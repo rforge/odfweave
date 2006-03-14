@@ -1,41 +1,31 @@
 \name{odfTable.matrix}
 \alias{odfTable.matrix}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Creating a OpenDocument format table from a matrix}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+reating a OpenDocument format table from a matrix
 }
 \usage{
 odfTable.matrix(x, colnames = NULL, useRowNames = TRUE, digits = max(3, getOption("digits") - 3), name = paste("Table", floor(runif(1) * 1000), sep = ""), styleNames = NULL, ...)
 }
-%- maybe also 'usage' for other objects documented here.
-\arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-  \item{colnames}{ ~~Describe \code{colnames} here~~ }
-  \item{useRowNames}{ ~~Describe \code{useRowNames} here~~ }
-  \item{digits}{ ~~Describe \code{digits} here~~ }
-  \item{name}{ ~~Describe \code{name} here~~ }
-  \item{styleNames}{ ~~Describe \code{styleNames} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
+\arguments{
+  \item{x}{a matrix}
+  \item{colnames}{optional column names for the table}
+  \item{useRowNames}{a logical: should the row names be printed in the final table}
+  \item{digits}{number of significant digits passed to format (numeric matrices only)}
+  \item{name}{A name for the table. ODF requires a name for each object, so we will make up a random name if left unspecified.}
+  \item{styleNames}{A character vector with the names for any styles specified by the user.}
+  \item{\dots}{optional arguments that can be passed to \code{format}}
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+
+\value{
+a character string of XML
+}
+\author{Max Kuhn}
+
+\seealso{\code{\link{odfTableGen}}}
 \examples{
-test <- TRUE
+cat(odfTable(matrix(rnorm(12), 3)))
 }
 \keyword{utilities}
+

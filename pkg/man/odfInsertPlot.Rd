@@ -1,43 +1,32 @@
 \name{odfInsertPlot}
 \alias{odfInsertPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Write XML for image inseration}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+Writes ODF markup to allow images in documents. Also can copy
+the image file to the Picture directory.
 }
 \usage{
-odfInsertPlot(file, height, width, units = "in", anchor = c("\n<text:p>\n", "\n</text:p>\n"), name = paste("graphics", floor(runif(1) * 1000), sep = ""), copy = TRUE, dest = paste(getwd(), "/Pictures", sep = ""), verbose = FALSE)
+odfInsertPlot(file, height, width, units = "in", 
+anchor = c("\n<text:p>\n", "\n</text:p>\n"), 
+name = paste("graphics", floor(runif(1) * 1000), sep = ""), 
+copy = TRUE, dest = paste(getwd(), "/Pictures", sep = ""), verbose = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{file}{ ~~Describe \code{file} here~~ }
-  \item{height}{ ~~Describe \code{height} here~~ }
-  \item{width}{ ~~Describe \code{width} here~~ }
-  \item{units}{ ~~Describe \code{units} here~~ }
-  \item{anchor}{ ~~Describe \code{anchor} here~~ }
-  \item{name}{ ~~Describe \code{name} here~~ }
-  \item{copy}{ ~~Describe \code{copy} here~~ }
-  \item{dest}{ ~~Describe \code{dest} here~~ }
-  \item{verbose}{ ~~Describe \code{verbose} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{file}{a string for the image file location}
+  \item{height}{the dispay height of the image}
+  \item{width}{the dispay width of the image}
+  \item{units}{the units for the display dimensions}
+  \item{anchor}{a character vector that the image markup will be 
+  sandwiched between}
+  \item{name}{a name for the figure}
+  \item{copy}{a logical: should the function copy the image file to
+  the picture directory? The function will overwrite files (if needed).}
+  \item{dest}{the locaiton of the pciture directory}
+  \item{verbose}{a logical: should details be written out?}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+a character string
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{Max Kuhn}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-test <- TRUE
-}
 \keyword{utilities}

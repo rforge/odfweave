@@ -1,39 +1,29 @@
 \name{odfWeave}
 \alias{odfWeave}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Sweave-like processing of OpenDocument format files}
 \description{
   ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
 odfWeave(file, workDir = tempdir(), verbose = TRUE, style = NULL, zipCmd = c("zip -r $$file$$ . -i *", "unzip -o $$file$$"))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{file}{ ~~Describe \code{file} here~~ }
-  \item{workDir}{ ~~Describe \code{workDir} here~~ }
-  \item{verbose}{ ~~Describe \code{verbose} here~~ }
-  \item{style}{ ~~Describe \code{style} here~~ }
-  \item{zipCmd}{ ~~Describe \code{zipCmd} here~~ }
+  \item{file}{the \code{odt} file created using OpenOffice V2.0 or above.}
+  \item{workDir}{a path to a directory where the source file will be unpacked and processed}
+  \item{verbose}{a logical: should details be printed?}
+  \item{style}{a list of style declarations. See \code{\link{defaultStyles}} for an example.}
+  \item{zipCmd}{a string for the zipping/unzipping the \code{odt} file. The token \code{$$file$$} will be gsubbed with the file name.}
 }
 \details{
   ~~ If necessary, more details than the description above ~~
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+a \code{odt} file with the R output
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{Max Kuhn}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{\code{\link[utils]{Sweave}}}
 \examples{
-test <- TRUE
+# put an example form the example directory
 }
 \keyword{utilities}

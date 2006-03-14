@@ -1,35 +1,19 @@
 \name{parseOdfXml}
 \alias{parseOdfXml}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Find and process R code in XML files}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function scans an XML file and determines if there are \code{<<>>=} chunks or \code{Sexpr} tags. The start and end of \code{<<>>=} chunks are determined and the R code is "repaired" in the case where OpenOffice changed the code.
 }
 \usage{
 parseOdfXml(x)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{x}{a character vector that contains lines of XML}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+a character vector that contains lines of XML that contain valid R code chunks.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{Max Kuhn}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-test <- TRUE
-}
 \keyword{utilities}
+

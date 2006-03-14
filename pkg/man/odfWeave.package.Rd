@@ -1,38 +1,28 @@
-\name{ReportTools-package}
-\alias{ReportTools-package}
-\alias{ReportTools}
+\name{odfWeave-package}
+\alias{odfWeave-package}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Sweave-like capability for OpenDocument files
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+This package tries to mimic the functionality of \code{\link{Sweave}} for OpenDocuemnt files (I've only used it for writer documents though). The OpenDocument format (ODF) is very different from latex (for example it is a compressed file) and due to these differences, it wasn't possible to actually use \code{\link{Sweave}}.
 }
 \details{
 \tabular{ll}{
-Package: \tab ReportTools\cr
+Package: \tab odfWeave\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2006-03-09\cr
-License: \tab What license is it under?\cr
+License: \tab GPL 2\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+
 }
 \author{
-Who wrote it
+Max Kuhn
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Max Kuhn <max.kuhn@pfizer.com>
 }
 \references{
-~~ Literature or other references for background information ~~
 }
-\keyword{ package }
-~~ Optionally other keywords from doc/KEYWORDS, one per line
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
+\keyword{ utilities }
 

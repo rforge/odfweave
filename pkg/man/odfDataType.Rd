@@ -1,35 +1,29 @@
 \name{odfDataType}
 \alias{odfDataType}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Determine object type consistent with ODF specification}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function converts R storage mode to types constistent with
+\code{office:value-type} in ODF.
 }
 \usage{
 odfDataType(x)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
+  \item{x}{a vector}
 }
 \details{
-  ~~ If necessary, more details than the description above ~~
+Right now, only value types of "string" and "double" are impimented (ODF
+has other values, such as float, double, percentage, currency, date, 
+time, boolean, string, void). More to follow.
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+a string.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
+\references{  The Opendocument format specification 
+http://xml.coverpages.org/OpenDocumentV10-Standard.html
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{Max Kuhn}
 \examples{
-test <- TRUE
+lapply(iris, odfDataType)
 }
 \keyword{utilities}

@@ -1,39 +1,30 @@
 \name{odfTableGen}
 \alias{odfTableGen}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Nuts and bolts of table generation}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+Writes the line-by-line ODF table code
 }
 \usage{
 odfTableGen(x, dataType, header = NULL, tableName, styles = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-  \item{dataType}{ ~~Describe \code{dataType} here~~ }
-  \item{header}{ ~~Describe \code{header} here~~ }
-  \item{tableName}{ ~~Describe \code{tableName} here~~ }
-  \item{styles}{ ~~Describe \code{styles} here~~ }
+  \item{x}{a character matrix}
+  \item{dataType}{a character string of values that specify the kind of data contained in the columns consistent with \code{office:value-type} in the ODF specification. The function \code{\link{odfDataType}} can be used to generate these values.}
+  \item{header}{a character string of column headers}
+  \item{tableName}{a character string for the table}
+  \item{styles}{a character string of style names used}
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
+\value{
+a character string
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{Max Kuhn}
 \examples{
-test <- TRUE
+ cat(
+    odfTableGen(
+       matrix(letters[1:9], 3), 
+       dataType = rep("string", 3), 
+       tableName = "Test"))
 }
 \keyword{utilities}
+

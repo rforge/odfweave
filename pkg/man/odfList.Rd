@@ -1,36 +1,25 @@
 \name{odfList}
 \alias{odfList}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Write XML for one layer lists}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+Creates ODF markup for enumerated or bulleted list one layer deep
 }
 \usage{
 odfList(data, styles = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ ~~Describe \code{data} here~~ }
-  \item{styles}{ ~~Describe \code{styles} here~~ }
+  \item{data}{a vector}
+  \item{styles}{a list of style types and their names. Only style types
+  of \code{bulletList} or \code{paraText} are required.}
 }
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
+\value{
+a string
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{Max Kuhn}
+
 \examples{
-test <- TRUE
+data(defaultStyles)
+odfList(levels(iris$Species), styles = lapply(defaultStyles, function(x) x$name))
 }
 \keyword{utilities}

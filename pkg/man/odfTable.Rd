@@ -1,35 +1,20 @@
 \name{odfTable}
 \alias{odfTable}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{Generic method for creating a table}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+Generic method for creating a table}
 \usage{
 odfTable(x, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-  \item{\dots}{ ~~Describe \code{\dots} here~~ }
+  \item{x}{a vector, matrix or data frame}
+  \item{\dots}{optional arguments}
 }
 \details{
+There are methods for vectors, matrices and data frames
 }
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-test <- TRUE
-}
+\author{Max Kuhn}
+
 \keyword{utilities}
+
