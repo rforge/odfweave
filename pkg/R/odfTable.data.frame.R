@@ -21,7 +21,7 @@ function(
       stop("wrong length of column names")
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
-   tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
+   tbleText <- odfTableGen(xChar, dataType = colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
    tbleText
 }
 
