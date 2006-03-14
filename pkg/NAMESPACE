@@ -15,7 +15,6 @@ export(
    parseOdfXml)
 
 
-S3method(odfTable, default)
 S3method(odfTable, character)
 S3method(odfTable, matrix)
 S3method(odfTable, numeric)
