@@ -1,0 +1,5 @@
+ - switch readlines with something else taht aviods warnings
+ - finalize last lines of ODFWeave: cleanup, copying out final file etc.
+ - improve man files
+ - enable examples on odfWeave man page
+ - look into R local zip function
