@@ -1,5 +1,11 @@
- - switch readlines with something else taht aviods warnings
- - finalize last lines of ODFWeave: cleanup, copying out final file etc.
  - improve man files
- - enable examples on odfWeave man page
- - look into R local zip function
+ - write vingette+FAQ 
+ - look into R internal zip function
+ - utilize table column formats: right now, 
+   only doubles and strings are supported 
+   and doubles are rounded
+ - another style arg to specify the style
+   of every cell in the table and different
+   styles for different columns
+ - test with Calc and Impress
+ - allow lists with multiple sub-lists
