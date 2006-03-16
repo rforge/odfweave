@@ -1,7 +1,9 @@
 "odfWeave" <-
 function(
    file, 
+   dest,
    workDir = tempdir(), 
+   cleanup = FALSE,
    verbose = TRUE, 
    style = NULL,
    zipCmd = c("zip -r $$file$$ . -i *", "unzip -o $$file$$"))
@@ -20,11 +22,13 @@ function(
    if(verbose) cat("  Setting wd\n"); flush.console()
    setwd(workDir)
       
+   workingCopy <- paste(workDir, "/", basename(file), sep = "")      
+      
    # copy file to the tmp dir       
    if(!file.exists(file))
       stop(paste(file, "does not exist"))   
    if(verbose) cat("  Copying ", file, "\n"); flush.console()      
-   if(!file.copy(file, paste(workDir, "/", basename(file), sep = "")))
+   if(!file.copy(file, workingCopy))
       stop("Error copying file")
 
    # unpack the file 
@@ -43,8 +47,8 @@ function(
       stop("Error unzipping file")
    
    # remove original file
-   if(verbose) cat("\n  Removing ", paste(workDir, "/", basename(file), sep = ""), "\n"); flush.console()      
-   if(unlink(paste(workDir, "/", basename(file), sep = ""), recursive = TRUE) == 1) 
+   if(verbose) cat("\n  Removing ", workingCopy, "\n"); flush.console()      
+   if(unlink(workingCopy, recursive = TRUE) == 1) 
       stop("Error removing original file")   
    
    # find xml files
@@ -56,8 +60,9 @@ function(
    # load xml into list
    xmlContents <- vector(mode = "list", length = length(xmlFiles))
    
-   #should find a way to do this differently to avoid the warnings - use file?
-   for(i in seq(along = xmlContents)) xmlContents[[i]] <- readLines(xmlFiles[i])
+   #readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
+#  for(i in seq(along = xmlContents)) xmlContents[[i]] <- readLines(xmlFiles[i])
+   for(i in seq(along = xmlContents)) xmlContents[[i]] <- scan(xmlFiles[i], what = "raw", sep = "\n", blank.lines.skip = FALSE, quiet = !verbose )   
    hasTags <- unlist(lapply(
       xmlContents, 
       function(x) length(c(grep("Sexpr", x), grep("&gt;&gt;=", x))) > 0))
@@ -116,9 +121,10 @@ function(
          
          #Sweave results to new xml file
          Sweave(
-         file =   paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""),
-         output = paste(workDir, "/", sweaveFiles[j], sep = ""),
-         stylepath = FALSE)
+            file =   paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""),
+            output = paste(workDir, "/", sweaveFiles[j], sep = ""),
+            quiet = !verbose,
+            stylepath = FALSE)
          
          # remove sweave file
          if(verbose) cat("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
@@ -141,12 +147,23 @@ function(
    if(system(zipCmd[1], invisible = TRUE) != 0)
       stop("Error zipping file")
 
+
+   # copy final file to destination      
+   if(!file.exists(workingCopy))
+      stop(paste(workingCopy, "does not exist"))   
+   if(verbose) cat("  Copying ", workingCopy, "\n"); flush.console()      
+   if(!file.copy(workingCopy, dest, overwrite = TRUE))
+      stop("Error copying file")
+
    if(verbose) cat("  Resetting wd\n"); flush.console()
    setwd(currentLoc)
 
    # delete working dir
-   if(verbose) cat("  Removing ", workDir, "\n"); flush.console()
-#   if(unlink(workDir, recursive = TRUE) == 1) stop("Error removing work dir")
+   if(cleanup)
+   {
+      if(verbose) cat("  Removing ", workDir, "\n"); flush.console()
+      if(unlink(workDir, recursive = TRUE) == 1) stop("Error removing work dir")
+   }
    options(encoding = currentEncoding)
    invisible(NULL)
 }
