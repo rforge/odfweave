@@ -6,7 +6,7 @@ function(
    cleanup = FALSE,
    verbose = TRUE, 
    style = NULL,
-   zipCmd = c("zip -r $$file$$ . -i *", "unzip -o $$file$$"))
+   zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"))
 {
    currentEncoding <- getOption("encoding")
    options(encoding = "UTF-8")
@@ -28,22 +28,24 @@ function(
    if(!file.exists(file))
       stop(paste(file, "does not exist"))   
    if(verbose) cat("  Copying ", file, "\n"); flush.console()      
-   if(!file.copy(file, workingCopy))
+   if(!file.copy(file, workingCopy, overwrite = TRUE))
       stop("Error copying file")
 
    # unpack the file 
    zipCmd[2] <- gsub(
       "$$file$$", 
       paste(
+         ifelse(version$os == 'mingw32', "\"", ""),
          workDir, 
          "/", 
-         basename(file), 
+         basename(file),
+         ifelse(version$os == 'mingw32', "\"", ""), 
          sep = ""), 
       zipCmd[2], 
       fixed = TRUE)   
       
    if(verbose) cat("  Decompressing file using", zipCmd[2], "\n"); flush.console()  
-   if(system(zipCmd[2], invisible = TRUE) != 0)
+   if(system(zipCmd[2]) != 0)
       stop("Error unzipping file")
    
    # remove original file
@@ -61,8 +63,8 @@ function(
    xmlContents <- vector(mode = "list", length = length(xmlFiles))
    
    #readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
-#  for(i in seq(along = xmlContents)) xmlContents[[i]] <- readLines(xmlFiles[i])
-   for(i in seq(along = xmlContents)) xmlContents[[i]] <- scan(xmlFiles[i], what = "raw", sep = "\n", blank.lines.skip = FALSE, quiet = !verbose )   
+#   for(i in seq(along = xmlContents)) xmlContents[[i]] <- readLines(xmlFiles[i])
+   for(i in seq(along = xmlContents)) xmlContents[[i]] <- scan(file(xmlFiles[i], encoding = "UTF-8"), what = "raw", sep = "\n", blank.lines.skip = FALSE, quiet = !verbose )   
    hasTags <- unlist(lapply(
       xmlContents, 
       function(x) length(c(grep("Sexpr", x), grep("&gt;&gt;=", x))) > 0))
@@ -136,15 +138,17 @@ function(
    zipCmd[1] <- gsub(
       "$$file$$", 
       paste(
+         ifelse(version$os == 'mingw32', "\"", ""),      
          workDir, 
          "/", 
          basename(file), 
+         ifelse(version$os == 'mingw32', "\"", ""),         
          sep = ""), 
       zipCmd[1], 
       fixed = TRUE)
 
    if(verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()      
-   if(system(zipCmd[1], invisible = TRUE) != 0)
+   if(system(zipCmd[1]) != 0)
       stop("Error zipping file")
 
 
