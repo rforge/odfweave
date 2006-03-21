@@ -4,12 +4,8 @@ function(x)
    leadWhite <- function(x) sub ("^[ \t]*", "", sub ("[ \t]*$", "", x)) 
    rCmd <- function(x)
    {
-      # this doesnt work with <<testChunk,  results=tex>>= (note the spaces) 
-      # or does it?
-      tmpString <- unlist(strsplit(leadWhite(x), "[<>]"))
-      tmpString <- leadWhite(tmpString) 
-      tmp <- tmpString[length(tmpString) - 1]
-      tmp <- odfTranslate(tmp)            
+      tmpString <- stripXmlTag(x)
+      tmp <- odfTranslate(tmpString)            
       tmp
    }
    
@@ -32,9 +28,7 @@ function(x)
          count <- count + 1
          rCode <- rCmd(x[j])
          tmpVec[count] <- rCode
-         hasAt <- (length(grep("\@", rCode)) >= 1)
-         hasNoAt <- (length(grep("[^ \@]", rCode)) >= 1)
-         if(hasAt & !hasNoAt)
+         if(rCode == "@")
          {
             tmpVec <- tmpVec[1:count]
             x[startLines[i]: (startLines[i] + count - 1)] <- tmpVec
