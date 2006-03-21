@@ -12,7 +12,8 @@ export(
    odfTableGen, 
    odfTranslate, 
    odfWeave, 
-   parseOdfXml)
+   parseOdfXml,
+   stripXmlTag)
 
 
 S3method(odfTable, character)
