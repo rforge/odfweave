@@ -13,7 +13,7 @@ function(
    if(useRowNames)
    {
       xChar <- cbind(rownames(x), xChar)
-      if(!is.null(dimnames(xChar)[[2]])) dimnames(xChar)[[2]] <- c("", dimnames(x)[[2]])
+      if(!is.null(rownames(x))) rownames(xChar)<- c("", dimnames(x)[[2]])
    }
    
    if(!is.null(colnames) && length(colnames) != dim(xChar)[2]) 
