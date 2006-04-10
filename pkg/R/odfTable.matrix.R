@@ -9,11 +9,13 @@ function(
    ...)
 {
 
+   colTypes <- apply(x, 2, odfDataType)
    xChar <- format(x, digits = digits, ...)
    if(useRowNames)
    {
       xChar <- cbind(rownames(x), xChar)
-      if(!is.null(rownames(x))) rownames(xChar)<- c("", dimnames(x)[[2]])
+      colTypes <- c("string", colTypes)
+      if(!is.null(rownames(x))) colnames(xChar)<- c("", dimnames(x)[[2]])
    }
    
    if(!is.null(colnames) && length(colnames) != dim(xChar)[2]) 
@@ -21,7 +23,7 @@ function(
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
 
-   colTypes <- apply(x, 2, odfDataType)
+
    tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
    tbleText
 }
