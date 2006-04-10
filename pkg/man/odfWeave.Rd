@@ -2,7 +2,7 @@
 \alias{odfWeave}
 \title{Sweave-like processing of OpenDocument format files}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  Sweave-like processing of OpenDocument format files
 }
 \usage{
 odfWeave(file, dest, workDir = tempdir(), cleanup = FALSE, verbose = TRUE, style = NULL, zipCmd = c("zip -r $$file$$ . -i *", "unzip -o $$file$$"))
@@ -35,7 +35,7 @@ library(odfWeave)
 data(defaultStyles)
 odfWeave(demoFile, outputFile, workingPath, style = defaultStyles, verbose = FALSE)
 
-unlink(workingPath)
+unlink(workingPath, recursive = TRUE)
 
 }
 \keyword{utilities}
