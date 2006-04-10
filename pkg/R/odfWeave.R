@@ -62,9 +62,37 @@ function(
    # load xml into list
    xmlContents <- vector(mode = "list", length = length(xmlFiles))
    
-   #readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
-#   for(i in seq(along = xmlContents)) xmlContents[[i]] <- readLines(xmlFiles[i])
+   # readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
    for(i in seq(along = xmlContents)) xmlContents[[i]] <- scan(file(xmlFiles[i], encoding = "UTF-8"), what = "raw", sep = "\n", blank.lines.skip = FALSE, quiet = !verbose )   
+   
+   # add style information, if any, to styles.xml 
+   if(!is.null(style))
+   {
+      if(verbose) cat("  Looking for style information in styles.xml\n"); flush.console()           
+      styleInfo <- xmlContents[[which(xmlFiles == "styles.xml")]]
+
+      locateAutoStart <- grep("<office:styles>", styleInfo, fixed = TRUE)
+      locateAutoStop <- grep("</office:styles>", styleInfo, fixed = TRUE)
+      if(length(locateAutoStart) > 1 & length(locateAutoStop) > 1)
+         stop("there are more that one <office:automatic-styles> or </office:automatic-styles> tags")
+      if(length(locateAutoStart) == 0 & length(locateAutoStop) == 1)
+      {
+         part1 <- styleInfo[1:(locateAutoStop - 1)]
+         part2 <- styleInfo[locateAutoStop:length(styleInfo)]
+         styleInfo <- c(part1, " <office:automatic-styles>", part2)
+         locateAutoStart <- locateAutoStop
+         locateAutoStop <- locateAutoStop + 1     
+      } 
+      # add style text here 
+      if(verbose) cat("  Spliiting file around office:automatic-styles at line", locateAutoStop, "\n"); flush.console()           
+      part1 <- styleInfo[1:(locateAutoStop -1)]
+      part2 <- styleInfo[locateAutoStop:length(styleInfo)]
+      styleVec <- odfStyleGen(style)            
+      xmlContents[[which(xmlFiles == "styles.xml")]] <- c(paste(part1, "\n"), styleVec, paste(part2, "\n"))            
+
+      if(verbose) cat("\n")
+   }     
+   
    hasTags <- unlist(lapply(
       xmlContents, 
       function(x) length(c(grep("Sexpr", x), grep("&gt;&gt;=", x))) > 0))
@@ -81,31 +109,7 @@ function(
          if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])    
          
              
-         if(length(grep("content.xml", sweaveFiles[j], fixed = TRUE)) > 0 & !is.null(style))
-         {
-            if(verbose) cat("  Looking for style information in content.xml\n"); flush.console()           
-         
-            locateAutoStart <- grep("<office:automatic-styles>", sweaveContents[[j]], fixed = TRUE)
-            locateAutoStop <- grep("</office:automatic-styles>", sweaveContents[[j]], fixed = TRUE)
-            if(length(locateAutoStart) > 1 & length(locateAutoStop) > 1)
-               stop("there are more that one <office:automatic-styles> or </office:automatic-styles> tags")
-            if(length(locateAutoStart) == 0 & length(locateAutoStop) == 1)
-            {
-               part1 <- sweaveContents[[j]][1:(locateAutoStop - 1)]
-               part2 <- sweaveContents[[j]][locateAutoStop:length(sweaveContents[[j]])]
-               sweaveContents[[j]] <- c(part1, " <office:automatic-styles>", part2)
-               locateAutoStart <- locateAutoStop
-               locateAutoStop <- locateAutoStop + 1     
-            }
-            # add style text here 
-            if(verbose) cat("  Spliiting file around office:automatic-styles at line", locateAutoStop, "\n"); flush.console()           
-            part1 <- sweaveContents[[j]][1:(locateAutoStop -1)]
-            part2 <- sweaveContents[[j]][locateAutoStop:length(sweaveContents[[j]])]
-            styleVec <- odfStyleGen(style)            
-            sweaveContents[[j]] <- c(part1, styleVec, part2)            
-
-            if(verbose) cat("\n")
-         }        
+      
          
          # write processed lines to Rnw file
          if(verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
@@ -133,8 +137,18 @@ function(
 #         if(unlink(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), recursive = TRUE) == 1) 
 #            stop("Error removing xml file file") 
          }
-   }    
+   }
    
+   # if there was no Sweave tags in styles.xml, write that out too
+   if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(style))       
+   {
+      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "w", encoding = "UTF-8")
+      sink(styleFile)   
+      cat(xmlContents[[which(xmlFiles == "styles.xml")]])
+      sink()
+      close(styleFile)
+
+   }
    zipCmd[1] <- gsub(
       "$$file$$", 
       paste(
