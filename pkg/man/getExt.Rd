@@ -25,5 +25,7 @@ getExt(c("/home/me/foo.Rd", "/home/me/foo.bar.Rd"))
 getExt("/home/me/foo.bar.Rd")
 getExt("/home/me/")
 getExt(c("/home/me/foo.Rd", "/home/me/"))
+getExt(c("/home/me/foo", "/home/me/"))
+getExt(c("/home/me/foo.", "/home/me/foo.bar.Rd"))
 }
 \keyword{utilities}
