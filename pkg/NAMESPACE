@@ -1,4 +1,5 @@
 export(
+   checkLength,
    getExt, 
    odfDataType, 
    odfInsertPlot,   
@@ -21,5 +22,7 @@ S3method(odfTable, matrix)
 S3method(odfTable, numeric)
 S3method(odfTable, data.frame)
 
-
+S3method(print, odfTable)
+S3method(print, odfList)
+S3method(print, odfInsertPlot)
 
