@@ -17,12 +17,15 @@ function(data, styles = NULL)
       "    </text:list-item>\n",
       sep = "")
 
-   paste(
+   out <- paste(
       "\n  <text:list ",
       listStyle,
       ">\n",
       paste(x, collapse = ""),
       "  </text:list>\n",
       sep = "")
+   structure(out, class = "odfList")     
 }
+
+print.odfList <- function(x, ...) cat(x)
 

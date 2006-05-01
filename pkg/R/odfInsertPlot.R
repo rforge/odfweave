@@ -23,7 +23,7 @@ function(file, height, width,
    }
    
    
-   out <- paste(
+   plotString <- paste(
       "    <draw:frame ",
       "\n",
 #      "     draw:style-name=\"fr1\"\n",
@@ -40,6 +40,9 @@ function(file, height, width,
       "    </draw:frame>",
       sep = "")
       
-    paste(anchor[1], out, anchor[2])
+   out <- paste(anchor[1], plotString, anchor[2])   
+   structure(out, class = "odfInsertPlot")     
 }
+
+print.odfInsertPlot <- function(x, ...) cat(x)
 
