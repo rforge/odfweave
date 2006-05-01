@@ -12,6 +12,6 @@ function(
    colTypes <- apply(xMat, 2, odfDataType)   
    xChar <- format(xMat, digits = digits, ...)
    tbleText <- odfTableGen(xChar, colTypes, header = colnames, tableName = name, styles = styleNames)
-   tbleText 
+   structure(tbleText, class = "odfTable")     
 }
 
