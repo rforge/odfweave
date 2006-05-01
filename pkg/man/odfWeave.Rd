@@ -5,7 +5,7 @@
   Sweave-like processing of OpenDocument format files
 }
 \usage{
-odfWeave(file, dest, workDir = tempdir(), cleanup = FALSE, verbose = TRUE, style = NULL, zipCmd = c("zip -r $$file$$ . -i *", "unzip -o $$file$$"))
+odfWeave(file, dest, workDir = tempdir(), cleanup = FALSE, verbose = TRUE, style = NULL, zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"))
 }
 \arguments{
   \item{file}{the \code{odt} file created using OpenOffice V2.0 or above.}
