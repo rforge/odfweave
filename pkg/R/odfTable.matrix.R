@@ -11,7 +11,7 @@ function(
 
    colTypes <- apply(x, 2, odfDataType)
    xChar <- format(x, digits = digits, ...)
-   if(useRowNames)
+   if(useRowNames & !is.null(rownames(x)))
    {
       xChar <- cbind(rownames(x), xChar)
       colTypes <- c("string", colTypes)
@@ -25,6 +25,6 @@ function(
 
 
    tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
-   tbleText
+   structure(tbleText, class = "odfTable")     
 }
 

@@ -10,7 +10,7 @@ function(
 {
    colTypes <- unlist(lapply(x, odfDataType))
    xChar <- as.matrix(format(x, digits = digits, ...))
-   if(useRowNames)
+   if(useRowNames & !is.null(rownames(x)))
    {
       xChar <- cbind(rownames(x), xChar)
       if(!is.null(dimnames(xChar)[[2]])) dimnames(xChar)[[2]] <- c("", dimnames(x)[[2]])
@@ -22,6 +22,6 @@ function(
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
    tbleText <- odfTableGen(xChar, dataType = colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
-   tbleText
+   structure(tbleText, class = "odfTable")     
 }
 
