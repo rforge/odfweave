@@ -29,24 +29,30 @@ function(
       stop(paste(file, "does not exist"))   
    if(verbose) cat("  Copying ", file, "\n"); flush.console()      
    if(!file.copy(file, workingCopy, overwrite = TRUE))
-      stop("Error copying file")
+      stop("Error copying odt file")
 
    # unpack the file 
    zipCmd[2] <- gsub(
       "$$file$$", 
       paste(
-         ifelse(version$os == 'mingw32', "\"", ""),
+         ifelse(.Platform$OS.type == "windows", "\"", ""),
          workDir, 
          "/", 
          basename(file),
-         ifelse(version$os == 'mingw32', "\"", ""), 
+         ifelse(.Platform$OS.type == "windows", "\"", ""), 
          sep = ""), 
       zipCmd[2], 
       fixed = TRUE)   
       
-   if(verbose) cat("  Decompressing file using", zipCmd[2], "\n"); flush.console()  
-   if(system(zipCmd[2]) != 0)
-      stop("Error unzipping file")
+   if(verbose) cat("  Decompressing odt file using", zipCmd[2], "\n"); flush.console()  
+   if(.Platform$OS.type == "windows")
+   {   
+      if(system(zipCmd[2], invisible = TRUE) != 0)
+         stop("Error unzipping file")
+   } else {
+      if(system(zipCmd[2]) != 0)
+         stop("Error unzipping odt file")   
+   }   
    
    # remove original file
    if(verbose) cat("\n  Removing ", workingCopy, "\n"); flush.console()      
@@ -63,7 +69,17 @@ function(
    xmlContents <- vector(mode = "list", length = length(xmlFiles))
    
    # readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
-   for(i in seq(along = xmlContents)) xmlContents[[i]] <- scan(file(xmlFiles[i], encoding = "UTF-8"), what = "raw", sep = "\n", blank.lines.skip = FALSE, quiet = !verbose )   
+   for(i in seq(along = xmlContents))
+   {
+      xmlConnection <- file(xmlFiles[i], "rb", encoding = "UTF-8")
+      xmlContents[[i]] <- readLines(xmlConnection)
+      close(xmlConnection)
+   }
+
+   # R can have a prblem writing out lines longer than 999 characters, so collapse if needed
+   if(verbose) cat("  Breaking long lines...\n"); flush.console()           
+   
+   for(i in seq(along = xmlContents)) xmlContents[[i]] <- checkLength(xmlContents[[i]])
    
    # add style information, if any, to styles.xml 
    if(!is.null(style))
@@ -74,17 +90,17 @@ function(
       locateAutoStart <- grep("<office:styles>", styleInfo, fixed = TRUE)
       locateAutoStop <- grep("</office:styles>", styleInfo, fixed = TRUE)
       if(length(locateAutoStart) > 1 & length(locateAutoStop) > 1)
-         stop("there are more that one <office:automatic-styles> or </office:automatic-styles> tags")
+         stop("there are more that one <office:styles> or <office:styles> tags")
       if(length(locateAutoStart) == 0 & length(locateAutoStop) == 1)
       {
          part1 <- styleInfo[1:(locateAutoStop - 1)]
          part2 <- styleInfo[locateAutoStop:length(styleInfo)]
-         styleInfo <- c(part1, " <office:automatic-styles>", part2)
+         styleInfo <- c(part1, " <office:styles>", part2)
          locateAutoStart <- locateAutoStop
          locateAutoStop <- locateAutoStop + 1     
       } 
       # add style text here 
-      if(verbose) cat("  Spliiting file around office:automatic-styles at line", locateAutoStop, "\n"); flush.console()           
+      if(verbose) cat("  Spliiting file around <office:styles> at line", locateAutoStop, "\n"); flush.console()           
       part1 <- styleInfo[1:(locateAutoStop -1)]
       part2 <- styleInfo[locateAutoStop:length(styleInfo)]
       styleVec <- odfStyleGen(style)            
@@ -106,14 +122,10 @@ function(
       for(j in seq(along = sweaveFiles))
       {
          if(verbose) cat("  Removing xml around <<>>= for ", sweaveFiles[j], "\n"); flush.console()           
-         if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])    
-         
-             
-      
-         
+         if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])       
          # write processed lines to Rnw file
          if(verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
-         rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "w")
+         rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb", encoding = "UTF-8")
          writeLines(
             sweaveContents[[j]],
             rnwFile)
@@ -152,26 +164,31 @@ function(
    zipCmd[1] <- gsub(
       "$$file$$", 
       paste(
-         ifelse(version$os == 'mingw32', "\"", ""),      
+         ifelse(.Platform$OS.type == "windows", "\"", ""),      
          workDir, 
          "/", 
          basename(file), 
-         ifelse(version$os == 'mingw32', "\"", ""),         
+         ifelse(.Platform$OS.type == "windows", "\"", ""),         
          sep = ""), 
       zipCmd[1], 
       fixed = TRUE)
 
-   if(verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()      
-   if(system(zipCmd[1]) != 0)
-      stop("Error zipping file")
-
+   if(verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()   
+   if(.Platform$OS.type == "windows")
+   {   
+      if(system(zipCmd[1], invisible = TRUE) != 0)
+         stop("Error zipping file")
+   } else {
+      if(system(zipCmd[1]) != 0)
+         stop("Error zipping file")   
+   }
 
    # copy final file to destination      
    if(!file.exists(workingCopy))
       stop(paste(workingCopy, "does not exist"))   
    if(verbose) cat("  Copying ", workingCopy, "\n"); flush.console()      
    if(!file.copy(workingCopy, dest, overwrite = TRUE))
-      stop("Error copying file")
+      stop("Error copying odt file")
 
    if(verbose) cat("  Resetting wd\n"); flush.console()
    setwd(currentLoc)
