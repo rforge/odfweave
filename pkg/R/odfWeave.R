@@ -154,7 +154,7 @@ function(
    # if there was no Sweave tags in styles.xml, write that out too
    if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(style))       
    {
-      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "w", encoding = "UTF-8")
+      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb", encoding = "UTF-8")
       sink(styleFile)   
       cat(xmlContents[[which(xmlFiles == "styles.xml")]])
       sink()
