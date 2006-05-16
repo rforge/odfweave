@@ -14,6 +14,7 @@ export(
    odfTranslate, 
    odfWeave, 
    parseOdfXml,
+   readXML,
    stripXmlTag)
 
 
