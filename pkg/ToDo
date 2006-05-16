@@ -1,9 +1,13 @@
+ - work-around for "slim" styles.xml files
  - improve man files
  - write vingette+FAQ 
- - look into R internal zip function
+ - parse <<>> to look for fig= TRUE and 
+   automatically save and insert image files
  - utilize table column formats: right now, 
    only doubles and strings are supported 
-   and doubles are rounded
+   and doubles are rounded instead of writing
+   full precision into file and only displaying
+   desired precision
  - another style arg to specify the style
    of every cell in the table and different
    styles for different columns
