@@ -8,15 +8,13 @@ function(
    style = NULL,
    zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"))
 {
-   currentEncoding <- getOption("encoding")
-   options(encoding = "UTF-8")
    currentLoc <- getwd()
    # create a temp dir (or have dir specified)
    if(!file.exists(workDir)) 
    {
       if(verbose) cat("  Creating ", workDir, "\n"); flush.console()
       if(!dir.create(workDir, showWarnings = TRUE, recursive = FALSE))
-         stop("Error creating workig directory")
+         stop("Error creating working directory")
    }
    
    if(verbose) cat("  Setting wd\n"); flush.console()
@@ -59,6 +57,14 @@ function(
    if(unlink(workingCopy, recursive = TRUE) == 1) 
       stop("Error removing original file")   
    
+   #check for Pictures directory
+   if(!file.exists(paste(workDir, "/Pictures", sep = "")))
+   {
+      if(verbose) cat("  Creating a Pictures directory\n"); flush.console()                
+      picDir <- dir.create(paste(workDir, "/Pictures", sep = ""), showWarnings = TRUE, recursive = FALSE)
+      if(!picDir)  stop("Error creating Pictures directory")   
+   }
+   
    # find xml files
    fileList <- list.files(workDir)
    xmlFiles <- fileList[grep(".xml", tolower(fileList), fixed = TRUE)]
@@ -71,12 +77,13 @@ function(
    # readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
    for(i in seq(along = xmlContents))
    {
-      xmlConnection <- file(xmlFiles[i], "rb", encoding = "UTF-8")
-      xmlContents[[i]] <- readLines(xmlConnection)
-      close(xmlConnection)
+      # a custom reader is used to import the contents of the xml files because
+      # OO has a feature to reduce the file size by removing linear breaks
+      # we read the data in and induce line breaks
+      xmlContents[[i]] <- readXML(xmlFiles[i], verbose = verbose)
    }
 
-   # R can have a prblem writing out lines longer than 999 characters, so collapse if needed
+   # R can have a problem writing out lines longer than 999 characters, so collapse if needed
    if(verbose) cat("  Breaking long lines...\n"); flush.console()           
    
    for(i in seq(along = xmlContents)) xmlContents[[i]] <- checkLength(xmlContents[[i]])
@@ -125,7 +132,7 @@ function(
          if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])       
          # write processed lines to Rnw file
          if(verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
-         rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb", encoding = "UTF-8")
+         rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb")
          writeLines(
             sweaveContents[[j]],
             rnwFile)
@@ -154,7 +161,7 @@ function(
    # if there was no Sweave tags in styles.xml, write that out too
    if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(style))       
    {
-      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb", encoding = "UTF-8")
+      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb")
       sink(styleFile)   
       cat(xmlContents[[which(xmlFiles == "styles.xml")]])
       sink()
@@ -199,7 +206,6 @@ function(
       if(verbose) cat("  Removing ", workDir, "\n"); flush.console()
       if(unlink(workDir, recursive = TRUE) == 1) stop("Error removing work dir")
    }
-   options(encoding = currentEncoding)
    invisible(NULL)
 }
 
