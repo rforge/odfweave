@@ -33,7 +33,7 @@ workingPath <- tempdir()
 
 library(odfWeave)
 data(defaultStyles)
-odfWeave(demoFile, outputFile, workingPath, style = defaultStyles, verbose = FALSE)
+odfWeave(demoFile, outputFile, workingPath, style = defaultStyles, verbose = TRUE)
 
 unlink(workingPath, recursive = TRUE)
 
