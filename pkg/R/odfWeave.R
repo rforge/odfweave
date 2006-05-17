@@ -1,23 +1,21 @@
-"odfWeave" <-
-function(
-   file, 
-   dest,
-   workDir = tempdir(), 
-   cleanup = FALSE,
-   verbose = TRUE, 
-   style = NULL,
-   zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"))
+# put in check for optimized files
+# rename parseOdfXml to processOdfXml?
+# documentation and beta testing
+# code review
+# add check for slim style file
+
+"odfWeave" <- function(file, dest, workDir = tempdir(), control = odfWeaveControl())
 {
    currentLoc <- getwd()
    # create a temp dir (or have dir specified)
    if(!file.exists(workDir)) 
    {
-      if(verbose) cat("  Creating ", workDir, "\n"); flush.console()
+      if(control$verbose) cat("  Creating ", workDir, "\n"); flush.console()
       if(!dir.create(workDir, showWarnings = TRUE, recursive = FALSE))
          stop("Error creating working directory")
    }
    
-   if(verbose) cat("  Setting wd\n"); flush.console()
+   if(control$verbose) cat("  Setting wd\n"); flush.console()
    setwd(workDir)
       
    workingCopy <- paste(workDir, "/", basename(file), sep = "")      
@@ -25,11 +23,12 @@ function(
    # copy file to the tmp dir       
    if(!file.exists(file))
       stop(paste(file, "does not exist"))   
-   if(verbose) cat("  Copying ", file, "\n"); flush.console()      
+   if(control$verbose) cat("  Copying ", file, "\n"); flush.console()      
    if(!file.copy(file, workingCopy, overwrite = TRUE))
       stop("Error copying odt file")
 
    # unpack the file 
+   zipCmd <- control$zipCmd
    zipCmd[2] <- gsub(
       "$$file$$", 
       paste(
@@ -42,7 +41,7 @@ function(
       zipCmd[2], 
       fixed = TRUE)   
       
-   if(verbose) cat("  Decompressing odt file using", zipCmd[2], "\n"); flush.console()  
+   if(control$verbose) cat("  Decompressing odt file using", zipCmd[2], "\n"); flush.console()  
    if(.Platform$OS.type == "windows")
    {   
       if(system(zipCmd[2], invisible = TRUE) != 0)
@@ -53,14 +52,14 @@ function(
    }   
    
    # remove original file
-   if(verbose) cat("\n  Removing ", workingCopy, "\n"); flush.console()      
+   if(control$verbose) cat("\n  Removing ", workingCopy, "\n"); flush.console()      
    if(unlink(workingCopy, recursive = TRUE) == 1) 
       stop("Error removing original file")   
    
    #check for Pictures directory
    if(!file.exists(paste(workDir, "/Pictures", sep = "")))
    {
-      if(verbose) cat("  Creating a Pictures directory\n"); flush.console()                
+      if(control$verbose) cat("  Creating a Pictures directory\n"); flush.console()                
       picDir <- dir.create(paste(workDir, "/Pictures", sep = ""), showWarnings = TRUE, recursive = FALSE)
       if(!picDir)  stop("Error creating Pictures directory")   
    }
@@ -80,18 +79,18 @@ function(
       # a custom reader is used to import the contents of the xml files because
       # OO has a feature to reduce the file size by removing linear breaks
       # we read the data in and induce line breaks
-      xmlContents[[i]] <- readXML(xmlFiles[i], verbose = verbose)
+      xmlContents[[i]] <- readXML(xmlFiles[i], verbose = control$verbose)
    }
 
    # R can have a problem writing out lines longer than 999 characters, so collapse if needed
-   if(verbose) cat("  Breaking long lines...\n"); flush.console()           
+   if(control$verbose) cat("  Breaking long lines...\n"); flush.console()           
    
    for(i in seq(along = xmlContents)) xmlContents[[i]] <- checkLength(xmlContents[[i]])
    
    # add style information, if any, to styles.xml 
-   if(!is.null(style))
+   if(!is.null(control$style))
    {
-      if(verbose) cat("  Looking for style information in styles.xml\n"); flush.console()           
+      if(control$verbose) cat("  Looking for style information in styles.xml\n"); flush.console()           
       styleInfo <- xmlContents[[which(xmlFiles == "styles.xml")]]
 
       locateAutoStart <- grep("<office:styles>", styleInfo, fixed = TRUE)
@@ -107,13 +106,13 @@ function(
          locateAutoStop <- locateAutoStop + 1     
       } 
       # add style text here 
-      if(verbose) cat("  Spliiting file around <office:styles> at line", locateAutoStop, "\n"); flush.console()           
+      if(control$verbose) cat("  Spliiting file around <office:styles> at line", locateAutoStop, "\n"); flush.console()           
       part1 <- styleInfo[1:(locateAutoStop -1)]
       part2 <- styleInfo[locateAutoStop:length(styleInfo)]
-      styleVec <- odfStyleGen(style)            
+      styleVec <- odfStyleGen(control$style)            
       xmlContents[[which(xmlFiles == "styles.xml")]] <- c(paste(part1, "\n"), styleVec, paste(part2, "\n"))            
 
-      if(verbose) cat("\n")
+      if(control$verbose) cat("\n")
    }     
    
    hasTags <- unlist(lapply(
@@ -122,16 +121,16 @@ function(
      
    if(any(hasTags))
    {
-      if(verbose) cat("\n  Sweave tags found in: ", xmlFiles[hasTags], "\n"); flush.console()      
+      if(control$verbose) cat("\n  Sweave tags found in: ", xmlFiles[hasTags], "\n"); flush.console()      
       sweaveFiles <- xmlFiles[hasTags]
       sweaveContents <- xmlContents[hasTags]
       
       for(j in seq(along = sweaveFiles))
       {
-         if(verbose) cat("  Removing xml around <<>>= for ", sweaveFiles[j], "\n"); flush.console()           
-         if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])       
+         if(control$verbose) cat("  Removing xml around <<>>= for ", sweaveFiles[j], "\n"); flush.console()           
+         if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]], control)       
          # write processed lines to Rnw file
-         if(verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
+         if(control$verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
          rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb")
          writeLines(
             sweaveContents[[j]],
@@ -139,27 +138,27 @@ function(
          close(rnwFile)
          
          #nuke the xml file
-         if(verbose) cat("\n  Removing ", sweaveFiles[j], "\n"); flush.console()           
+         if(control$verbose) cat("\n  Removing ", sweaveFiles[j], "\n"); flush.console()           
          if(unlink(paste(workDir, "/", sweaveFiles[j], sep = ""), recursive = TRUE) == 1) 
             stop("Error removing xml file file") 
-         if(verbose) cat("  Sweaving ",gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n\n"); flush.console()            
+         if(control$verbose) cat("  Sweaving ",gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n\n"); flush.console()            
          
          #Sweave results to new xml file
          Sweave(
             file =   paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""),
             output = paste(workDir, "/", sweaveFiles[j], sep = ""),
-            quiet = !verbose,
+            quiet = !control$verbose,
             stylepath = FALSE)
          
          # remove sweave file
-         if(verbose) cat("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
+         if(control$verbose) cat("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
 #         if(unlink(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), recursive = TRUE) == 1) 
 #            stop("Error removing xml file file") 
          }
    }
    
    # if there was no Sweave tags in styles.xml, write that out too
-   if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(style))       
+   if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(control$style))       
    {
       styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb")
       sink(styleFile)   
@@ -180,7 +179,7 @@ function(
       zipCmd[1], 
       fixed = TRUE)
 
-   if(verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()   
+   if(control$verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()   
    if(.Platform$OS.type == "windows")
    {   
       if(system(zipCmd[1], invisible = TRUE) != 0)
@@ -193,17 +192,17 @@ function(
    # copy final file to destination      
    if(!file.exists(workingCopy))
       stop(paste(workingCopy, "does not exist"))   
-   if(verbose) cat("  Copying ", workingCopy, "\n"); flush.console()      
+   if(control$verbose) cat("  Copying ", workingCopy, "\n"); flush.console()      
    if(!file.copy(workingCopy, dest, overwrite = TRUE))
       stop("Error copying odt file")
 
-   if(verbose) cat("  Resetting wd\n"); flush.console()
+   if(control$verbose) cat("  Resetting wd\n"); flush.console()
    setwd(currentLoc)
 
    # delete working dir
-   if(cleanup)
+   if(control$cleanup)
    {
-      if(verbose) cat("  Removing ", workDir, "\n"); flush.console()
+      if(control$verbose) cat("  Removing ", workDir, "\n"); flush.console()
       if(unlink(workDir, recursive = TRUE) == 1) stop("Error removing work dir")
    }
    invisible(NULL)
