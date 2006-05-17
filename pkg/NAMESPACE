@@ -1,6 +1,8 @@
 export(
    checkLength,
-   getExt, 
+   figGen,
+   getExt,
+   isPlotChunk,
    odfDataType, 
    odfInsertPlot,   
    odfList, 
@@ -13,6 +15,7 @@ export(
    odfTableGen, 
    odfTranslate, 
    odfWeave, 
+   odfWeaveControl,
    parseOdfXml,
    readXML,
    stripXmlTag)
@@ -25,5 +28,4 @@ S3method(odfTable, data.frame)
 
 S3method(print, odfTable)
 S3method(print, odfList)
-S3method(print, odfInsertPlot)
 
