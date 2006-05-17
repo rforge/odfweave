@@ -1,8 +1,6 @@
  - work-around for "slim" styles.xml files
  - improve man files
  - write vingette+FAQ 
- - parse <<>> to look for fig= TRUE and 
-   automatically save and insert image files
  - utilize table column formats: right now, 
    only doubles and strings are supported 
    and doubles are rounded instead of writing
