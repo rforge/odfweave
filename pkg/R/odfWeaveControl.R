@@ -1,5 +1,5 @@
 odfWeaveControl <- function(
-   zipCmd = c("zip -r $$file$$ .  -i *", "unzip -o $$file$$"),
+   zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"),
    cleanup = FALSE,
    style = defaultStyles,
    verbose = TRUE,
