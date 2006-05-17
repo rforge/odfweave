@@ -3,7 +3,8 @@ function(file, height, width,
    units = "in",
    anchor = c("<text:p>", "</text:p>"),
    name = paste("graphics", floor(runif(1) * 1000), sep = ""), 
-   verbose = FALSE)
+   externalFile = FALSE,
+   dest = paste(getwd(), "/Pictures", sep = ""))
 {
 
    if(!(getExt(file) %in% c("png", "jpeg", "jpg", "gif", "tiff", "bmp")))
@@ -24,8 +25,19 @@ function(file, height, width,
       "         xlink:actuate=\"onLoad\"/>",
       "    </draw:frame>")
       
-   out <- c(anchor[1], plotString, anchor[2])   
+   out <- c(anchor[1], plotString, anchor[2]) 
+   if(externalFile)
+   {
+      out <- paste(out, collapse = "\n")
+      newPath <- paste(dest, "/", basename(file), sep = "")
+   
+      if(!file.exists(dest))
+         stop(paste(dest, "does not exist"))   
+      if(!file.copy(file, newPath,  overwrite = TRUE))
+         stop("Error copying file")
+   }  
    out   
 }
 
 
+#odfInsertPlot("c:\\tmp\\pcaPlots.png", 4, 3, externalFile = TRUE, dest = "c:\\tmp\\pcaPlots2.png")
