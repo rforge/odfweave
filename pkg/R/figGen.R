@@ -16,7 +16,7 @@ figGen <- function(type, device, plotName = NULL, ...)
 
    out <- paste(
       device,
-      "(filename = \"", 
+      ifelse(device != "bitmap", "(filename = \"",  "(file = \""),
       plotName, 
       "\"",
       dotText, 
