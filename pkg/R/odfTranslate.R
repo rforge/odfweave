@@ -6,8 +6,8 @@ function(x)
    x <- gsub("&quot;", "\"", x)
    x <- gsub("&apos;", "\'", x)
    x <- gsub("&amp;", "&", x)  
-   x <- gsub("“", "\"", x)  
-   x <- gsub("”", "\"", x)        
+   x <- gsub("\342\200\235", "\"", x)  
+   x <- gsub("\342\200\234", "\"", x)        
    x
 }
 
