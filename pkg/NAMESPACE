@@ -2,7 +2,6 @@ export(
    checkLength,
    figGen,
    getExt,
-   isPlotChunk,
    odfDataType, 
    odfInsertPlot,   
    odfList, 
@@ -17,7 +16,6 @@ export(
    odfWeave, 
    odfWeaveControl,
    parseOdfXml,
-   readXML,
    stripXmlTag)
 
 
