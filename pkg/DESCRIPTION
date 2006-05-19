@@ -6,5 +6,6 @@ Date: 2006-05-15
 Author: Max Kuhn
 Maintainer: Max Kuhn <max.kuhn@pfizer.com>
 Description: Sweave-like processing of OpenDocument format files
+Depends: lattice
 Encoding: UTF-8
 License: GPL 2
