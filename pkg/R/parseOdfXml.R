@@ -2,66 +2,87 @@
 function(x, control)
 {
    leadWhite <- function(x) sub ("^[ \t]*", "", sub ("[ \t]*$", "", x)) 
-   rCmd <- function(x)
+     
+   xml2R <- function(x)
    {
+      if(length(grep("<text:line-break/>", x)) >= 1) x <- unlist(strsplit(x, "<text:line-break/>"))  
       tmpString <- stripXmlTag(x)
       tmp <- odfTranslate(tmpString)            
       tmp
    }
    
-   SexpLines <- grep("\\Sexpr", x, extend = FALSE)
+   SexpLines <- grep("\\Sexpr\\{([^\\}]*)\\}", x)
    x[SexpLines] <- odfTranslate(x[SexpLines])
 
-   # search thru for lines with << and >>=
-   hasStartTag <- grep("&gt;&gt;=", x, extend = FALSE)
-   hasEndTag <- grep("&lt;&lt;", x, extend = FALSE)
-   
-   startLines <- hasEndTag[hasEndTag %in% hasStartTag]
+   # search thru for lines with <<>>=
+   startLines <- grep("&lt;&lt;(.*)&gt;&gt;=", x)
+
    hasPlots <- isPlotChunk(x[startLines])
    
+
    for(i in seq(along = startLines))
    {
-      if(i == 1) tmpData <- x[1:startLines[1] - 1]
-      tmpVec <- vector(mode = "character", length = length(x) - startLines[i])
+      #rnwOut is the test of the file that Sweave will run on
+      if(i == 1) rnwOut <- x[1:startLines[1] - 1]
+      
+      # create a container for the pure R code
+      pureR <- vector(mode = "character", length = 0)
+      
+      # count will contain the number of lines of xml that
+      # contain R code
       count <- 0
-      # from there, search for a line with only a @
+          
+      # scan the xml until the end of the code chunk (a line with only a @)
       for(j in startLines[i]:length(x))
       {
+      
          count <- count + 1
-         rCode <- rCmd(x[j])
-         tmpVec[count] <- rCode
-         if(rCode == "@")
-         {
-            tmpVec <- tmpVec[1:count]
+         
+         # convert the line of xml to pure R and possible
+         # expand the number of lines of pure R, i.e, 
+         # length(x) may !=  length(xml2R(x[j))         
+         rCode <- xml2R(x[j])
+         
+         # append this/these lines of R to the rest of
+         # the code chunk
+         pureR <- c(pureR, rCode)
+         
+         if(length(grep("^@", rCode)) > 0)
+         {         
+         
             if(hasPlots[i])
             {
                plotName <- paste("rPlot", floor(runif(1) * 10000), ".", control$plotType, sep = "")
                # insert device code around all code in the chunk
-               tmpVec <- c(
-                  tmpVec[1],
+               pureR <- c(
+                  pureR[1],
                   figGen(
                   	type = control$plotType,
                   	device = control$plotDevice,
                   	plotName = paste("./Pictures/", plotName, sep = "")), 
-                  tmpVec[c(-1, -length(tmpVec))],
+                  pureR[c(-1, -length(pureR))],
                   "dev.off()",
-                  tmpVec[length(tmpVec)])
+                  pureR[length(pureR)])
                # now we need to add the xml to display the plot
-               tmpVec <- c(
-                  tmpVec,
+               pureR <- c(
+                  pureR,
                   odfInsertPlot(plotName, control$figWidth, control$figHeight))
-            }
+            }         
+         
             # append R chunk to existing xml
-            tmpData <- c(tmpData, tmpVec)
-            # if there is more xml, add it
+            rnwOut <- c(rnwOut, pureR)
+            
+            # if there is more xml between teh end of the chunk
+            # and the next chunk, add it
             if(i < length(startLines))
             {
-               tmpData <- c(tmpData, x[(startLines[i] + count):(startLines[i + 1] - 1)])
-            } else tmpData <- c(tmpData, x[(startLines[i] + count):length(x)])
-            break
+               rnwOut <- c(rnwOut, x[(startLines[i] + count):(startLines[i + 1] - 1)])
+            } else rnwOut <- c(rnwOut, x[(startLines[i] + count):length(x)])
+            break            
          }
       }
    }
-   tmpData
+         
+   rnwOut
 }
 
