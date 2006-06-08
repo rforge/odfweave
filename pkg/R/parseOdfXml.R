@@ -1,3 +1,8 @@
+# R code in ODF files get wrapped in xml and some of the characters
+# may be changed from what the user types in.
+# This function processes the xml files and writes out Rnw files
+# (hopefully) consistent with Sweave's expectations.
+
 "parseOdfXml" <-
 function(x, control)
 {
@@ -11,6 +16,8 @@ function(x, control)
       tmp
    }
    
+   # for in-line Swave tags, make sure that any converted character
+   # are fixed prior to the Sweave call
    SexpLines <- grep("\\Sexpr\\{([^\\}]*)\\}", x)
    x[SexpLines] <- odfTranslate(x[SexpLines])
 
@@ -23,7 +30,7 @@ function(x, control)
    for(i in seq(along = startLines))
    {
       #rnwOut is the test of the file that Sweave will run on
-      if(i == 1) rnwOut <- x[1:startLines[1] - 1]
+      if(i == 1) rnwOut <- x[1:(startLines[1] - 1)]
       
       # create a container for the pure R code
       pureR <- vector(mode = "character", length = 0)
@@ -50,6 +57,9 @@ function(x, control)
          if(length(grep("^@", rCode)) > 0)
          {         
          
+            # this writes graphics device information around plot code
+            # this should go into an Sweave driver, but I haven't written
+            # one yet.
             if(hasPlots[i])
             {
                plotName <- paste("rPlot", floor(runif(1) * 10000), ".", control$plotType, sep = "")
@@ -72,7 +82,7 @@ function(x, control)
             # append R chunk to existing xml
             rnwOut <- c(rnwOut, pureR)
             
-            # if there is more xml between teh end of the chunk
+            # if there is more xml between the end of the chunk
             # and the next chunk, add it
             if(i < length(startLines))
             {
