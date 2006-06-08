@@ -62,6 +62,87 @@ function(x)
       out <- c(out, cellTextFormat)
    } 
    
+   if(!is.null(x$RInput))
+   {
+      paraFormat <- paste(
+         "\n  <style:style style:name=\"",
+         x$RInput$name,
+         "\" style:family=\"paragraph\"",
+         " style:parent-style-name=\"",
+         x$RInput$parentStyleName,
+         "\">\n",
+         "   <style:text-properties ", 
+         ifelse(!is.null(x$RInput$textAlign),
+            paste(" fo:text-align=\"", x$RInput$textAlign,"\"", sep = ""),
+            ""),
+         ifelse(!is.null(x$RInput$fontColor),
+            paste(" fo:color=\"", x$RInput$fontColor,"\"", sep = ""),
+            ""),         
+         ifelse(!is.null(x$RInput$fontName),
+            paste(" style:font-name=\"", x$RInput$fontName,"\"", sep = ""),
+            ""),          
+         ifelse(!is.null(x$RInput$fontWeight),
+            paste(" fo:font-weight=\"", x$RInput$fontWeight,"\"", sep = ""),
+            ""), 
+         "/>\n  </style:style>\n",         
+         sep = "")      
+      out <- c(out, paraFormat)
+   } 
+   
+   if(!is.null(x$ROutput))
+   {
+      paraFormat <- paste(
+         "\n  <style:style style:name=\"",
+         x$ROutput$name,
+         "\" style:family=\"paragraph\"",
+         " style:parent-style-name=\"",
+         x$ROutput$parentStyleName,
+         "\">\n",
+         "   <style:text-properties ", 
+         ifelse(!is.null(x$ROutput$textAlign),
+            paste(" fo:text-align=\"", x$ROutput$textAlign,"\"", sep = ""),
+            ""),
+         ifelse(!is.null(x$ROutput$fontColor),
+            paste(" fo:color=\"", x$ROutput$fontColor,"\"", sep = ""),
+            ""),         
+         ifelse(!is.null(x$ROutput$fontName),
+            paste(" style:font-name=\"", x$ROutput$fontName,"\"", sep = ""),
+            ""),          
+         ifelse(!is.null(x$ROutput$fontWeight),
+            paste(" fo:font-weight=\"", x$ROutput$fontWeight,"\"", sep = ""),
+            ""), 
+         "/>\n  </style:style>\n",         
+         sep = "")      
+      out <- c(out, paraFormat)
+   }   
+      
+   if(!is.null(x$RChunk))
+   {
+      paraFormat <- paste(
+         "\n  <style:style style:name=\"",
+         x$RChunk$name,
+         "\" style:family=\"paragraph\"",
+         " style:parent-style-name=\"",
+         x$RChunk$parentStyleName,
+         "\">\n",
+         "   <style:text-properties ", 
+         ifelse(!is.null(x$RChunk$textAlign),
+            paste(" fo:text-align=\"", x$RChunk$textAlign,"\"", sep = ""),
+            ""),
+         ifelse(!is.null(x$RChunk$fontColor),
+            paste(" fo:color=\"", x$RChunk$fontColor,"\"", sep = ""),
+            ""),         
+         ifelse(!is.null(x$RChunk$fontName),
+            paste(" style:font-name=\"", x$RChunk$fontName,"\"", sep = ""),
+            ""),          
+         ifelse(!is.null(x$RChunk$fontWeight),
+            paste(" fo:font-weight=\"", x$RChunk$fontWeight,"\"", sep = ""),
+            ""), 
+         "/>\n  </style:style>\n",         
+         sep = "")      
+      out <- c(out, paraFormat)
+   }  
+      
    if(!is.null(x$cellHeaderText))
    {
    
