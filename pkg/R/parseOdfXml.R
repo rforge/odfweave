@@ -16,7 +16,7 @@ function(x, control)
       tmp
    }
    
-   # for in-line Swave tags, make sure that any converted character
+   # for in-line Sweave tags, make sure that any converted character
    # are fixed prior to the Sweave call
    SexpLines <- grep("\\Sexpr\\{([^\\}]*)\\}", x)
    x[SexpLines] <- odfTranslate(x[SexpLines])
@@ -56,29 +56,6 @@ function(x, control)
          
          if(length(grep("^@", rCode)) > 0)
          {         
-         
-            # this writes graphics device information around plot code
-            # this should go into an Sweave driver, but I haven't written
-            # one yet.
-            if(hasPlots[i])
-            {
-               plotName <- paste("rPlot", floor(runif(1) * 10000), ".", control$plotType, sep = "")
-               # insert device code around all code in the chunk
-               pureR <- c(
-                  pureR[1],
-                  figGen(
-                  	type = control$plotType,
-                  	device = control$plotDevice,
-                  	plotName = paste("./Pictures/", plotName, sep = "")), 
-                  pureR[c(-1, -length(pureR))],
-                  "dev.off()",
-                  pureR[length(pureR)])
-               # now we need to add the xml to display the plot
-               pureR <- c(
-                  pureR,
-                  odfInsertPlot(plotName, control$figWidth, control$figHeight))
-            }         
-         
             # append R chunk to existing xml
             rnwOut <- c(rnwOut, pureR)
             
