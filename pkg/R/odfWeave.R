@@ -148,7 +148,7 @@
             file =   paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""),
             output = paste(workDir, "/", sweaveFiles[j], sep = ""),
             quiet = !control$verbose,
-            stylepath = FALSE)
+            driver = RweaveOdf(), control = control)
          
          # remove sweave file
          if(control$verbose) cat("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
