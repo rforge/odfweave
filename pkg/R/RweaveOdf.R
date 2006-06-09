@@ -1,5 +1,5 @@
 
-RweaveOdf <- function(control)
+RweaveOdf <- function()
 {
     list(setup = RweaveOdfSetup,
          runcode = RweaveOdfRuncode,
@@ -46,9 +46,6 @@ RweaveOdfSetup <-
 
 RweaveOdfRuncode <- function(object, chunk, options, control)
 {
-# Sweave doesnt pass the control arg, how should we deal with this?
-# can we attach the control file to the options list?
-# driver$setpup has a ... arg
 
     if(!(options$engine %in% c("R", "S"))){
         return(object)
@@ -68,23 +65,17 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
     }
 
     chunkprefix <- RweaveChunkPrefix(options)
-
     chunkout <- object$output
-
     SweaveHooks(options, run=TRUE)
-
     chunkexps <- try(parse(text=chunk), silent=TRUE)
     RweaveTryStop(chunkexps, options)
-    openSinput <- FALSE
-    openSchunk <- FALSE
 
     if(length(chunkexps)==0)
         return(object)
 
-   rCont <- odfTranslate(getOption("continue"), toR = FALSE)
-   rPrompt <- odfTranslate(getOption("prompt"), toR = FALSE)
+    rCont <- odfTranslate(getOption("continue"), toR = FALSE)
+    rPrompt <- odfTranslate(getOption("prompt"), toR = FALSE)
    
-   # we need to reference a style name (if any)
    # put this in a function
    
    styleNames <- vector(mode ="character", length = 3)
@@ -99,7 +90,10 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
    styleNames[3] <- ifelse(
       is.null(options$control$style$RChunk$name), 
       "", 
-      options$control$style$RChunk$name)            
+      options$control$style$RChunk$name)      
+      
+      
+# right now only one outStart, but this should be a vector            
       outStart <- paste(
                   "<text:p",
                      ifelse(
@@ -161,35 +155,51 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
 
         if(object$debug)
             cat(paste(output, collapse="\n"))
-
-
         # write the output to the file
         if(length(output)>0 & (options$results != "hide")){
-            output <- paste(output,collapse="\n")
-            if(options$strip.white %in% c("all", "true")){
-                output <- sub("^[[:space:]]*\n", "", output)
-                output <- sub("\n[[:space:]]*$", "", output)
-                if(options$strip.white=="all")
-                    output <- sub("\n[[:space:]]*\n", "\n", output)
-            }
+            taggedOutput <- paste(outStart, odfTranslate(output, toR = FALSE), outEnd, "\n", sep = "")             
+            output <- paste(taggedOutput,collapse="\n")
+            
+# I'll have to find an example of when this matters            
+            
+#            if(options$strip.white %in% c("all", "true")){
+#                output <- sub("^[[:space:]]*\n", "", output)
+#                output <- sub("\n[[:space:]]*$", "", output)
+#                if(options$strip.white=="all")
+#                    output <- sub("\n[[:space:]]*\n", "\n", output)
+#            }
             cat(output, file=chunkout, append=TRUE)
             remove(output)
         }
     }
 
-#    if(is.null(options$label) & options$split)
-#        close(chunkout)
+# be creaful of plot type auto generated name check this, use sweave file name  + counter?
 
     if(options$fig && options$eval)
     {
+         imageName <- paste("./Pictures/", chunkprefix, ".", options$control$plotType, sep = "")
+
          figGen(
-         type = options$control$plotType,
-         device = options$control$plotDevice,
-         plotName = paste("./Pictures/", chunkprefix, sep = ""))    
+            type = options$control$plotType,
+            device = options$control$plotDevice,
+            plotName = imageName,
+            width = options$control$plotWidth,
+            height = options$control$plotHeight)    
+            
          err <- try({SweaveHooks(options, run=TRUE);
                      eval(chunkexps, envir=.GlobalEnv)})
+                     
          dev.off()
-         if(inherits(err, "try-error")) stop(err)    
+         
+         if(inherits(err, "try-error")) stop(err) 
+         
+         plotMarkup <- odfInsertPlot(
+            imageName, 
+            name = gsub("-", "", chunkprefix),            
+            height = options$control$dispHeight, 
+            width = options$control$dispWidth) 
+         cat(plotMarkup, file=chunkout, append=TRUE)
+   
     }
     return(object)
 }
