@@ -55,9 +55,9 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         cat("  ", formatC(options$chunknr, width=2), ":")
         if(options$echo) cat(" echo")
         if(options$eval){
-            if(options$print) cat("print")
-            if(options$term) cat("term")
-            cat("  ", options$results)
+            if(options$print) cat(" print")
+            if(options$term) cat(" term")
+            cat(" ", options$results, sep="")
         }
         if(!is.null(options$label))
             cat("(label=", options$label, ")", sep="")
@@ -129,7 +129,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         {
             if(options$results == "verbatim")
             {
-               taggedOutput <- paste(codeMarkup$RChunk, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
+               taggedOutput <- paste(codeMarkup$ROutput, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
                output <- paste(taggedOutput,collapse="\n")
             }
 # I'll have to find an example of when this matters            
@@ -188,9 +188,9 @@ RweaveOdfWritedoc <- function(object, chunk)
             ## protect against character(0), because sub() will fail
             if(length(val)==0) val <- ""
         }
-        else
-            val <- paste("\\\\verb{<<", cmd, ">>{", sep="")
-
+        else {
+            val <- cmd
+         }
         chunk[pos[1]] <- sub(object$syntax$docexpr, val, chunk[pos[1]])
     }
     while(any(pos <- grep(object$syntax$docopt, chunk)))
