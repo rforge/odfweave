@@ -26,7 +26,7 @@ a character string of XML
 
 \seealso{\code{\link{odfTableGen}}}
 \examples{
-cat(odfTable(iris[1:5,]))
+odfTable(iris[1:5,])
 }
 \keyword{utilities}
 

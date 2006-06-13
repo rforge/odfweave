@@ -25,7 +25,7 @@ a character string of XML
 
 \seealso{\code{\link{odfTableGen}}}
 \examples{
-cat(odfTable(matrix(rnorm(12), 3)))
+odfTable(matrix(rnorm(12), 3))
 }
 \keyword{utilities}
 

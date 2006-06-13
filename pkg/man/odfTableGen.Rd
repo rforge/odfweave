@@ -20,11 +20,10 @@ a character string
 }
 \author{Max Kuhn}
 \examples{
- cat(
     odfTableGen(
        matrix(letters[1:9], 3), 
        dataType = rep("string", 3), 
-       tableName = "Test"))
+       tableName = "Test")
 }
 \keyword{utilities}
 
