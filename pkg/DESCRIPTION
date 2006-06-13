@@ -1,11 +1,10 @@
 Package: odfWeave
 Type: Package
-Title: Sweave-like processing of OpenDocument format files
-Version: 0.2
-Date: 2006-05-15
+Title: Sweave processing of Open Document Format files
+Version: 0.3
+Date: 2006-06-13
 Author: Max Kuhn
 Maintainer: Max Kuhn <max.kuhn@pfizer.com>
-Description: Sweave-like processing of OpenDocument format files
+Description: Sweave processing of Open Document Format files
 Depends: lattice
-Encoding: UTF-8
 License: GPL 2
