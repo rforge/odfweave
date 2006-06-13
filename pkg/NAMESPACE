@@ -1,7 +1,7 @@
 export(
-   checkLength,
    figGen,
    getExt,
+   matrixPaste,
    odfDataType, 
    odfInsertPlot,   
    odfList, 
@@ -15,7 +15,7 @@ export(
    odfTranslate, 
    odfWeave, 
    odfWeaveControl,
-   parseOdfXml,
+   processXml,
    processInLine,
    RweaveOdf,
    stripXmlTag,
