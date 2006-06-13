@@ -1,5 +1,4 @@
 # put in check for optimized files
-# rename parseOdfXml to processOdfXml?
 # documentation and beta testing
 # code review
 # add check for slim style file
@@ -81,29 +80,8 @@
    # add style information, if any, to styles.xml 
    if(!is.null(control$style))
    {
-      if(control$verbose) cat("  Looking for style information in styles.xml\n"); flush.console()           
       styleInfo <- xmlContents[[which(xmlFiles == "styles.xml")]]
-
-      locateAutoStart <- grep("<office:styles>", styleInfo, fixed = TRUE)
-      locateAutoStop <- grep("</office:styles>", styleInfo, fixed = TRUE)
-      if(length(locateAutoStart) > 1 & length(locateAutoStop) > 1)
-         stop("there are more that one <office:styles> or <office:styles> tags")
-      if(length(locateAutoStart) == 0 & length(locateAutoStop) == 1)
-      {
-         part1 <- styleInfo[1:(locateAutoStop - 1)]
-         part2 <- styleInfo[locateAutoStop:length(styleInfo)]
-         styleInfo <- c(part1, " <office:styles>", part2)
-         locateAutoStart <- locateAutoStop
-         locateAutoStop <- locateAutoStop + 1     
-      } 
-      # add style text here 
-      if(control$verbose) cat("  Spliiting file around <office:styles> at line", locateAutoStop, "\n"); flush.console()           
-      part1 <- styleInfo[1:(locateAutoStop -1)]
-      part2 <- styleInfo[locateAutoStop:length(styleInfo)]
-      styleVec <- odfStyleGen(control$style)            
-      xmlContents[[which(xmlFiles == "styles.xml")]] <- c(paste(part1, "\n"), styleVec, paste(part2, "\n"))            
-
-      if(control$verbose) cat("\n")
+      xmlContents[[which(xmlFiles == "styles.xml")]] <- addStyleDefs(styleInfo, control$style, control$verbose)          
    }     
    
    findTags <- function(x) (length(c(grep("\\Sexpr\\{([^\\}]*)\\}", x), grep("&lt;&lt;(.*)&gt;&gt;=", x))) > 0)
@@ -118,7 +96,7 @@
       for(j in seq(along = sweaveFiles))
       {
          if(control$verbose) cat("  Removing xml around <<>>= for ", sweaveFiles[j], "\n"); flush.console()           
-         if(findTags(sweaveContents[[j]])) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])       
+         if(findTags(sweaveContents[[j]])) sweaveContents[[j]] <- processXml(sweaveContents[[j]])       
          # write processed lines to Rnw file
          if(control$verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
          rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb")
@@ -153,8 +131,8 @@
       cat(xmlContents[[which(xmlFiles == "styles.xml")]])
       sink()
       close(styleFile)
-
    }
+   
    zipCmd[1] <- gsub(
       "$$file$$", 
       paste(
@@ -170,19 +148,15 @@
    if(control$verbose) cat("\n\  Packaging file using", zipCmd[1], "\n"); flush.console()   
    if(.Platform$OS.type == "windows")
    {   
-      if(system(zipCmd[1], invisible = TRUE) != 0)
-         stop("Error zipping file")
+      if(system(zipCmd[1], invisible = TRUE) != 0)  stop("Error zipping file")
    } else {
-      if(system(zipCmd[1]) != 0)
-         stop("Error zipping file")   
+      if(system(zipCmd[1]) != 0) stop("Error zipping file")   
    }
 
    # copy final file to destination      
-   if(!file.exists(workingCopy))
-      stop(paste(workingCopy, "does not exist"))   
+   if(!file.exists(workingCopy))  stop(paste(workingCopy, "does not exist"))   
    if(control$verbose) cat("  Copying ", workingCopy, "\n"); flush.console()      
-   if(!file.copy(workingCopy, dest, overwrite = TRUE))
-      stop("Error copying odt file")
+   if(!file.copy(workingCopy, dest, overwrite = TRUE))  stop("Error copying odt file")
 
    if(control$verbose) cat("  Resetting wd\n"); flush.console()
    setwd(currentLoc)
