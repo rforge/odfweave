@@ -76,39 +76,9 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
     rCont <- odfTranslate(getOption("continue"), toR = FALSE)
     rPrompt <- odfTranslate(getOption("prompt"), toR = FALSE)
    
-   # put this in a function
-   
-   styleNames <- vector(mode ="character", length = 3)
-   styleNames[1] <- ifelse(
-      is.null(options$control$style$RInput$name), 
-      "", 
-      options$control$style$RInput$name)
-   styleNames[2] <- ifelse(
-      is.null(options$control$style$ROutput$name), 
-      "", 
-      options$control$style$ROutput$name)
-   styleNames[3] <- ifelse(
-      is.null(options$control$style$RChunk$name), 
-      "", 
-      options$control$style$RChunk$name)      
-      
-      
-# right now only one outStart, but this should be a vector            
-      outStart <- paste(
-                  "<text:p",
-                     ifelse(
-                        styleNames[2] == "", 
-                        "", 
-                        paste(
-                           " text:style-name=\"",
-                           styleNames[2],
-                           "\"", 
-                           sep = "")),
-                  ">",
-                  sep = "")
-         outEnd <- "</text:p>"     
-   #end function
-
+    # put this in a function
+    codeMarkup <- RCodeTags(options$control$style)
+    endTag <- "</text:p>" 
 
     for(nce in 1:length(chunkexps))
     {
@@ -128,7 +98,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
             dceForXml2 <- paste(ifelse(seq(along = dceForXml) == 1, rPrompt, rCont), dceForXml)
             # now wrap this result in xml tags before printing
             # using style  names
-            taggedDce <- paste(outStart, dceForXml2, outEnd, "\n", sep = "")               
+            taggedDce <- paste(codeMarkup$RInput, dceForXml2, endTag, "\n", sep = "")               
             
             cat("\n", 
                 paste(taggedDce,
@@ -159,7 +129,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         {
             if(options$results == "verbatim")
             {
-               taggedOutput <- paste(outStart, odfTranslate(output, toR = FALSE), outEnd, "\n", sep = "")             
+               taggedOutput <- paste(codeMarkup$RChunk, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
                output <- paste(taggedOutput,collapse="\n")
             }
 # I'll have to find an example of when this matters            
@@ -301,5 +271,22 @@ RweaveOdfOptions <- function(options)
     if(!is.null(controlData)) options$control <- controlData
     
     options
+}
+
+RCodeTags <- function(style)
+{
+   requiredStyles <- c("RInput", "ROutput")
+   styleNames <-  lapply(style, function(x) x$name)
+   styleNames <- styleNames[names(styleNames) %in% requiredStyles]
+   missingStyle <- !(requiredStyles %in% names(styleNames))
+   # add an element for this style
+   for(i in requiredStyles[missingStyle]) styleNames[[i]] <- ""
+   styleTag <- ifelse(
+      unlist(styleNames) != "",
+      paste("text:style-name=\"", styleNames, "\"", sep = ""),
+      "")
+   startTags <- as.list(paste("<text:p ", styleTag, ">", sep = ""))
+   names(startTags) <- names(styleNames)
+   startTags    
 }
 
