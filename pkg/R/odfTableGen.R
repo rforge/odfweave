@@ -22,13 +22,7 @@ function(x, dataType, header = NULL, tableName, styles = NULL)
    
    if(!is.null(header))
    {
-      headLine01 <- paste(
-         "\n      <text:p ", 
-         textHeaderStyle,
-         "> ",  
-         header, 
-         " </text:p>",
-         sep = "")
+      headLine01 <- paste("\n      <text:p ", textHeaderStyle, "> ", header, " </text:p>", sep = "")
 
       headLine02 <- paste(
          "\n    <table:table-cell ", 
@@ -46,42 +40,49 @@ function(x, dataType, header = NULL, tableName, styles = NULL)
 
    } else headLine03 <-  NULL   
    
-   textMat <- apply(x, 2, function(data, stl) paste(
-      "\n      <text:p ",
-      stl,
-      "> ", 
-      data, 
-      " </text:p>",
-      sep = ""),
-      stl = textStyle)
-   # in case x only had one row, apply will make it a vector
-   if(!is.matrix(textMat)) textMat <- as.matrix(t(textMat))
-   cellMat <- t(apply(textMat, 1, 
-      function(data, dType) paste(
-         "\n    <table:table-cell ", 
-         tableCellStyle, 
-         "office:value-type=\"", 
-         dType, 
-         "\">", 
-         data, 
-         "\n    </table:table-cell>", 
-         sep = ""), 
-      dType = dataType))
-   flatCellMat <- apply(cellMat, 1, function(data) paste(data, collapse = "\n"))
-   rowVec <- paste("\n  <table:table-row>", flatCellMat, "\n  </table:table-row>")
-  
+   
+   leftValueTags <- matrix(
+      rep(
+         paste("      <text:p ",  textStyle, "> ", sep = ""),
+         prod(tableDim)),
+      nrow = tableDim[1])
+   rightValueTags <- matrix(
+      rep(
+         paste(" </text:p>", sep = ""),
+         prod(tableDim)),
+      nrow = tableDim[1])      
+   valueMarkup <- matrixPaste(leftValueTags, x, rightValueTags,  sep = rep("", 3))
+   columnMarkup <- rep(
+         paste("    <table:table-cell ", tableCellStyle, "office:value-type=\"", dataType, "\">", sep = ""),
+         tableDim[1])
+   leftCellTags <- matrix(columnMarkup, nrow = tableDim[1], byrow = TRUE)      
+   rightCellTags <- matrix(
+      rep(
+         paste(" </table:table-cell>", sep = ""),
+         prod(tableDim)),
+      nrow = tableDim[1])    
+   cellMarkup <- matrixPaste(leftCellTags, valueMarkup, rightCellTags, sep = rep("\n", 3))
+   leftRowTags <- matrix(
+      c(
+         rep("<table:table-row>", tableDim[1]),
+         rep("", (tableDim[2] - 1) * tableDim[1])),
+      nrow = tableDim[1])
+   rightRowTags <- matrix(
+      c(
+         rep("", (tableDim[2] - 1) * tableDim[1]),      
+         rep("</table:table-row>\n", tableDim[1])),
+      nrow = tableDim[1])   
+   rowMarkup <- matrixPaste(leftRowTags, cellMarkup, rightRowTags, sep = rep("\n", 3))
+      
    startText <- paste(
-      "\n<table:table table:name=\"",
-      tableName,
-      "\" ",
-      tableStyle,
-      ">", 
-      "\n  <table:table-column ",
-      tableColumnStyle,
-      "table:number-columns-repeated=\"",
-      length(dataType),
-      "\"/>",
+      "\n<table:table table:name=\"",  tableName, "\" ", tableStyle, ">", 
+      "\n  <table:table-column ",  tableColumnStyle, 
+      "table:number-columns-repeated=\"", length(dataType), "\"/>",
       sep = "")
-   c(startText, headLine03, rowVec, "\n</table:table>\n\n")
-}
 
+   list(
+      start = startText,
+      header = headLine03,
+      cells = rowMarkup,
+      end = "\n</table:table>\n")
+}
