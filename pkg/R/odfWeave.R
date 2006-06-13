@@ -21,8 +21,7 @@
    workingCopy <- paste(workDir, "/", basename(file), sep = "")      
       
    # copy file to the tmp dir       
-   if(!file.exists(file))
-      stop(paste(file, "does not exist"))   
+   if(!file.exists(file)) stop(paste(file, "does not exist"))   
    if(control$verbose) cat("  Copying ", file, "\n"); flush.console()      
    if(!file.copy(file, workingCopy, overwrite = TRUE))
       stop("Error copying odt file")
@@ -32,29 +31,24 @@
    zipCmd[2] <- gsub(
       "$$file$$", 
       paste(
-         ifelse(.Platform$OS.type == "windows", "\"", ""),
-         workDir, 
-         "/", 
-         basename(file),
+         ifelse(.Platform$OS.type == "windows", "\"", ""), 
+         workDir, "/", basename(file),
          ifelse(.Platform$OS.type == "windows", "\"", ""), 
          sep = ""), 
       zipCmd[2], 
       fixed = TRUE)   
       
-   if(control$verbose) cat("  Decompressing odt file using", zipCmd[2], "\n"); flush.console()  
+   if(control$verbose) cat("  Decompressing ODF file using", zipCmd[2], "\n"); flush.console()  
    if(.Platform$OS.type == "windows")
    {   
-      if(system(zipCmd[2], invisible = TRUE) != 0)
-         stop("Error unzipping file")
+      if(system(zipCmd[2], invisible = TRUE) != 0) stop("Error unzipping file")
    } else {
-      if(system(zipCmd[2]) != 0)
-         stop("Error unzipping odt file")   
+      if(system(zipCmd[2]) != 0) stop("Error unzipping odt file")   
    }   
    
    # remove original file
    if(control$verbose) cat("\n  Removing ", workingCopy, "\n"); flush.console()      
-   if(unlink(workingCopy, recursive = TRUE) == 1) 
-      stop("Error removing original file")   
+   if(unlink(workingCopy, recursive = TRUE) == 1)  stop("Error removing original file")   
    
    #check for Pictures directory
    if(!file.exists(paste(workDir, "/Pictures", sep = "")))
@@ -73,12 +67,9 @@
    # load xml into list
    xmlContents <- vector(mode = "list", length = length(xmlFiles))
    
-   # readLines is more natrual, but shows warnings due to no EOF (OO creates XML wo EOF)
+   # readLines is more natural, but shows warnings due to no EOF (OO creates XML wo EOF)
    for(i in seq(along = xmlContents))
    {
-      # a custom reader is used to import the contents of the xml files because
-      # OO has a feature to reduce the file size by removing linear breaks
-      # we read the data in and induce line breaks
       xmlContents[[i]] <- readXML(xmlFiles[i], verbose = control$verbose)
    }
 
@@ -115,9 +106,8 @@
       if(control$verbose) cat("\n")
    }     
    
-   hasTags <- unlist(lapply(
-      xmlContents, 
-      function(x) length(c(grep("Sexpr", x), grep("&gt;&gt;=", x))) > 0))
+   findTags <- function(x) (length(c(grep("\\Sexpr\\{([^\\}]*)\\}", x), grep("&lt;&lt;(.*)&gt;&gt;=", x))) > 0)
+   hasTags <- unlist(lapply(xmlContents, findTags))
      
    if(any(hasTags))
    {
@@ -128,13 +118,11 @@
       for(j in seq(along = sweaveFiles))
       {
          if(control$verbose) cat("  Removing xml around <<>>= for ", sweaveFiles[j], "\n"); flush.console()           
-         if(length(grep("&gt;&gt;=", sweaveContents[[j]])) > 0) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]], control)       
+         if(findTags(sweaveContents[[j]])) sweaveContents[[j]] <- parseOdfXml(sweaveContents[[j]])       
          # write processed lines to Rnw file
          if(control$verbose) cat("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
          rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), "wb")
-         writeLines(
-            sweaveContents[[j]],
-            rnwFile)
+         writeLines(sweaveContents[[j]], rnwFile)
          close(rnwFile)
          
          #nuke the xml file
