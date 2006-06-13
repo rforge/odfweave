@@ -16,7 +16,10 @@ export(
    odfWeave, 
    odfWeaveControl,
    parseOdfXml,
-   stripXmlTag)
+   processInLine,
+   RweaveOdf,
+   stripXmlTag,
+   xml2R)
 
 
 S3method(odfTable, character)
