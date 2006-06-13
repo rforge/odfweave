@@ -10,8 +10,6 @@ function(x, toR = TRUE)
       x <- gsub("&amp;", "&", x)  
       x <- gsub("\342\200\235", "\"", x)  
       x <- gsub("\342\200\234", "\"", x)  
-# minus character
-# look for '<text:s text:c="#"/>'  here?
    } else {
       # & must be the first here
       x <- gsub("&","&amp;",  x)       
