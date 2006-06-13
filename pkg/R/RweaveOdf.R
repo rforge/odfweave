@@ -23,8 +23,8 @@ RweaveOdfSetup <-
     else{
         prefix.string <- basename(sub("\\.xml$", "", output))
     }
-    if(!quiet) cat("Writing to file ", output, "\n",
-                   "Processing code chunks ...\n", sep="")
+    if(!quiet) cat("  Writing to file ", output, "\n",
+                   "  Processing code chunks ...\n", sep="")
     output <- file(output, open="w+")
 
     options <- list(prefix=TRUE, prefix.string=prefix.string,
@@ -52,15 +52,15 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
     }
 
     if(!object$quiet){
-        cat(formatC(options$chunknr, width=2), ":")
+        cat("  ", formatC(options$chunknr, width=2), ":")
         if(options$echo) cat(" echo")
         if(options$eval){
-            if(options$print) cat(" print")
-            if(options$term) cat(" term")
-            cat("", options$results)
+            if(options$print) cat("print")
+            if(options$term) cat("term")
+            cat("  ", options$results)
         }
         if(!is.null(options$label))
-            cat(" (label=", options$label, ")", sep="")
+            cat("(label=", options$label, ")", sep="")
         cat("\n")
     }
 
@@ -123,13 +123,12 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
             cat("\nRnw> ", paste(dce, collapse="\n+  "),"\n")
             
         # this block will print the R code (if echo = TRUE)            
-        if(options$echo){
-            dceForXml2 <- paste(rCont, dceForXml)
+        if(options$echo)
+        {
+            dceForXml2 <- paste(ifelse(seq(along = dceForXml) == 1, rPrompt, rCont), dceForXml)
             # now wrap this result in xml tags before printing
             # using style  names
-            taggedDce <- paste(outStart, rPrompt, dceForXml, outEnd, "\n", sep = "")               
-               
-            # leave it as a vector or collapse? (i think collapse)
+            taggedDce <- paste(outStart, dceForXml2, outEnd, "\n", sep = "")               
             
             cat("\n", 
                 paste(taggedDce,
@@ -156,10 +155,13 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         if(object$debug)
             cat(paste(output, collapse="\n"))
         # write the output to the file
-        if(length(output)>0 & (options$results != "hide")){
-            taggedOutput <- paste(outStart, odfTranslate(output, toR = FALSE), outEnd, "\n", sep = "")             
-            output <- paste(taggedOutput,collapse="\n")
-            
+        if(length(output)>0 & (options$results != "hide"))
+        {
+            if(options$results == "verbatim")
+            {
+               taggedOutput <- paste(outStart, odfTranslate(output, toR = FALSE), outEnd, "\n", sep = "")             
+               output <- paste(taggedOutput,collapse="\n")
+            }
 # I'll have to find an example of when this matters            
             
 #            if(options$strip.white %in% c("all", "true")){
@@ -172,8 +174,6 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
             remove(output)
         }
     }
-
-# be creaful of plot type auto generated name check this, use sweave file name  + counter?
 
     if(options$fig && options$eval)
     {
@@ -227,7 +227,7 @@ RweaveOdfWritedoc <- function(object, chunk)
     {
         opts <- sub(paste(".*", object$syntax$docopt, ".*", sep=""),
                     "\\1", chunk[pos[1]])
-        object$options <- SweaveParseOptions(opts, object$options,
+        object$options <- utils:::SweaveParseOptions(opts, object$options,
                                              RweaveOdfOptions)
         chunk[pos[1]] <- sub(object$syntax$docopt, "", chunk[pos[1]])
     }
@@ -240,7 +240,7 @@ RweaveOdfFinish <- function(object, error=FALSE)
 {
     if(!object$quiet && !error)
         cat("\n",
-            gettextf("'%s' has been Sweaved",
+            gettextf("  '%s' has been Sweaved",
                      summary(object$output)$description),
             "\n", sep = "")
     close(object$output)
