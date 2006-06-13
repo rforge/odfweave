@@ -7,9 +7,7 @@ function(file, height, width,
    dest = paste(getwd(), "/Pictures", sep = ""))
 {
 
-   if(!(getExt(file) %in% c("png", "jpeg", "jpg", "gif", "tiff", "bmp")))
-      stop("graphics format not supported")
- 
+   if(getExt(file) %in% c("pdf")) stop("graphics format not supported")
    
    plotString <- c(
       "    <draw:frame ",
@@ -31,13 +29,9 @@ function(file, height, width,
       out <- paste(out, collapse = "\n")
       newPath <- paste(dest, "/", basename(file), sep = "")
    
-      if(!file.exists(dest))
-         stop(paste(dest, "does not exist"))   
-      if(!file.copy(file, newPath,  overwrite = TRUE))
-         stop("Error copying file")
+      if(!file.exists(dest)) stop(paste(dest, "does not exist"))   
+      if(!file.copy(file, newPath,  overwrite = TRUE)) stop("Error copying file")
    }  
    out   
 }
 
-
-#odfInsertPlot("c:\\tmp\\pcaPlots.png", 4, 3, externalFile = TRUE, dest = "c:\\tmp\\pcaPlots2.png")
