@@ -5,7 +5,7 @@ function(
    useRowNames = TRUE,  # discard or not
    digits      = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""),
-   styleNames = NULL,
+   styles = NULL,
    ...)
 {
 
@@ -22,9 +22,9 @@ function(
       stop("wrong length of column names")
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
+   if(is.null(styles))    styles <- formatMatrix(xChar, dimnames(xChar)[[2]])
 
-
-   tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles = styleNames)
+   tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles)
    structure(tbleText, class = "odfTable")     
 }
 
