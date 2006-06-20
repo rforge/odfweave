@@ -1,7 +1,6 @@
 odfWeaveControl <- function(
    zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"),
    cleanup = FALSE,
-   style = defaultStyles,
    verbose = TRUE,
    plotType = "png",
    plotDevice = ifelse(.Platform$OS.type == "windows", "png", "bitmap"),
@@ -14,7 +13,6 @@ odfWeaveControl <- function(
    list(
       zipCmd = zipCmd,
       cleanup = cleanup,
-      style = style,
       verbose = verbose,
       plotType = plotType,
       plotDevice = plotDevice,
