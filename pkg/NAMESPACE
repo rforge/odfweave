@@ -1,32 +1,33 @@
 export(
-   figGen,
-   getExt,
+   getStyles,
+   getStyleDefs,
    matrixPaste,
-   odfDataType, 
-   odfInsertPlot,   
-   odfList, 
-   odfStyleGen, 
+   odfInsertPlot,  
+   odfItemize, 
    odfTable, 
    odfTable.character, 
    odfTable.data.frame, 
    odfTable.matrix,    
    odfTable.numeric, 
-   odfTableGen, 
    odfTranslate, 
    odfWeave, 
    odfWeaveControl,
-   processXml,
    processInLine,
    RweaveOdf,
+   RweaveOdfSetup,
+   setStyles,
+   setStyleDefs,   
    stripXmlTag,
+   tableStyles,   
    xml2R)
 
 
 S3method(odfTable, character)
+S3method(odfTable, factor)
 S3method(odfTable, matrix)
 S3method(odfTable, numeric)
 S3method(odfTable, data.frame)
 
 S3method(print, odfTable)
-S3method(print, odfList)
+S3method(print, odfItemize)
 
