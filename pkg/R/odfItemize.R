@@ -30,5 +30,5 @@ function(data)
    structure(out, class = "odfItemize")     
 }
 
-print.odfList <- function(x, ...) cat(x)
+print.odfItemize <- function(x, ...) cat(x)
 
