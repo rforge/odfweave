@@ -77,12 +77,15 @@
    
    for(i in seq(along = xmlContents)) xmlContents[[i]] <- checkLength(xmlContents[[i]])
    
-   # add style information, if any, to styles.xml 
-   if(!is.null(control$style))
-   {
-      styleInfo <- xmlContents[[which(xmlFiles == "styles.xml")]]
-      xmlContents[[which(xmlFiles == "styles.xml")]] <- addStyleDefs(styleInfo, control$style, control$verbose)          
-   }     
+   # add style information, if any, to styles.xml and content.xml
+   styles <- getStyleDefs()
+      
+   styleInfo <- xmlContents[[which(xmlFiles == "styles.xml")]]
+   xmlContents[[which(xmlFiles == "styles.xml")]] <- addStyleDefs(styleInfo, styles, "styles", control$verbose)        
+   
+   styleInfo <- xmlContents[[which(xmlFiles == "content.xml")]]     
+   xmlContents[[which(xmlFiles == "content.xml")]] <- addStyleDefs(styleInfo, styles, "content", control$verbose)          
+  
    
    findTags <- function(x) (length(c(grep("\\Sexpr\\{([^\\}]*)\\}", x), grep("&lt;&lt;(.*)&gt;&gt;=", x))) > 0)
    hasTags <- unlist(lapply(xmlContents, findTags))
@@ -124,7 +127,7 @@
    }
    
    # if there was no Sweave tags in styles.xml, write that out too
-   if(!hasTags[which(xmlFiles == "styles.xml")] & !is.null(control$style))       
+   if(!hasTags[which(xmlFiles == "styles.xml")])       
    {
       styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb")
       sink(styleFile)   
