@@ -77,7 +77,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
     rPrompt <- odfTranslate(getOption("prompt"), toR = FALSE)
    
     # put this in a function
-    codeMarkup <- RCodeTags(options$control$style)
+    codeMarkup <- RCodeTags()
     endTag <- "</text:p>" 
 
     for(nce in 1:length(chunkexps))
@@ -98,7 +98,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
             dceForXml2 <- paste(ifelse(seq(along = dceForXml) == 1, rPrompt, rCont), dceForXml)
             # now wrap this result in xml tags before printing
             # using style  names
-            taggedDce <- paste(codeMarkup$RInput, dceForXml2, endTag, "\n", sep = "")               
+            taggedDce <- paste(codeMarkup$input, dceForXml2, endTag, "\n", sep = "")               
             
             cat("\n", 
                 paste(taggedDce,
@@ -129,7 +129,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         {
             if(options$results == "verbatim")
             {
-               taggedOutput <- paste(codeMarkup$ROutput, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
+               taggedOutput <- paste(codeMarkup$output, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
                output <- paste(taggedOutput,collapse="\n")
             }
 # I'll have to find an example of when this matters            
@@ -273,14 +273,9 @@ RweaveOdfOptions <- function(options)
     options
 }
 
-RCodeTags <- function(style)
+RCodeTags <- function()
 {
-   requiredStyles <- c("RInput", "ROutput")
-   styleNames <-  lapply(style, function(x) x$name)
-   styleNames <- styleNames[names(styleNames) %in% requiredStyles]
-   missingStyle <- !(requiredStyles %in% names(styleNames))
-   # add an element for this style
-   for(i in requiredStyles[missingStyle]) styleNames[[i]] <- ""
+   styleNames <-  getStyles()[c("input", "output")]
    styleTag <- ifelse(
       unlist(styleNames) != "",
       paste("text:style-name=\"", styleNames, "\"", sep = ""),
