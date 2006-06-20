@@ -1,285 +1,162 @@
-"odfStyleGen" <-
-function(x)
+"odfStyleGen" <- function(x, type = "styles")
 {
    out <- vector(mode = "character", length = 0)
+   if(is.null(x)) return(out)
    
-   if(!is.null(x$paraText))
-   {
-      paraFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$paraText$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$paraText$parentStyleName,
-         "\">\n",
-         "   <style:text-properties ", 
-         ifelse(!is.null(x$paraText$textAlign),
-            paste(" fo:text-align=\"", x$paraText$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$paraText$fontColor),
-            paste(" fo:color=\"", x$paraText$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$paraText$fontName),
-            paste(" style:font-name=\"", x$paraText$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$paraText$fontWeight),
-            paste(" fo:font-weight=\"", x$paraText$fontWeight,"\"", sep = ""),
-            ""), 
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, paraFormat)
-   }  
+   has <- function(x) !is.null(x) && x != ""
      
-   if(!is.null(x$cellText))
-   {
+   styles <-  unlist(lapply(x, function(x) x$type))
    
-      cellTextFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$cellText$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$cellText$parentStyleName,
-         "\">\n",
-         "   <style:paragraph-properties ", 
-         ifelse(!is.null(x$cellText$textAlign),
-            paste(" fo:text-align=\"", x$cellText$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cellText$justifySingleWord),
-            paste(" style:justify-single-word=\"", x$cellText$justifySingleWord,"\"", sep = ""),
-            ""),    
-         " />\n   <style:text-properties ",
-         ifelse(!is.null(x$cellText$fontColor),
-            paste(" fo:color=\"", x$cellText$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$cellText$fontName),
-            paste(" style:font-name=\"", x$cellText$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$cellText$fontWeight),
-            paste(" fo:font-weight=\"", x$cellText$fontWeight,"\"", sep = ""),
-            ""),           
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, cellTextFormat)
-   } 
-   
-   if(!is.null(x$RInput))
+   if(type == "styles")
    {
-      paraFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$RInput$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$RInput$parentStyleName,
-         "\">\n",
-         "   <style:text-properties ", 
-         ifelse(!is.null(x$RInput$textAlign),
-            paste(" fo:text-align=\"", x$RInput$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$RInput$fontColor),
-            paste(" fo:color=\"", x$RInput$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$RInput$fontName),
-            paste(" style:font-name=\"", x$RInput$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$RInput$fontWeight),
-            paste(" fo:font-weight=\"", x$RInput$fontWeight,"\"", sep = ""),
-            ""), 
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, paraFormat)
-   } 
-   
-   if(!is.null(x$ROutput))
-   {
-      paraFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$ROutput$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$ROutput$parentStyleName,
-         "\">\n",
-         "   <style:text-properties ", 
-         ifelse(!is.null(x$ROutput$textAlign),
-            paste(" fo:text-align=\"", x$ROutput$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$ROutput$fontColor),
-            paste(" fo:color=\"", x$ROutput$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$ROutput$fontName),
-            paste(" style:font-name=\"", x$ROutput$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$ROutput$fontWeight),
-            paste(" fo:font-weight=\"", x$ROutput$fontWeight,"\"", sep = ""),
-            ""), 
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, paraFormat)
-   }   
-      
-   if(!is.null(x$RChunk))
-   {
-      paraFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$RChunk$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$RChunk$parentStyleName,
-         "\">\n",
-         "   <style:text-properties ", 
-         ifelse(!is.null(x$RChunk$textAlign),
-            paste(" fo:text-align=\"", x$RChunk$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$RChunk$fontColor),
-            paste(" fo:color=\"", x$RChunk$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$RChunk$fontName),
-            paste(" style:font-name=\"", x$RChunk$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$RChunk$fontWeight),
-            paste(" fo:font-weight=\"", x$RChunk$fontWeight,"\"", sep = ""),
-            ""), 
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, paraFormat)
-   }  
-      
-   if(!is.null(x$cellHeaderText))
-   {
-   
-      cellHeaderTextFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$cellHeaderText$name,
-         "\" style:family=\"paragraph\"",
-         " style:parent-style-name=\"",
-         x$cellHeaderText$parentStyleName,
-         "\">\n",
-         "   <style:paragraph-properties ", 
-         ifelse(!is.null(x$cellHeaderText$textAlign),
-            paste(" fo:text-align=\"", x$cellHeaderText$textAlign,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cellHeaderText$justifySingleWord),
-            paste(" style:justify-single-word=\"", x$cellHeaderText$justifySingleWord,"\"", sep = ""),
-            ""),    
-         " />\n   <style:text-properties ",
-         ifelse(!is.null(x$cellHeaderText$fontColor),
-            paste(" fo:color=\"", x$cellHeaderText$fontColor,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$cellHeaderText$fontName),
-            paste(" style:font-name=\"", x$cellHeaderText$fontName,"\"", sep = ""),
-            ""),          
-         ifelse(!is.null(x$cellHeaderText$fontWeight),
-            paste(" fo:font-weight=\"", x$cellHeaderText$fontWeight,"\"", sep = ""),
-            ""),           
-         "/>\n  </style:style>\n",         
-         sep = "")      
-      out <- c(out, cellHeaderTextFormat)
-   }    
-   
-   if(!is.null(x$cell))
-   {
-      cellFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$cell$name,
-         "\" style:family=\"table-cell\">\n   <style:table-cell-properties ", 
-         ifelse(!is.null(x$cell$marginLeft),
-            paste(" fo:background-color=\"", x$cell$marginLeft,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cell$padding),
-            paste(" fo:padding=\"", x$cell$padding,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cell$leftBorder),
-            paste(" fo:border-left=\"", x$cell$leftBorder,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cell$rightBorder),
-            paste(" fo:border-right=\"", x$cell$rightBorder,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cell$topBorder),
-            paste(" fo:border-top=\"", x$cell$topBorder,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$cell$bottomBorder),
-            paste(" fo:border-bottom=\"", x$cell$bottomBorder,"\"", sep = ""),
-            ""),              
-         " >\n   </style:table-cell-properties>\n  </style:style>\n",
-         sep = "")   
-      out <- c(out, cellFormat)
-                       
-   } 
-  
-   if(!is.null(x$column))
-   {
-      columnFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$column$name,
-         "\" style:family=\"table-column\">\n   <style:table-column-properties ", 
-         ifelse(!is.null(x$column$width),
-            paste(" column-width=\"", x$column$width,"\"", sep = ""),
-            ""),
-         " />\n  </style:style>\n",
-         sep = "")   
-      out <- c(out, columnFormat)    
-   } 
-   
-   if(!is.null(x$table))
-   {
-      
-      tableFormat <- paste(
-         "\n  <style:style style:name=\"",
-         x$table$name,
-         "\" style:family=\"table\">\n   <style:table-properties ", 
-         ifelse(!is.null(x$table$marginLeft),
-            paste(" fo:margin-left=\"", x$table$marginLeft,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$table$marginRight),
-            paste(" fo:margin-right=\"", x$table$marginLeft,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$table$marginTop),
-            paste(" fo:margin-top=\"", x$table$marginTop,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$table$marginBottom),
-            paste(" fo:margin-bottom=\"", x$table$marginBottom,"\"", sep = ""),
-            ""), 
-         " />\n  </style:style>\n",
-         sep = "")
-      out <- c(out, tableFormat)    
-      
-   } 
-   
-   if(!is.null(x$bulletList))
-   {
-      
-      bulletListFormat <- paste(
-         "\n  <text:list-style style:name=\"",
-         x$bulletList$name,
-         "\">\n   <text:list-level-style-bullet ",
-         ifelse(!is.null(x$bulletList$level),
-            paste(" text:level=\"", x$bulletList$level,"\"", sep = ""),
-            ""),         
-         ifelse(!is.null(x$bulletList$styleName),
-            paste(" text:style-name=\"", x$bulletList$styleName,"\"", sep = ""),
-            ""),                     
-         ifelse(!is.null(x$bulletList$bulletChar),
-            paste(" text:bullet-char=\"", x$bulletList$bulletChar,"\"", sep = ""),
-            ""),
-         ">\n    <style:list-level-properties ",
+      paraStyles <- styles[styles == "Paragraph"]
+      for(i in seq(along = paraStyles))
+      { 
+         thisStyle <- x[[ names(paraStyles)[i] ]]
+         if(has(thisStyle$fontType))
+         {
+            fontText <- ""
+            if(length(grep("bold", thisStyle$fontType)) == 1)
+               fontText <- c(fontText, "fo:font-weight=\"bold\"")
+            if(length(grep("italic", thisStyle$fontType)) == 1)
+               fontText <- c(fontText, "fo:font-style=\"italic\"")      
+            if(length(grep("underline", thisStyle$fontType)) == 1)
+               fontText <- c(
+                  fontText, 
+                  "style:text-underline-style=\"solid\"",
+                  "style:text-underline-width=\"auto\"",
+                  "style:text-underline-color=\"font-color\"")
+            if(length(grep("shadow", thisStyle$fontType)) == 1)
+               fontText <- c(fontText, "fo:text-shadow=\"1pt 1pt\"")     
+            if(length(grep("superscript", thisStyle$fontType)) == 1)
+               fontText <- c(fontText, "style:text-position=\"super 58%\"")           
+            if(length(grep("subscript", thisStyle$fontType)) == 1)
+               fontText <- c(fontText, "style:text-position=\"sub 58%\"")                 
+         } else fontText <- ""                  
          
-         ifelse(!is.null(x$bulletList$spaceBefore),
-            paste(" text:space-before=\"", x$bulletList$spaceBefore,"\"", sep = ""),
-            ""),
-         ifelse(!is.null(x$bulletList$minLabelWidth),
-            paste(" text:min-label-width=\"", x$bulletList$minLabelWidth,"\"", sep = ""),
-            ""),
-         "/>\n    <style:text-properties ",
-         ifelse(!is.null(x$bulletList$fontName),
-            paste(" style:font-name=\"", x$bulletList$fontName,"\"", sep = ""),
-            ""), 
-         " />\n   </text:list-level-style-bullet>\n  </text:list-style>\n",
-         sep = "")
-      out <- c(out, bulletListFormat)    
+         paraFormat <- paste(
+            "  <style:style style:name=\"",
+            names(paraStyles)[i],
+            "\" style:family=\"paragraph\"",
+            ifelse(has(thisStyle$parentStyleName),
+               paste(" style:parent-style-name=\"", thisStyle$parentStyleName,"\"", sep = ""),
+               ""),         
+            ">\n",
+            "   <style:text-properties ", 
+            ifelse(has(thisStyle$fontColor),
+               paste(" fo:color=\"", thisStyle$fontColor,"\"", sep = ""),
+               ""),    
+            ifelse(has(thisStyle$fontSize),
+               paste(" fo:font-size=\"", thisStyle$fontSize,"\"", sep = ""),
+               ""),               
+            paste(fontText, collapse = " "),     
+            ifelse(has(thisStyle$fontName),
+               paste(" style:font-name=\"", thisStyle$fontName,"\"", sep = ""),
+               ""),    
+            "/>",
+            ifelse(has(thisStyle$textAlign),
+               paste("\n   <style:paragraph-properties  fo:text-align=\"", thisStyle$textAlign,"\"/>", sep = ""),
+               ""),
+            "\n  </style:style>\n",         
+            sep = "")      
+         out <- c(out, paraFormat)
+      }
+           
+      tableStyles <- styles[styles == "Table"]
+      for(i in seq(along = tableStyles))
+      {
+         thisStyle <- x[[ names(tableStyles)[i] ]]
+         tableFormat <- paste(
+            "  <style:style style:name=\"",
+            names(tableStyles)[i],
+            "\" style:family=\"table\">\n   <style:table-properties ", 
+            ifelse(has(thisStyle$marginLeft),
+               paste(" fo:margin-left=\"", thisStyle$marginLeft,"\"", sep = ""),
+               ""),
+            ifelse(has(thisStyle$marginRight),
+               paste(" fo:margin-right=\"", thisStyle$marginLeft,"\"", sep = ""),
+               ""),
+            ifelse(has(thisStyle$marginTop),
+               paste(" fo:margin-top=\"", thisStyle$marginTop,"\"", sep = ""),
+               ""),
+            ifelse(has(thisStyle$marginBottom),
+               paste(" fo:margin-bottom=\"", thisStyle$marginBottom,"\"", sep = ""),
+               ""), 
+            " />\n  </style:style>\n",
+            sep = "")
+         out <- c(out, tableFormat)          
+      }    
       
-   }    
-   out <- c(out, "\n")
-   
-   
-   out
+      bulletStyles <- styles[styles == "Bullet List"]
+      for(i in seq(along = bulletStyles))
+      {
+         thisStyle <- x[[ names(bulletStyles)[i] ]]
+         bulletListFormat <- paste(
+            "  <text:list-style style:name=\"",
+            names(bulletStyles)[i],
+            "\">\n   <text:list-level-style-bullet ",
+            ifelse(has(thisStyle$level),
+               paste(" text:level=\"", thisStyle$level,"\"", sep = ""),
+               ""),         
+            ifelse(has(thisStyle$styleName),
+               paste(" text:style-name=\"", thisStyle$styleName,"\"", sep = ""),
+               ""),                     
+            ifelse(has(thisStyle$bulletChar),
+               paste(" text:bullet-char=\"", thisStyle$bulletChar,"\"", sep = ""),
+               ""),
+            ">\n    <style:list-level-properties ",
+            
+            ifelse(has(thisStyle$spaceBefore),
+               paste(" text:space-before=\"", thisStyle$spaceBefore,"\"", sep = ""),
+               ""),
+            ifelse(has(thisStyle$minLabelWidth),
+               paste(" text:min-label-width=\"", thisStyle$minLabelWidth,"\"", sep = ""),
+               ""),
+            "/>\n    <style:text-properties ",
+            ifelse(has(thisStyle$fontName),
+               paste(" style:font-name=\"", thisStyle$fontName,"\"", sep = ""),
+               ""), 
+            " />\n   </text:list-level-style-bullet>\n  </text:list-style>\n",
+            sep = "")
+         out <- c(out, bulletListFormat)          
+      }
+   }  else {
+      cellStyles <- styles[styles == "Table Cell"]
+      for(i in seq(along = cellStyles))
+      {
+         thisStyle <- x[[ names(cellStyles)[i] ]]
+         
+         cellTextFormat <- paste(
+            "  <style:style style:name=\"",
+            names(cellStyles)[i],
+            "\" style:family=\"table-cell\"",
+            ">\n",
+            "   <style:table-cell-properties ", 
+            ifelse(has(thisStyle$verticalAlign),
+               paste(" style:vertical-align=\"", thisStyle$verticalAlign,"\"", sep = ""),
+               ""),            
+            ifelse(has(thisStyle$leftBorder),
+               paste(" fo:border-left=\"", thisStyle$leftBorder,"\"", sep = ""),
+               ""), 
+            ifelse(has(thisStyle$rightBorder),
+               paste(" fo:border-right=\"", thisStyle$rightBorder,"\"", sep = ""),
+               ""), 
+            ifelse(has(thisStyle$topBorder),
+               paste(" fo:border-top=\"", thisStyle$topBorder,"\"", sep = ""),
+               ""), 
+            ifelse(has(thisStyle$bottomBorder),
+               paste(" fo:border-bottom=\"", thisStyle$bottomBorder,"\"", sep = ""),
+               ""),     
+            ifelse(has(thisStyle$padding),
+               paste(" fo:padding=\"", thisStyle$padding,"\"", sep = ""),
+               ""),                 
+                                            
+            "/>\n  </style:style>\n",         
+            sep = "")      
+         out <- c(out, cellTextFormat)
+      }   
+   }
+      out
 }
+
 
