@@ -2,6 +2,7 @@ export(
    getStyles,
    getStyleDefs,
    matrixPaste,
+   odfCat,
    odfInsertPlot,  
    odfItemize, 
    odfTable, 
@@ -29,5 +30,6 @@ S3method(odfTable, numeric)
 S3method(odfTable, data.frame)
 
 S3method(print, odfTable)
+S3method(print, odfCat)
 S3method(print, odfItemize)
 
