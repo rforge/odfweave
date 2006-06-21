@@ -1,6 +1,7 @@
 export(
    getStyles,
    getStyleDefs,
+   listString,
    matrixPaste,
    odfCat,
    odfInsertPlot,  
@@ -13,6 +14,7 @@ export(
    odfTranslate, 
    odfWeave, 
    odfWeaveControl,
+   pkgVersions,
    processInLine,
    RweaveOdf,
    RweaveOdfSetup,
