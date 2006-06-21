@@ -20,7 +20,7 @@ odfCat <- function(..., sep = " ", trim = FALSE,
    
    if(has(styles$paragraph)) paraStyle <- paste("text:style-name=\"", styles$paragraph, "\"", sep = "")
       else paraStyle <- ""
-   x <- paste(theDots, collapse = sep)
+   x <- paste(odfTranslate(theDots, toR = FALSE), collapse = sep)
    out <- paste(
       "<text:p ",
       paraStyle,
