@@ -26,7 +26,7 @@ addStyleDefs <- function(x, style, dest = "styles", verbose = TRUE)
    styleVec <- odfStyleGen(style, type = dest)            
    if(verbose) cat("\n")
   
-   c(paste(part1, "\n"), styleVec, paste(part2, "\n"))   
-
+   out <- if(dest == "styles") c(paste(part1, "\n"), styleVec, paste(part2, "\n"))  else c(part1, styleVec, part2)
+   out
 }
 
