@@ -121,8 +121,8 @@
          
          # remove sweave file
          if(control$verbose) cat("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n"); flush.console()           
-#         if(unlink(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), recursive = TRUE) == 1) 
-#            stop("Error removing xml file file") 
+         if(unlink(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), recursive = TRUE) == 1) 
+            stop("Error removing xml file file") 
          }
    }
    
