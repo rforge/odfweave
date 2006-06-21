@@ -13,8 +13,8 @@ assign(
       table = "Rtable1",
       cell = "noBorder",
       header = "lowerBorder",
-      cellText = "ArialNormal",
-      headerText = "ArialBold",
+      cellText = "ArialCentered",
+      headerText = "ArialCenteredBold",
       bullet = "Rbullet"
       ), 
    env = .odfEnv)
@@ -26,7 +26,7 @@ assign(
 # There are distinct text and paragraph properties that can be set (with some
 # overlapping elements, such as background color). To specifiy text styles,
 # these two sets of properties are specified under the "Paragraph" style here.   
-      ArialBold = list(
+      ArialCenteredBold = list(
          type = "Paragraph",
          parentStyleName = "",
          textAlign = "center",
@@ -35,6 +35,14 @@ assign(
          fontType = "bold",
          fontColor = "#000000"),
       ArialNormal = list(
+         type = "Paragraph",
+         parentStyleName = "",
+         textAlign = "left",
+         fontName = "Arial", 
+         fontSize = "12pt",
+         fontType = "normal",
+         fontColor = "#000000"),      
+      ArialCentered = list(
          type = "Paragraph",
          parentStyleName = "",
          textAlign = "center",
