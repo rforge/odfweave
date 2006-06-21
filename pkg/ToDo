@@ -6,8 +6,5 @@
    and doubles are rounded instead of writing
    full precision into file and only displaying
    desired precision
- - another style arg to specify the style
-   of every cell in the table and different
-   styles for different columns
  - test with Calc and Impress
  - allow lists with multiple sub-lists
