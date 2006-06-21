@@ -14,6 +14,7 @@ odfCat(..., sep = " ", trim = FALSE,
   \item{sep}{character string to insert between the objects to print.}
   \item{trim}{used to convert numeric data to character using \code{\link{format}} }
   \item{digits}{used to convert numeric data to character using \code{\link{format}} }
+  \item{nsmall}{used to convert numeric data to character using \code{\link{format}} }
   \item{width}{used to convert numeric data to character using \code{\link{format}} }
   \item{na.encode}{used to convert numeric data to character using \code{\link{format}} }
   \item{scientific}{used to convert numeric data to character using \code{\link{format}} }
