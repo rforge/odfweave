@@ -61,7 +61,6 @@
 \title{The OdfWeave Package}
 \author{Max Kuhn \\ max.kuhn@pfizer.com}
 
-
 %\VignetteIndexEntry{odfWeave}
 \begin{document}
 
@@ -209,11 +208,11 @@ library(odfWeave)
 inFile <- "example.odt"
 outFile <- "out.odt"
 
-forRnews <- odfWeaveControl(
+newCntl <- odfWeaveControl(
    dispWidth = 4.5, 
    dispHeight = 4.5)
 
-odfWeave(inFile, outFile, control = forRnews)
+odfWeave(inFile, outFile, control = newCntl)
 \end{verbatim}
 Figure \ref{figure:after} shows the results. Note that since the first in--line \texttt{Sexpr} command had uniform formatting, the output of that command retained the formatting. In general, the formatting of in--line \texttt{Sweave} tags and code chunks is required to be uniform (as an error is likely to be produced otherwise). For example,  \texttt{round({\it sqrt(2)}, 2)}, ends up looking like
       
@@ -221,7 +220,7 @@ Figure \ref{figure:after} shows the results. Note that since the first in--line 
       
 and can be difficult to process and parse.
 
-One additional note about this example: the initial code chunk that loads the data does not specify the full path to the file. In this example, the source data were previously zipped into the ODF file (using \texttt{zip RnewsExample.odt pcrData.csv}) so that the source data are embedded with the analysis and report. Once the file is processed using \texttt{odfWeave}, the resulting document also contains the source data in it's original form. 
+One additional note about this example: the initial code chunk that loads the data does not specify the full path to the file. In this example, the source data were previously zipped into the ODF file (using \texttt{zip example.odt pcrData.csv}) so that the source data are embedded with the analysis and report. Once the file is processed using \texttt{odfWeave}, the resulting document also contains the source data in it's original form. 
 
 
 \begin{figure}[p]
