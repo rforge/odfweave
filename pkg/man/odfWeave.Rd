@@ -54,12 +54,15 @@ an ODF file with the R output
 
 \seealso{ \code{\link{odfWeaveControl}},  \code{\link{RweaveOdf}}, \code{\link[utils]{Sweave}}}
 \examples{
-demoFile <- system.file("examples", "basics.odt", package = "odfWeave")
-outputFile <- gsub("basics", "output", demoFile)
+demoFile <- system.file("examples", "examples.odt", package = "odfWeave")
+outputFile <- gsub("examples.odt", "output.odt", demoFile)
  
 workingPath <- tempdir()
 
 library(odfWeave)
 odfWeave(demoFile, outputFile, workingPath)
+
+## see also system.file("examples", "simple.odt", package = "odfWeave")
+
 }
 \keyword{utilities}

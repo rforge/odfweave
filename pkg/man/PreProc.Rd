@@ -1,4 +1,4 @@
-\name{odfTranslate}
+\name{XML Processing Functions}
 \alias{odfTranslate}
 \alias{stripXmlTag}
 \alias{processInLine}
@@ -6,11 +6,11 @@
 
 \title{XML Processing Functions}
 \description{
-These function takes a character vector of XML forteh open Document Format and process it it various ways. 
+These function takes a character vector of XML for the open Document Format and process it it various ways. 
 
-\code{odfTranslate} converts some XML modified characters (such as \code{&gt}) to R code (\code{>}). Also tries to mistake proof the code by anticipating characters that might be in UTF-8 encoding to R compliant characters (e.g. in some fonts, " will become a UTF-8 character, which R will choke on).
+\code{odfTranslate} converts some XML modified characters (such as \code{&gt}) to R code (\code{>}). \code{odfTranslate} also tries to mistake proof the code by anticipating characters that might be in UTF-8 encoding to R compliant characters (e.g. in some fonts, " will become a UTF-8 character, which R will choke on).
 
-\code{stripXmlTag}  removes any text between "<" and ">" and optinally remove leading or trailing whitespace. 
+\code{stripXmlTag}  removes any text between "<" and ">" and optionally remove leading or trailing whitespace. 
 
 \code{processInLine} uses \code{odfTranslate} and \code{stripXmlTag} to process in-line \code{Sweave} statements. Similarly, \code{xml2R} does the same thing for code chunks.
 }
@@ -30,7 +30,7 @@ xml2R(x)
 \value{
 a character vector
 }
-\author{Max Kuhn and Nathan Coulter}
+\author{Max Kuhn and Nathan Coulter (for stripXmlTag)}
 
 \examples{
 

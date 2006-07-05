@@ -5,7 +5,7 @@
 Creates a string, matrix or data frame that shows the packages and their versions currently used (i.e in the search path).
 }
 \usage{
-function(type = "string", ncol = 4) 
+pkgVersions(type = "string", ncol = 4) 
 }
 \arguments{
   \item{type}{a string  designating the type of output object: "string", "matrix" or "data frame"}
@@ -15,7 +15,7 @@ function(type = "string", ncol = 4)
 \value{
 a string, character matrix or a data frame with columns "Package" and "Version"
 }
-\author{Max Kuhn, originally by Jim Rogers}
+\author{Max Kuhn, original version by Jim Rogers}
 \examples{
 pkgVersions()
 pkgVersions("matrix")

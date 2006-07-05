@@ -10,8 +10,8 @@ odfWeaveControl(
     zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"), 
     cleanup = FALSE, verbose = TRUE, plotType = "png", 
     plotDevice = ifelse(.Platform$OS.type == "windows", "png", "bitmap"), 
-    plotHeight = ifelse(plotType %in% c("jpg", "png", "gif", "bmp"), 480, 6), 
-    plotWidth = ifelse(plotType %in%  c("jpg", "png", "gif", "bmp"), 480, 6), 
+    plotHeight = ifelse(plotType \%in\% c("jpg", "png", "gif", "bmp"), 480, 6), 
+    plotWidth = ifelse(plotType \%in\%  c("jpg", "png", "gif", "bmp"), 480, 6), 
     dispHeight = 4.5, dispWidth = 4.5) 
 }
 \arguments{

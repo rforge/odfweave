@@ -12,20 +12,25 @@ Create an Open Document Format table from a data frame, matrix or vector
 }
 \usage{
 odfTable(x, ...)
+
 odfTable.numeric(x, horizontal = length(x) < 5, colnames = names(x), 
    digits = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
    styles = NULL, ...)
+   
 odfTable.character(x, horizontal = length(x) < 5, colnames = names(x), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
    styles = NULL, ...)
+   
 odfTable.character(x, horizontal = length(x) < 5, colnames = names(x), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
    styles = NULL, ...)
+   
 odfTable.data.frame(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
    styles = NULL, ...)
+   
 odfTable.matrix(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3),
     name = paste("Table", floor(runif(1) * 1000), sep = ""), 
@@ -33,7 +38,7 @@ odfTable.matrix(x, colnames = NULL, useRowNames = TRUE,
 }
 \arguments{
   \item{x}{a vector, matrix or data frame}
-  \item{horizontal}{a logical: should the vector be shown as a 1xn table or nx1?}  
+  \item{horizontal}{a logical: should the vector be shown as a 1xn table or nx1? This is ignored for other data structures.}  
   \item{colnames}{a vector of column names that can be used. Note that if the row names are used in the table, this should contain an extra element for that column.}
   \item{useRowNames}{a logical: should the row names be printed in the final table}
   \item{digits}{number of significant digits passed to format}
@@ -47,7 +52,7 @@ There are two main components to specifying output formats: style definitions an
 The data structures are converted to character matrices using format.
 }
 \value{
-a lit of character string of XMLs
+a list of character string that contain XML markup
 }
 \author{Max Kuhn}
 
