@@ -61,6 +61,7 @@ an ODF file with the R output
 demoFile <- system.file("examples", "examples.odt", package = "odfWeave")
 demoFile <- system.file("examples", "testCases.odt", package = "odfWeave")
 }
+
 demoFile <- system.file("examples", "simple.odt", package = "odfWeave")
 outputFile <- gsub("simple.odt", "output.odt", demoFile)
  
