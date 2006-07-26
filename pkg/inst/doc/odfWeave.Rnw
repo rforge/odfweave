@@ -273,7 +273,7 @@ The package also contains a function, \texttt{tableStyles}, that can be used to 
 
 There are a few miscellaneous functions also included in the package. \texttt{pkgVersions} can create a summary of the packages and versions in the search path:
 <<pkgVersions, print = TRUE>>=
- pkgVersions("matrix")
+ pkgVersions("matrix", ncol = 3)
 @
 The function \texttt{listString} takes a vector and returns a textual list. For example,  \verb|letters[1:4]| would become "\Sexpr{listString(letters[1:4])}". Also, \texttt{matrixPaste} can take a series of character matrices with the same dimensions and perform an element--wise paste.
 
