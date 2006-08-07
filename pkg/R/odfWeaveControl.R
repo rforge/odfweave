@@ -1,9 +1,10 @@
 odfWeaveControl <- function(
    zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"),
    cleanup = FALSE,
+   reEncode = TRUE,
    verbose = TRUE,
    plotType = "png",
-   plotDevice = ifelse(.Platform$OS.type == "windows", "png", "bitmap"),
+   plotDevice = ifelse(capabilities("png"), "png", "bitmap"),
    plotHeight = ifelse(plotDevice %in% c("jpeg", "png", "bmp"), 480, 6),
    plotWidth = ifelse(plotDevice %in% c("jpeg", "png", "bmp"), 480, 6),
    dispHeight = 4.5,
