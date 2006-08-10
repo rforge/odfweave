@@ -1,4 +1,3 @@
-
 RweaveOdf <- function()
 {
     list(setup = RweaveOdfSetup,
@@ -15,7 +14,7 @@ RweaveOdfSetup <-
 {
     theDots <- list(...)
     # pass the control object here
-    
+
     if(is.null(output)){
         prefix.string <- basename(sub(syntax$extension, "", file))
         output <- paste(prefix.string, "xml", sep=".")
@@ -30,7 +29,7 @@ RweaveOdfSetup <-
     options <- list(prefix=TRUE, prefix.string=prefix.string,
                     engine="R", print=FALSE, eval=eval,
                     fig=FALSE, term=TRUE,
-                    echo=echo, results="verbatim", 
+                    echo=echo, results="verbatim",
                     strip.white="true")
 
     ## to be on the safe side: see if defaults pass the check
@@ -38,8 +37,8 @@ RweaveOdfSetup <-
 
     # now attach the control arg passed by ... (if any) to options
     if("control" %in% names(theDots)) options$control <- theDots$control
-    
-    list(output=output, 
+
+    list(output=output,
          debug=debug, quiet=quiet, syntax = syntax,
          options=options, chunkout=list())
 }
@@ -75,32 +74,32 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
 
     rCont <- odfTranslate(getOption("continue"), toR = FALSE)
     rPrompt <- odfTranslate(getOption("prompt"), toR = FALSE)
-   
+
     # put this in a function
     codeMarkup <- RCodeTags()
-    endTag <- "</text:p>" 
+    endTag <- "</text:p>"
 
     for(nce in 1:length(chunkexps))
     {
         ce <- chunkexps[[nce]]
         dce <- deparse(ce, width.cutoff=0.75*getOption("width"))
-        
-        #convert some character, such as < or &   
+
+        #convert some character, such as < or &
         dceForXml <- odfTranslate(dce, toR = FALSE)
 
-            
+
         if(object$debug)
             cat("\nRnw> ", paste(dce, collapse="\n+  "),"\n")
-            
-        # this block will print the R code (if echo = TRUE)            
+
+        # this block will print the R code (if echo = TRUE)
         if(options$echo)
         {
             dceForXml2 <- paste(ifelse(seq(along = dceForXml) == 1, rPrompt, rCont), dceForXml)
             # now wrap this result in xml tags before printing
             # using style  names
-            taggedDce <- paste(codeMarkup$input, dceForXml2, endTag, "\n", sep = "")               
-            
-            cat("\n", 
+            taggedDce <- paste(codeMarkup$input, dceForXml2, endTag, "\n", sep = "")
+
+            cat("\n",
                 paste(taggedDce,
                       collapse=paste("\n", rCont, sep="")),
                 file=chunkout, append=TRUE, sep="")
@@ -113,7 +112,7 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         if(options$eval) err <- RweaveEvalWithOpt(ce, options)
 #     cat("\n") # make sure final line is complete
         sink()
-        
+
         # read them back in
         output <- readLines(tmpcon)
         close(tmpcon)
@@ -129,11 +128,11 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
         {
             if(options$results == "verbatim")
             {
-               taggedOutput <- paste(codeMarkup$output, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")             
+               taggedOutput <- paste(codeMarkup$output, odfTranslate(output, toR = FALSE), endTag, "\n", sep = "")
                output <- paste(taggedOutput,collapse="\n")
             }
-# I'll have to find an example of when this matters            
-            
+# I'll have to find an example of when this matters
+
 #            if(options$strip.white %in% c("all", "true")){
 #                output <- sub("^[[:space:]]*\n", "", output)
 #                output <- sub("\n[[:space:]]*$", "", output)
@@ -147,26 +146,29 @@ RweaveOdfRuncode <- function(object, chunk, options, control)
 
     if(options$fig && options$eval)
     {
-         deviceInfo <- getImageDefs()
-         
-         imageName <- paste("./Pictures/", chunkprefix, ".", deviceInfo$type, sep = "")
+         imageName <- paste("./Pictures/", chunkprefix, ".", options$control$plotType, sep = "")
 
-         figGen(plotName = imageName)    
-            
+         figGen(
+            type = options$control$plotType,
+            device = options$control$plotDevice,
+            plotName = imageName,
+            width = options$control$plotWidth,
+            height = options$control$plotHeight)
+
          err <- try({SweaveHooks(options, run=TRUE);
                      eval(chunkexps, envir=.GlobalEnv)})
-                     
+
          dev.off()
-         
-         if(inherits(err, "try-error")) stop(err) 
-         
+
+         if(inherits(err, "try-error")) stop(err)
+
          plotMarkup <- odfInsertPlot(
-            imageName, 
-            name = gsub("-", "", chunkprefix),            
-            height = deviceInfo$dispHeight, 
-            width = deviceInfo$dispWidth) 
+            imageName,
+            name = gsub("-", "", chunkprefix),
+            height = options$control$dispHeight,
+            width = options$control$dispWidth)
          cat(plotMarkup, file=chunkout, append=TRUE)
-   
+
     }
     return(object)
 }
@@ -222,7 +224,7 @@ RweaveOdfOptions <- function(options)
     ## defaults in the init function!
 
     ## convert a character string to logical
-    
+
     # Let's not check the control file
     if("control" %in% names(options))
     {
@@ -266,10 +268,9 @@ RweaveOdfOptions <- function(options)
 
     # add the control info back in (if any)
     if(!is.null(controlData)) options$control <- controlData
-    
+
     options
 }
-
 RCodeTags <- function()
 {
    styleNames <-  getStyles()[c("input", "output")]
@@ -279,6 +280,6 @@ RCodeTags <- function()
       "")
    startTags <- as.list(paste("<text:p ", styleTag, ">", sep = ""))
    names(startTags) <- names(styleNames)
-   startTags    
+   startTags
 }
 
