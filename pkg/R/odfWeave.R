@@ -1,7 +1,16 @@
-"odfWeave" <- function(file, dest, workDir=tempdir(), control=odfWeaveControl()){ 
+"odfWeave" <- 
+function(file, dest, workDir=tempdir(), control=odfWeaveControl()){ 
+   #configure
+   currentLoc <- getwd()
+   zipCmd <- control$zipCmd
+   zipCmd <- gsub("$$file$$", shellQuote(basename(file)), zipCmd, fixed=TRUE)
+   currentLocale <- c(Sys.getlocale("LC_CTYPE"), Sys.getlocale("LC_COLLATE"))
+   Sys.setlocale("LC_CTYPE", "C")
+   Sys.setlocale("LC_COLLATE", "C")
+
 
    #check for an unzipping utility
-   if(all(control$zipCmd == c("zip -r $$file$$ .", "unzip -o $$file$$")))
+   if(all(zipCmd == c("zip -r $$file$$ .", "unzip -o $$file$$")))
    {
       errorText <- paste(
          "unzip could not be found.",
@@ -21,44 +30,27 @@
       }
    }
 
-   currentLoc <- getwd()
-
-   #these aren't used in the current implementation
-   #currentLocale <- c(Sys.getlocale("LC_CTYPE"), Sys.getlocale("LC_COLLATE"))
-   #Sys.setlocale("LC_CTYPE", "C")
-   #Sys.setlocale("LC_COLLATE", "C")
-
-   # create a temp dir (or have dir specified)
+   # create temp dir
    if(!file.exists(workDir))
    {
       announce("  Creating ", workDir, "\n")
-      announce(workDir, showWarnings = TRUE, recursive = FALSE)
-         stop("Error creating working directory")
+      dir.create(workDir, showWarnings = TRUE, recursive = FALSE)
+      if(!file.exists(workDir)) stop("Error creating working directory")
    }
 
-   announce("  Setting wd\n")
+   announce("  Setting wd to ", workDir, "\n")
    setwd(workDir)
 
-   workingCopy <- paste(workDir, "/", basename(file), sep = "")
+   workingCopy <- paste(basename(file), sep = "")
 
    # copy file to the tmp dir
    if(!file.exists(file)) stop(paste(file, "does not exist"))
    announce("  Copying ", file, "\n")
    if(!file.copy(file, workingCopy, overwrite = TRUE))
-      stop("Error copying odt file")
+   if(!file.exists(workingCopy)) stop("Error copying odt file")
+
 
    # unpack the file
-   zipCmd <- control$zipCmd
-   zipCmd[2] <- gsub(
-      "$$file$$",
-      paste(
-         ifelse(.Platform$OS.type == "windows", "\"", ""),
-         workDir, "/", basename(file),
-         ifelse(.Platform$OS.type == "windows", "\"", ""),
-         sep = ""),
-      zipCmd[2],
-      fixed = TRUE)
-
    announce("  Decompressing ODF file using", zipCmd[2], "\n")
    if(.Platform$OS.type == "windows")
    {
@@ -69,13 +61,14 @@
 
    # remove original file
    announce("\n  Removing ", workingCopy, "\n")
-   if(unlink(workingCopy, recursive = TRUE) == 1)  stop("Error removing original file")
+   file.remove(workingCopy)
+   if (file.exists(workingCopy)) stop("Error removing original file")
 
-   #check for Pictures directory
+   #configure Pictures directory
    if(!file.exists(paste(workDir, "/Pictures", sep = "")))
    {
       announce("  Creating a Pictures directory\n")
-      picDir <- dir.create(paste(c(workDir, "/Pictures"), collapse = ""), showWarnings = TRUE, recursive = FALSE)
+      picDir <- dir.create("Pictures", showWarnings = TRUE, recursive = FALSE)
       if(!picDir)  stop("Error creating Pictures directory")
    }
 
@@ -104,75 +97,59 @@
    #for convenience
    tagsFound <- tagsExist(stags)
 
-   if(any(tagsFound))
-   {
+   if(any(tagsFound)) {
       announce("\n  Sweave tags found in: ", xmlFiles[tagsFound], "\n")
       sweaveFiles <- xmlFiles[tagsFound]
       sweaveContents <- xmlContents[tagsFound]
 
-      for(j in seq(along = sweaveFiles))
-      {
+      for(j in seq(along = sweaveFiles)) {
          announce("  Removing xml around <<>>= for ", sweaveFiles[j], "\n")
          if(!is.null(sweaveContents[j])) sweaveContents[j] <-
          processXml(sweaveContents[j], stags[,j])
          # write processed lines to Rnw file
-         announce("  Writing ", sweaveFiles[j], " to ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n")
-         rnwFile <- file(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw",
-            sweaveFiles[j]), sep = ""), "wb")
+         rnwFileName <- (gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]))
+         announce("  Writing ", sweaveFiles[j], " to ", rnwFileName, "\n")
+         rnwFile <- file(rnwFileName, "wb")
          writeXML(sweaveContents[[j]], rnwFile)
 
          #nuke the xml file
          announce("\n  Removing ", sweaveFiles[j], "\n")
-         if(unlink(paste(workDir, "/", sweaveFiles[j], sep = ""), recursive = TRUE) == 1)
-            stop("Error removing xml file file")
-         announce("  Sweaving ",gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n\n")
-         #not used in current implementation
-         #Sys.setlocale("LC_CTYPE", currentLocale[1])
-         #Sys.setlocale("LC_COLLATE", currentLocale[2])
+         file.remove(sweaveFiles[j], recursive = TRUE)
+      	if (file.exists(sweaveFiles[j])) stop("Error removing xml file file")
 
          #Sweave results to new xml file
+         announce("  Sweaving ",rnwFileName, "\n\n")
+
+         Sys.setlocale("LC_CTYPE", currentLocale[1])
+         Sys.setlocale("LC_COLLATE", currentLocale[2])
+
          Sweave(
-            file =   paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""),
-            output = paste(workDir, "/", sweaveFiles[j], sep = ""),
+            file =   paste(rnwFileName, sep = ""),
+            output = paste(sweaveFiles[j], sep = ""),
             quiet = !control$verbose,
             driver = RweaveOdf(), control = control)
 
-         #not used in current implementation
-         #Sys.setlocale("LC_CTYPE", "C")
-         #Sys.setlocale("LC_COLLATE", "C")
+         Sys.setlocale("LC_CTYPE", "C")
+         Sys.setlocale("LC_COLLATE", "C")
 
          # remove sweave file
-         announce("  Removing ", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), "\n")
-         if(unlink(paste(workDir, "/", gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]), sep = ""), recursive = TRUE) == 1)
-            stop("Error removing xml file file")
-         }
+         announce("  Removing ", rnwFileName, "\n")
+         file.remove(rnwFileName, recursive = TRUE)
+         if (file.exists(rnwFileName)) stop("Error removing xml file file")
+      }
    }
 
    # if there was no Sweave tags in styles.xml, write that out too
-   if(!tagsFound[which(xmlFiles == "styles.xml")])
-   {
-      styleFile <- file(paste(workDir, "/styles.xml", sep = ""), "wb")
+   if(!tagsFound[which(xmlFiles == "styles.xml")]) {
+      styleFile <- file("styles.xml", "wb")
       sink(styleFile)
       cat(xmlContents[[which(xmlFiles == "styles.xml")]])
       sink()
       close(styleFile)
    }
 
-   zipCmd[1] <- gsub(
-      "$$file$$",
-      paste(
-         ifelse(.Platform$OS.type == "windows", "\"", ""),
-         workDir,
-         "/",
-         basename(file),
-         ifelse(.Platform$OS.type == "windows", "\"", ""),
-         sep = ""),
-      zipCmd[1],
-      fixed = TRUE)
-
    announce("\n\  Packaging file using", zipCmd[1], "\n")
-   if(.Platform$OS.type == "windows")
-   {
+   if(.Platform$OS.type == "windows") {
       if(system(zipCmd[1], invisible = TRUE) != 0)  stop("Error zipping file")
    } else {
       if(system(zipCmd[1]) != 0) stop("Error zipping file")
@@ -186,20 +163,20 @@
    announce("  Resetting wd\n")
    setwd(currentLoc)
 
-   #Sys.setlocale("LC_CTYPE", currentLocale[1])
-   #Sys.setlocale("LC_COLLATE", currentLocale[2])
+   Sys.setlocale("LC_CTYPE", currentLocale[1])
+   Sys.setlocale("LC_COLLATE", currentLocale[2])
 
    # delete working dir
    if(control$cleanup)
    {
       announce("  Removing ", workDir, "\n")
-      if(unlink(workDir, recursive = TRUE) == 1) stop("Error removing work dir")
+      unlink(shellQuote(workDir), recursive = TRUE)
+      if (file.exists(workDir)) stop("Error removing work dir")
    }
    invisible(NULL)
 }
 
-announce <- function (...) {
-   control=odfWeaveControl()
+"announce" <- function (..., control=odfWeaveControl()) {
    if (control$verbose) cat(...)
    flush.console()
 }
@@ -230,6 +207,14 @@ announce <- function (...) {
    close(outFile)
 }
 
+"shellQuote" <- function(x) {
+   if (.Platform$OS.type == "windows"){
+      return(paste('"', x, '"', sep=""))
+   } else {
+      return(gsub(" ", "\\\\ ", x))
+   }
+}
+
 "subin" <- function(x, matches, pieces){
    piece <- length(pieces)
    if (piece == 0) return(x)
@@ -251,16 +236,15 @@ announce <- function (...) {
 
 "tagsIdxs" <- function(x) {
       #input:  character
-      #output: 2-way integer list
-      #   match offsets for each character/pattern
-
-      #TODO:  add names to list instead of to "matchtype" attribute
+      #output: 2-way integer list of offsets where tags were found
+		#  "match.length" attribute contains a length for each offset
+		#	See. "gregexpr", under "grep" in the R reference manual
 
       matchtype = "match.type"
 
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
-      out2 <- gregexpr("(?s)(?U)(<text:p)(?(?=text:p)(?!)|.)*&lt;&lt;.*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      out2 <- gregexpr("(?s)(?U)(<text:p)(?:(?!text:p).)*&lt;&lt;.*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
@@ -284,7 +268,7 @@ announce <- function (...) {
    #
    #   matches:  list of integers with atribute 'match.length'
    #
-   #output: character
+   #output: character vector of substrings of x
    unlist(
       lapply(
          seq(length(matches)),

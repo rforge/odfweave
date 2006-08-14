@@ -1,7 +1,13 @@
 odfWeaveControl <- function(
    zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"),
-   cleanup = FALSE,
-   verbose = TRUE)
+   cleanup = TRUE,
+   verbose = TRUE,
+   plotType = "png",
+   plotDevice = ifelse(.Platform$OS.type == "windows", "png", "bitmap"),
+   plotHeight = ifelse(plotDevice %in% c("jpeg", "png", "bmp"), 480, 6),
+   plotWidth = ifelse(plotDevice %in% c("jpeg", "png", "bmp"), 480, 6),
+   dispHeight = 4.5,
+   dispWidth = 4.5)
 {
 	# pass ... args to figGen here?
    list(
