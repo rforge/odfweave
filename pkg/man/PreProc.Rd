@@ -41,6 +41,6 @@ z <- " <text:span text:style-name=\"T1\">\\Sexpr{x &gt; 2}</text:span>"
 stripXmlTag(x)
 odfTranslate(y)
 xml2R(y)
-processInLine(z)
+#processInLine(z)
 }
 \keyword{utilities}
