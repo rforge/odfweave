@@ -115,7 +115,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
          #nuke the xml file
          announce("\n  Removing ", sweaveFiles[j], "\n")
          file.remove(sweaveFiles[j], recursive = TRUE)
-      	if (file.exists(sweaveFiles[j])) stop("Error removing xml file file")
+         if (file.exists(sweaveFiles[j])) stop("Error removing xml file file")
 
          #Sweave results to new xml file
          announce("  Sweaving ",rnwFileName, "\n\n")
@@ -237,14 +237,32 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
 "tagsIdxs" <- function(x) {
       #input:  character
       #output: 2-way integer list of offsets where tags were found
-		#  "match.length" attribute contains a length for each offset
-		#	See. "gregexpr", under "grep" in the R reference manual
+      #  "match.length" attribute contains a length for each offset
+      #  See. "gregexpr", under "grep" in the R reference manual
 
       matchtype = "match.type"
 
+
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
-      out2 <- gregexpr("(?s)(?U)(<text:p)(?:(?!text:p).)*&lt;&lt;.*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+
+      #find the innermost "text:p" block containing a chunk, and all subseqent
+      #   content up to and including the "text:p" block containing the "@",
+      #   which marks the end of a chunk
+      #breaking down the regular expression:
+      #   (?s)
+      #       make repetition metacharacters match a newline
+      #   (?U)
+      #       make repetition characters ungreedy
+      #   (?:(?!text:p).)
+      #       match any character as long as "test:p" doesn't come next
+      #   (?:(?!&gt;&gt(?!=)).)
+      #       match any character as long as two "greater-than" characters not
+      #       followed by an "equals" sign don't come next
+      #   (/text:p>|.*</text:p)
+      #      the closing tag might immediately follow the "@", or it might be
+      #      preceded by some other non-block tags
+      out2 <- gregexpr("(?s)(?U)<text:p(?:(?!text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
