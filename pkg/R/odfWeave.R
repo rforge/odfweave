@@ -10,6 +10,8 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
    Sys.setlocale("LC_CTYPE", "C")
    Sys.setlocale("LC_COLLATE", "C")
 
+   if(dirname(dest) == ".") dest <- paste(currentLoc, "/", dest, sep = "")
+   
    verbose <- control$verbose
 
    #check for an unzipping utility
