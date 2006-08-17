@@ -13,25 +13,22 @@ Create an Open Document Format table from a data frame, matrix or vector
 \usage{
 odfTable(x, ...)
 
-odfTable.numeric(x, horizontal = length(x) < 5, colnames = names(x), 
+\method{odfTable}{numeric}(x, horizontal = length(x) < 5, colnames = names(x), 
+   digits = max(3, getOption("digits") - 3), 
+   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+   styles = NULL, ...)
+  
+\method{odfTable}{character}(x, horizontal = length(x) < 5, colnames = names(x), 
+   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+   styles = NULL, ...)
+   
+  
+\method{odfTable}{data.frame}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
    styles = NULL, ...)
    
-odfTable.character(x, horizontal = length(x) < 5, colnames = names(x), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
-   
-odfTable.character(x, horizontal = length(x) < 5, colnames = names(x), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
-   
-odfTable.data.frame(x, colnames = NULL, useRowNames = TRUE, 
-   digits = max(3, getOption("digits") - 3), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
-   
-odfTable.matrix(x, colnames = NULL, useRowNames = TRUE, 
+\method{odfTable}{matrix}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3),
     name = paste("Table", floor(runif(1) * 1000), sep = ""), 
     styles = NULL, ...)
