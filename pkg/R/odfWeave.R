@@ -183,7 +183,10 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
    if(control$cleanup)
    {
       announce(verbose, "  Removing ", workDir, "\n")
+		browser()
       unlink(workDir, recursive = TRUE)
+      if (file.exists(workDir)) unlink(shQuote(workDir), recursive=TRUE)
+      if (file.exists(workDir)) unlink(shellQuote(workDir), recursive=TRUE)
       if (file.exists(workDir)) stop("Error removing work dir")
    }
    invisible(NULL)
@@ -249,7 +252,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
       collapse = "")
 }
 
-"tagsIdxs" <- function(x) {
+"tagsIdxs" <- function(x, verbose=FALSE) {
       #input:  character
       #output: 2-way integer list of offsets where tags were found
       #  "match.length" attribute contains a length for each offset
@@ -257,7 +260,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
 
       matchtype = "match.type"
 
-		announce("Regular Expression:  Sexpr")
+		announce(verbose, "Regular Expression:  Sexpr")
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
 
@@ -277,10 +280,10 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
       #   (/text:p>|.*</text:p)
       #      the closing tag might immediately follow the "@", or it might be
       #      preceded by some other non-block tags
-		announce("Regular Expression:  <<>>")
+		announce(verbose, "Regular Expression:  <<>>")
       out2 <- gregexpr("(?s)(?U)<text:p(?:(?!text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
-		announce("Regular Expression:  SwweaveOpts")
+		announce(verbose, "Regular Expression:  SwweaveOpts")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
       mapply(list, out1, out2, out3)
