@@ -183,7 +183,6 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    if(control$cleanup)
    {
       announce(verbose, "  Removing ", workDir, "\n")
-		browser()
       unlink(workDir, recursive = TRUE)
       if (file.exists(workDir)) unlink(shQuote(workDir), recursive=TRUE)
       if (file.exists(workDir)) unlink(shellQuote(workDir), recursive=TRUE)
