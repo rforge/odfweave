@@ -29,7 +29,7 @@ RweaveOdfSetup(file, syntax,
   \item{\ldots}{optional arguments. This is used to pass the control object to the driver}  
 }
 \section{Supported Options}{
-  RweaveOdf supports the following options for code chunks (the values
+   \code{\link{RweaveOdf}} supports the following options for code chunks (the values
   in parentheses show the default values):
   \describe{
     \item{echo:}{logical (\code{TRUE}). Include S code in the
@@ -56,7 +56,7 @@ RweaveOdfSetup(file, syntax,
       graphical output. Note that only one figure per code chunk can be
       processed this way.}
   }
-  Note that image options, such as the image type and size, are set using \code{\ref{odfWeaveControl}}.
+  Note that image options, such as the image type and size, are set using \code{\link{odfWeaveControl}}.
   
 }
 \author{Max Kuhn, based on \code{\link{RweaveLatex}} by Friedrich Leisch}

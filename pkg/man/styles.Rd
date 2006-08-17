@@ -51,7 +51,7 @@ Since these functions can be called from within code chunks, graphical
 parameters can be changes during the Sweave process.
 }
 \value{
-The get functions return lists.
+The get functions return named lists.
 }
 \author{Max Kuhn}
 
