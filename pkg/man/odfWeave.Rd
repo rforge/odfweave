@@ -5,7 +5,7 @@
   Sweave processing of Open Document Format files
 }
 \usage{
-odfWeave(file, dest, workDir = tempdir(), control = odfWeaveControl())
+odfWeave(file, dest, workDir = odfTmpDir(), control = odfWeaveControl())
 }
 \arguments{
   \item{file}{the ODF file created using OpenOffice V2.0 or above.}

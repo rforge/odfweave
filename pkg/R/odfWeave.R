@@ -1,5 +1,5 @@
 "odfWeave" <- 
-function(file, dest, workDir=tempdir(), control=odfWeaveControl())
+function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 { 
    #configure
    currentLoc <- getwd()
