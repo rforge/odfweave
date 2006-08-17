@@ -257,7 +257,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
 
       matchtype = "match.type"
 
-
+		announce("Regular Expression:  Sexpr")
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
 
@@ -277,8 +277,10 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl())
       #   (/text:p>|.*</text:p)
       #      the closing tag might immediately follow the "@", or it might be
       #      preceded by some other non-block tags
+		announce("Regular Expression:  <<>>")
       out2 <- gregexpr("(?s)(?U)<text:p(?:(?!text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
+		announce("Regular Expression:  SwweaveOpts")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
       mapply(list, out1, out2, out3)
