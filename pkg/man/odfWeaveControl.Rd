@@ -8,7 +8,7 @@ Allows the user to specify how odfWeave operates and style information for the d
 \usage{
 odfWeaveControl(
     zipCmd = c("zip -r $$file$$ .", "unzip -o $$file$$"), 
-    cleanup = FALSE, verbose = TRUE)}
+    cleanup = TRUE, verbose = TRUE)}
 \arguments{
   \item{zipCmd}{a string for the zipping/unzipping the \code{odt} file. The token \code{$$file$$} will be gsub'ed with the file name.}
   \item{cleanup}{a logical: remove the working directory?}
