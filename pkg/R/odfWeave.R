@@ -1,13 +1,16 @@
 "odfWeave" <- 
-function(file, dest, workDir=tempdir(), control=odfWeaveControl()){ 
+function(file, dest, workDir=tempdir(), control=odfWeaveControl())
+{ 
    #configure
    currentLoc <- getwd()
    zipCmd <- control$zipCmd
    zipCmd <- gsub("$$file$$", shellQuote(basename(file)), zipCmd, fixed=TRUE)
+   
    currentLocale <- c(Sys.getlocale("LC_CTYPE"), Sys.getlocale("LC_COLLATE"))
    Sys.setlocale("LC_CTYPE", "C")
    Sys.setlocale("LC_COLLATE", "C")
 
+   verbose <- control$verbose
 
    #check for an unzipping utility
    if(all(zipCmd == c("zip -r $$file$$ .", "unzip -o $$file$$")))
@@ -33,25 +36,33 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
    # create temp dir
    if(!file.exists(workDir))
    {
-      announce("  Creating ", workDir, "\n")
+      announce(verbose, "  Creating ", workDir, "\n")
       dir.create(workDir, showWarnings = TRUE, recursive = FALSE)
       if(!file.exists(workDir)) stop("Error creating working directory")
    }
 
-   announce("  Setting wd to ", workDir, "\n")
-   setwd(workDir)
-
-   workingCopy <- paste(basename(file), sep = "")
-
+   announce(verbose, "  Setting wd to ", workDir, "\n")
+   
+   workingCopy <- paste(basename(file), sep = "")  
+   
    # copy file to the tmp dir
    if(!file.exists(file)) stop(paste(file, "does not exist"))
-   announce("  Copying ", file, "\n")
-   if(!file.copy(file, workingCopy, overwrite = TRUE))
-   if(!file.exists(workingCopy)) stop("Error copying odt file")
+   announce(verbose, "  Copying ", file, "\n")
+   if(!file.copy(file, paste(workDir, "/", workingCopy, sep = ""), overwrite = TRUE)) stop("Error copying odt file")
+   
+   
+   setwd(workDir)
+#
+#
+#   # copy file to the tmp dir
+#   if(!file.exists(file)) stop(paste(file, "does not exist"))
+#   announce(verbose, "  Copying ", file, "\n")
+#   if(!file.copy(file, workingCopy, overwrite = TRUE))
+#   if(!file.exists(workingCopy)) stop("Error copying odt file")
 
 
    # unpack the file
-   announce("  Decompressing ODF file using", zipCmd[2], "\n")
+   announce(verbose, "  Decompressing ODF file using", zipCmd[2], "\n")
    if(.Platform$OS.type == "windows")
    {
       if(system(zipCmd[2], invisible = TRUE) != 0) stop("Error unzipping file")
@@ -60,14 +71,14 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
    }
 
    # remove original file
-   announce("\n  Removing ", workingCopy, "\n")
+   announce(verbose, "\n  Removing ", workingCopy, "\n")
    file.remove(workingCopy)
    if (file.exists(workingCopy)) stop("Error removing original file")
 
    #configure Pictures directory
    if(!file.exists(paste(workDir, "/Pictures", sep = "")))
    {
-      announce("  Creating a Pictures directory\n")
+      announce(verbose, "  Creating a Pictures directory\n")
       picDir <- dir.create("Pictures", showWarnings = TRUE, recursive = FALSE)
       if(!picDir)  stop("Error creating Pictures directory")
    }
@@ -98,27 +109,27 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
    tagsFound <- tagsExist(stags)
 
    if(any(tagsFound)) {
-      announce("\n  Sweave tags found in: ", xmlFiles[tagsFound], "\n")
+      announce(verbose, "\n  Sweave tags found in: ", xmlFiles[tagsFound], "\n")
       sweaveFiles <- xmlFiles[tagsFound]
       sweaveContents <- xmlContents[tagsFound]
 
       for(j in seq(along = sweaveFiles)) {
-         announce("  Removing xml around <<>>= for ", sweaveFiles[j], "\n")
+         announce(verbose, "  Removing xml around <<>>= for ", sweaveFiles[j], "\n")
          if(!is.null(sweaveContents[j])) sweaveContents[j] <-
          processXml(sweaveContents[j], stags[,j])
          # write processed lines to Rnw file
          rnwFileName <- (gsub("[Xx][Mm][Ll]", "Rnw", sweaveFiles[j]))
-         announce("  Writing ", sweaveFiles[j], " to ", rnwFileName, "\n")
+         announce(verbose, "  Writing ", sweaveFiles[j], " to ", rnwFileName, "\n")
          rnwFile <- file(rnwFileName, "wb")
          writeXML(sweaveContents[[j]], rnwFile)
 
          #nuke the xml file
-         announce("\n  Removing ", sweaveFiles[j], "\n")
+         announce(verbose, "\n  Removing ", sweaveFiles[j], "\n")
          file.remove(sweaveFiles[j], recursive = TRUE)
          if (file.exists(sweaveFiles[j])) stop("Error removing xml file file")
 
          #Sweave results to new xml file
-         announce("  Sweaving ",rnwFileName, "\n\n")
+         announce(verbose, "  Sweaving ",rnwFileName, "\n\n")
 
          Sys.setlocale("LC_CTYPE", currentLocale[1])
          Sys.setlocale("LC_COLLATE", currentLocale[2])
@@ -133,7 +144,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
          Sys.setlocale("LC_COLLATE", "C")
 
          # remove sweave file
-         announce("  Removing ", rnwFileName, "\n")
+         announce(verbose, "  Removing ", rnwFileName, "\n")
          file.remove(rnwFileName, recursive = TRUE)
          if (file.exists(rnwFileName)) stop("Error removing xml file file")
       }
@@ -148,7 +159,7 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
       close(styleFile)
    }
 
-   announce("\n\  Packaging file using", zipCmd[1], "\n")
+   announce(verbose, "\n\  Packaging file using", zipCmd[1], "\n")
    if(.Platform$OS.type == "windows") {
       if(system(zipCmd[1], invisible = TRUE) != 0)  stop("Error zipping file")
    } else {
@@ -157,10 +168,10 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
 
    # copy final file to destination
    if(!file.exists(workingCopy))  stop(paste(workingCopy, "does not exist"))
-   announce("  Copying ", workingCopy, "\n")
+   announce(verbose, "  Copying ", workingCopy, "\n")
    if(!file.copy(workingCopy, dest, overwrite = TRUE))  stop("Error copying odt file")
 
-   announce("  Resetting wd\n")
+   announce(verbose, "  Resetting wd\n")
    setwd(currentLoc)
 
    Sys.setlocale("LC_CTYPE", currentLocale[1])
@@ -169,17 +180,19 @@ function(file, dest, workDir=tempdir(), control=odfWeaveControl()){
    # delete working dir
    if(control$cleanup)
    {
-      announce("  Removing ", workDir, "\n")
-      unlink(shellQuote(workDir), recursive = TRUE)
+      announce(verbose, "  Removing ", workDir, "\n")
+      unlink(workDir, recursive = TRUE)
       if (file.exists(workDir)) stop("Error removing work dir")
    }
    invisible(NULL)
 }
 
-"announce" <- function (..., control=odfWeaveControl()) {
-   if (control$verbose) cat(...)
+"announce" <- function (verbose = TRUE, ...) 
+{
+   if (verbose) cat(...)
    flush.console()
-}
+   invisible()
+} 
 
 "attR<-" <- function (x, name, value) {
    #apply an attribute lists in a list
