@@ -75,10 +75,8 @@ demoFile <- system.file("examples", "testCases.odt", package = "odfWeave")
 
 demoFile <- system.file("examples", "simple.odt", package = "odfWeave")
 outputFile <- gsub("simple.odt", "output.odt", demoFile)
- 
-workingPath <- tempdir()
 
 library(odfWeave)
-odfWeave(demoFile, outputFile, workingPath)
+odfWeave(demoFile, outputFile)
 }
 \keyword{utilities}
