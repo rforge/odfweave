@@ -71,10 +71,15 @@
                c(
                   element(
                      style_text,
-                     style_text_attr,
-                     if(has(thisStyle$textAlign))
-                     	element(style_paragraph, style_paragraph_attr))))),
-            collapse="")
+                     style_text_attr
+						),
+						if(has(thisStyle$textAlign))
+							element(style_paragraph, style_paragraph_attr)
+						)
+					)
+				),
+            collapse=""
+			)
       }
 
       tableStyles <- styles[styles == "Table"]
