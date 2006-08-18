@@ -42,7 +42,7 @@ getImageDefs <- function() get("imageDefs", envir = .odfEnv)
 
 setImageDefs <- function(def, verbose = TRUE)
 {
-   if(!(all(names(defs) %in% c("type", "device", "plotHeight", 
+   if(!(all(names(def) %in% c("type", "device", "plotHeight", 
       "plotWidth", "dispHeight", "dispWidth", "args" ))))
       stop("arguments were included. see ?setImageDefs")
 
@@ -74,10 +74,12 @@ setImageDefs <- function(def, verbose = TRUE)
          "generate ps graphics for OpenOffice\n")
       if(length(psArgs) == 0 | any(!psArgs)) cat(psNote)
    }
+   
    current <- getImageDefs()
+   current <- current[names(def)]
    for(i in names(current))
    {
-      if(!is.null(def[[i]]) && current[[i]] != def[[i]]) current[[i]] <- def[[i]]
+      if(!isTRUE(all.equal(current[[i]], def[[i]]))) current[[i]] <- def[[i]]
    }
    
    if(current$device %in% c("png", "bmp", "jpeg") & verbose)
@@ -104,4 +106,5 @@ setImageDefs <- function(def, verbose = TRUE)
    flush.console()
    assign("imageDefs",  current, env = .odfEnv)
 }
+
 
