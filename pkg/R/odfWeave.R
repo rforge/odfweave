@@ -106,7 +106,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    xmlContents["content.xml"] <- addStyleDefs(styleInfo, styles, "content", control$verbose)
 
    #get indexes and lengths of sweave expression matches
-   stags <- tagsIdxs(xmlContents)
+   stags <- tagsIdxs(xmlContents, verbose=control$verbose)
    #for convenience
    tagsFound <- tagsExist(stags)
 
@@ -259,7 +259,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
       matchtype = "match.type"
 
-		announce(verbose, "Regular Expression:  Sexpr")
+      announce(verbose, "Regular Expression:  Sexpr\n")
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
 
@@ -268,21 +268,29 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
       #   which marks the end of a chunk
       #breaking down the regular expression:
       #   (?s)
-      #       make repetition metacharacters match a newline
+      #      make repetition metacharacters match a newline
       #   (?U)
-      #       make repetition characters ungreedy
-      #   (?:(?!text:p).)
-      #       match any character as long as "test:p" doesn't come next
+      #      make repetition characters ungreedy
+      #   ((?>[^>]*)|(?:(?!<text:p).))*
+      #      match anything not containing "<text:p".  It has been optimized
+      #      to reduce recursion of the regular expression
       #   (?:(?!&gt;&gt(?!=)).)
-      #       match any character as long as two "greater-than" characters not
-      #       followed by an "equals" sign don't come next
+      #      match any character as long as two "greater-than" characters not
+      #      followed by an "equals" sign don't come next
       #   (/text:p>|.*</text:p)
       #      the closing tag might immediately follow the "@", or it might be
       #      preceded by some other non-block tags
-		announce(verbose, "Regular Expression:  <<>>")
-      out2 <- gregexpr("(?s)(?U)<text:p(?:(?!text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      #
+      #test data
+      #"hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather.hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather."
+
+      Rprof("Rprof.out", interval=1)
+
+      announce(verbose, "Regular Expression:  <<>>\n")
+      out2 <- gregexpr("(?s)(?U)<text:p((?>[^>]*)|(?:(?!<text:p).))*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      #replaced on 20060821:  out2 <- gregexpr("(?s)(?U)<text:p(?:(?!<text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
-		announce(verbose, "Regular Expression:  SwweaveOpts")
+      announce(verbose, "Regular Expression:  SwweaveOpts\n")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
       mapply(list, out1, out2, out3)
