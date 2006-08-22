@@ -284,13 +284,21 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
       #test data
       #"hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather.hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather."
 
-      Rprof("Rprof.out", interval=1)
-
       announce(verbose, "Regular Expression:  <<>>\n")
-      out2 <- gregexpr("(?s)(?U)<text:p((?>[^>]*)|(?:(?!<text:p).))*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
-      #replaced on 20060821:  out2 <- gregexpr("(?s)(?U)<text:p(?:(?!<text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      out2 <-
+
+      #The following expression works, and is a little less recursive
+      #also replaced on 20060821
+      #out2 <- gregexpr("(?s)(?U)<text:p((?>[^<]*)|(?:(?!<text:p).))*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      #the following expression works, but is highly recursive.
+      #It was replaced on 20060821
+      #out2 <- gregexpr("(?s)(?U)<text:p(?:(?!<text:p).)*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+
+      #verbose regular expression, but lazy evaluation down the list of
+      #alternative expressions avoids most recursion
+      gregexpr("(?s)(?U)<text:p([^<]|<[^t]|<t[^e]|<te[^x]|<tex[^t]|<text[^:]|text: [^p])*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
-      announce(verbose, "Regular Expression:  SwweaveOpts\n")
+      announce(verbose, "Regular Expression:  SweaveOpts\n")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
       mapply(list, out1, out2, out3)

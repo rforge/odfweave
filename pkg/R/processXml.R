@@ -14,9 +14,6 @@
    # process lines with options. In this case, we will
    # nuke everything else on the line
 
-   #TODO:  I (nc) didn't see any code to nuke everything else on the line
-   #	is it in odfTranslate?
-   #  Do we nedd to add newlines here?
    matches <- tagsIdxs(x)
    optmatches <- getByAttR(matches, "match.type", "option")[[1]]
    if(tagsExist(optmatches)){

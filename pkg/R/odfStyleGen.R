@@ -72,14 +72,14 @@
                   element(
                      style_text,
                      style_text_attr
-						),
-						if(has(thisStyle$textAlign))
-							element(style_paragraph, style_paragraph_attr)
-						)
-					)
-				),
+                  ),
+                  if(has(thisStyle$textAlign))
+                     element(style_paragraph, style_paragraph_attr)
+                  )
+               )
+            ),
             collapse=""
-			)
+         )
       }
 
       tableStyles <- styles[styles == "Table"]
@@ -142,10 +142,10 @@
                element(list_style, list_style_attr,
                   element(list_level, list_level_attr,
                      c(
-                     	element(list_level_properties,
-                     		list_level_properties_attr),
-                     	element(style_text_properties,
-                     		style_text_properties_attr)))),
+                        element(list_level_properties,
+                           list_level_properties_attr),
+                        element(style_text_properties,
+                           style_text_properties_attr)))),
             ),
             collapse="")
       }
