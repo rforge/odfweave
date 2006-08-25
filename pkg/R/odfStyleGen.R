@@ -1,8 +1,10 @@
 "tagattr" <- function(name, val) paste(c(name, '="', val, '"'), collapse="")
 "element" <- function(tag, atts, content="") {
-#character strings:  tag, content
-#character: atts
-#returns a character string
+   #tag:  character string, name the element
+   #atts: character, attributes of a tag in the form name="value"
+	#   empty items are discarded 
+   #content: character string, text of an element
+   #value: character string, and properly-formed element
    atts <- paste(atts[atts!=""], collapse=" ")
    if (all(content == "")) {
       close <- "/>"

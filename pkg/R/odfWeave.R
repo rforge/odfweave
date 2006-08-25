@@ -233,8 +233,15 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 }
 
 "subin" <- function(x, matches, pieces){
+	#input
+	#   x:  character string, the content
+	#   matches:  TODO 
+	#   pieces: strings to substitute into x 
+	#value:  x, with pieces inserted
+
    piece <- length(pieces)
    if (piece == 0) return(x)
+	#TODO:  matches should be a vector, so [[ can be replaced by [
    matchstart <- matches[[piece]]
    matchend <- matchstart + attr(matches, "match.length")[piece]
    part1 <- substr(x, 1, matchstart - 1)
