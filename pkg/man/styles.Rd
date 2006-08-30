@@ -35,6 +35,7 @@ For example, the \code{input} and \code{output} elements control how R code and 
 For graphics, \code{getImageDefs} and \code{setImageDefs} can be used to
 specifiy the type of plot device and it's arguments. \code{getImageDefs}
 will return a list with elements
+\describe{
 \item{type}{a character string for the image type (this is also used to
   set the file extension). Possible values are "png", "jpeg", "bmp", or
   "eps" (OpenOffice does not accept pdf or svg graphics)}
@@ -49,6 +50,7 @@ will return a list with elements
 \item{dispWidth}{similar to \code{dispHeight}}
 Since these functions can be called from within code chunks, graphical
 parameters can be changes during the Sweave process.
+}
 }
 \value{
 The get functions return named lists.

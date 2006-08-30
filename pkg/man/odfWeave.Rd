@@ -39,7 +39,7 @@ application is needed. \code{unzip} and \code{zip} are free utilities located at
 
 \url{http://www.info-zip.org/}
 
-Also, \code{jar} cna be used. See \code{link{odfWeaveControl}} for more
+Also, \code{jar} can be used. See \code{link{odfWeaveControl}} for more
 information on configuring \code{odfWeave} to use applications other than
 \code{zip} and \code{unzip}. 
 
@@ -55,8 +55,9 @@ should be in \code{\Sexpr} calls and block code chunks should use the
 \code{<<>>=} syntax (i.e. no Latex syntax will currently work).
 
 
-The image format and sizes are specified using \code{\link{setImageDefs}}. The dimensions of the image file and the dimensions of the rendered image can be set independently. See \code{\link{setImageDefs}} for more details.
-
+The image format and sizes are specified using \code{\link{setImageDefs}}.
+The dimensions of the image file and the dimensions of the rendered
+image can be set independently. See \code{\link{setImageDefs}} for more details.
 }
 \value{
 an ODF file with the R output

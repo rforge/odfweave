@@ -8,7 +8,8 @@
 \description{
 These function takes a character vector of XML for the Open Document Format and process it it various ways. 
 
-\code{odfTranslate} converts some XML modified characters (such as \code{&gt}) to R code (\code{>}). \code{odfTranslate} also tries to mistake proof the code by anticipating characters that might be in UTF-8 encoding to R compliant characters (e.g. OpenOffice may convert some characters. For example, " will become a UTF-8 character, which R will choke on).
+\code{odfTranslate} converts some XML modified characters (such as
+\code{&gt}) to R code (\code{>}). This function also tries to mistake proof the code by anticipating characters that might be in UTF-8 encoding to R compliant characters (e.g. OpenOffice may convert some characters. For example, " will become a UTF-8 character, which R will choke on).
 
 \code{stripXmlTag}  removes any text between "<" and ">" and optionally remove leading or trailing whitespace. 
 
