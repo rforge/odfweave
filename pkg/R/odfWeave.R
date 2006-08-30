@@ -52,16 +52,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    announce(verbose, "  Copying ", file, "\n")
    if(!file.copy(file, paste(workDir, "/", workingCopy, sep = ""), overwrite = TRUE)) stop("Error copying odt file")
    
-   
    setwd(workDir)
-#
-#
-#   # copy file to the tmp dir
-#   if(!file.exists(file)) stop(paste(file, "does not exist"))
-#   announce(verbose, "  Copying ", file, "\n")
-#   if(!file.copy(file, workingCopy, overwrite = TRUE))
-#   if(!file.exists(workingCopy)) stop("Error copying odt file")
-
 
    # unpack the file
    announce(verbose, "  Decompressing ODF file using", zipCmd[2], "\n")
@@ -89,7 +80,6 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    fileList <- list.files(workDir)
    xmlFiles <- fileList[grep(".xml", tolower(fileList), fixed = TRUE)]
    if(length(xmlFiles) == 0) stop("Something is wrong - no xml")
-   # should make not enough look for specific files
 
    # load xml into list
    xmlContents <- vector(mode = "character", length = length(xmlFiles))
@@ -266,7 +256,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
       matchtype = "match.type"
 
-      announce(verbose, "Regular Expression:  Sexpr\n")
+      announce(verbose, "   Regular Expression:  Sexpr\n")
       out1 <- gregexpr("(?s)\\\\Sexpr\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out1, matchtype) <- "sexpr"
 
@@ -291,8 +281,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
       #test data
       #"hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather.hello you <text:p> what <b>do</b> you <text:p>there is all this <text:p> and <i>there</i> and <code>yucka</code> but  &lt;&lt; what </text:p> in the world </text:p> the end </text:p> blather."
 
-      announce(verbose, "Regular Expression:  <<>>\n")
-      out2 <-
+      announce(verbose, "  Regular Expression:  <<>>\n")
 
       #The following expression works, and is a little less recursive
       #also replaced on 20060821
@@ -303,9 +292,9 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
       #verbose regular expression, but lazy evaluation down the list of
       #alternative expressions avoids most recursion
-      gregexpr("(?s)(?U)<text:p([^<]|<[^t]|<t[^e]|<te[^x]|<tex[^t]|<text[^:]|text: [^p])*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      out2 <- gregexpr("(?s)(?U)<text:p([^<]|<[^t]|<t[^e]|<te[^x]|<tex[^t]|<text[^:]|text: [^p])*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
-      announce(verbose, "Regular Expression:  SweaveOpts\n")
+      announce(verbose, "  Regular Expression:  SweaveOpts\n")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
       attR(out3, matchtype) <- "option"
       mapply(list, out1, out2, out3)
