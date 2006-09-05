@@ -52,7 +52,7 @@
             tagattr('style:name', paste(names(paraStyles)[i], collapse=" ")),
             tagattr('style:family', 'paragraph'),
             if(has(thisStyle$parentStyleName))
-               tagattr('style:parent-style-name', thisStyle$parentStyleName),
+               tagattr('style:parent-style-name', thisStyle$parentStyleName)
          )
          style_text <- 'style:text-properties'
          style_text_attr <- c(
@@ -105,7 +105,7 @@
             c(
                out,
                element(style_style, style_style_attr,
-                  element(table_properties, table_properties_attr)),
+                  element(table_properties, table_properties_attr))
             ),
             collapse="")
       }
@@ -116,7 +116,7 @@
          thisStyle <- x[[(bulletStyles)[i]]]
          list_style <- 'text:list-style'
          list_style_attr <- c(
-            tagattr("style:name", paste(names(bulletStyles)[i], collapse=" ")),
+            tagattr("style:name", paste(names(bulletStyles)[i], collapse=" "))
          )
          list_level <- "text:list-level-style-bullet"
          list_level_attr <- c(
@@ -125,14 +125,14 @@
             if(has(thisStyle$styleName))
                tagattr("text:style-name", thisStyle$styleName),
             if(has(thisStyle$bulletChar))
-               tagattr("text:bullet-char", thisStyle$bulletChar),
+               tagattr("text:bullet-char", thisStyle$bulletChar)
          )
          list_level_properties <- 'style:list-level-properties'
          list_level_properties_attr <- c(
             if(has(thisStyle$spaceBefore))
                tagattr("text:space-before", thisStyle$spaceBefore),
             if(has(thisStyle$minLabelWidth))
-               tagattr("text:min-label-width", thisStyle$minLabelWidth),
+               tagattr("text:min-label-width", thisStyle$minLabelWidth)
          )
          style_text_properties <- 'style:text-properties'
          style_text_properties_attr <- c(
@@ -147,7 +147,7 @@
                         element(list_level_properties,
                            list_level_properties_attr),
                         element(style_text_properties,
-                           style_text_properties_attr)))),
+                           style_text_properties_attr))))
             ),
             collapse="")
       }
@@ -173,7 +173,7 @@
             if(has(thisStyle$bottomBorder))
                tagattr("fo:border-bottom", thisStyle$bottomBorder),
             if(has(thisStyle$padding))
-               tagattr("fo:padding", thisStyle$padding),
+               tagattr("fo:padding", thisStyle$padding)
          )
          out <- paste(
             c(
