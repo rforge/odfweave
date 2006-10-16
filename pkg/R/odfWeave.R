@@ -292,7 +292,10 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
       #verbose regular expression, but lazy evaluation down the list of
       #alternative expressions avoids most recursion
-      out2 <- gregexpr("(?s)(?U)<text:p([^<]|<[^t]|<t[^e]|<te[^x]|<tex[^t]|<text[^:]|text: [^p])*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+      ##(replaced 2006-10-13)## out2 <- gregexpr("(?s)(?U)<text:p([^<]|<[^t]|<t[^e]|<te[^x]|<tex[^t]|<text[^:]|text: [^p])*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@<(/text:p>|.*</text:p>)", x, perl=TRUE)
+		#Thanks to Philip Hazel for this example of eliminating regular
+		#expression backtraking into runs of non-< and non-& characters
+      out2 <- gregexpr("(?s)(?U)<text:p((?>[^<&]*)(?(?=<text:p)(?!)|.))*&lt;&lt;(?:(?!&gt;&gt(?!=)).)*&gt;&gt;=.*>@[ \t]*<(/text:p>|.*</text:p>)", x, perl=TRUE)
       attR(out2, matchtype) <- "chunk"
       announce(verbose, "  Regular Expression:  SweaveOpts\n")
       out3 <- gregexpr("(?s)\\\\SweaveOpts\\{[^\\}]*?\\}", x, perl=TRUE)
