@@ -132,6 +132,9 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
             quiet = !control$verbose,
             driver = RweaveOdf(), control = control)
 
+         #in case people use setwd in their code:
+         setwd(workDir)
+         
          Sys.setlocale("LC_CTYPE", "C")
          Sys.setlocale("LC_COLLATE", "C")
 
