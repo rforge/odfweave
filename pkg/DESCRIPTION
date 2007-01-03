@@ -1,8 +1,8 @@
 Package: odfWeave
 Type: Package
 Title: Sweave processing of Open Document Format (ODF) files
-Version: 0.4.4
-Date: 2006-09-06
+Version: 0.4.7
+Date: 2007-01-03
 Author: Max Kuhn
 Maintainer: Max Kuhn <max.kuhn@pfizer.com>
 Description: Sweave processing of Open Document Format (ODF) files
