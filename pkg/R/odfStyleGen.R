@@ -30,7 +30,7 @@
             if(length(grep("bold", thisStyle$fontType)))
                fontText <- c(fontText, tagattr("fo:font-weight", "bold"))
             if(length(grep("italic", thisStyle$fontType)))
-               fontText <- c(fontText, tagattr("fo:font-style=", "italic"))
+               fontText <- c(fontText, tagattr("fo:font-style", "italic"))
             if(length(grep("underline", thisStyle$fontType)))
                fontText <- c(
                   fontText,
@@ -173,7 +173,9 @@
             if(has(thisStyle$bottomBorder))
                tagattr("fo:border-bottom", thisStyle$bottomBorder),
             if(has(thisStyle$padding))
-               tagattr("fo:padding", thisStyle$padding)
+               tagattr("fo:padding", thisStyle$padding),
+            if(has(thisStyle$backgroundColor))
+               tagattr("fo:background-color", thisStyle$backgroundColor)               
          )
          out <- paste(
             c(
@@ -189,3 +191,4 @@
    }
    out
 }
+
