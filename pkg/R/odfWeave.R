@@ -14,6 +14,9 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    
    verbose <- control$verbose
 
+   # check for input file
+   if(!file.exists(file)) stop(paste("Cannot find the input file:", file))
+
    #check for an unzipping utility
    if(all(zipCmd == c("zip -r $$file$$ .", "unzip -o $$file$$")))
    {
