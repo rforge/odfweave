@@ -4,6 +4,10 @@
 
 # todo: style values should be validated
 
+assign(
+   "picPath",  
+   NA, 
+   env = .odfEnv)
 
 assign(
    "imageDefs",  
