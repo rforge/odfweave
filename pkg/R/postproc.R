@@ -147,7 +147,7 @@ getChild <- function(node, attr, value)
 
 handleBreakElements <- function(.state)
 {
-   for (i in seq_along(.state$breakElements))
+   for (i in seq(along = .state$breakElements))
    {
       pageStyle <- .state$breakElements[[i]]$style
 
