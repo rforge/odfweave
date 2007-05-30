@@ -3,7 +3,10 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 { 
 
    # check that we can write to the target path
-   if(file.access(dest, mode = 2) < 0) stop(paste("cannot write to", dest))
+   if(file.exists(dest))
+   {
+      if(file.access(dest, mode = 2) < 0) stop(paste("cannot write to", dest))
+   }
    
    # configure
    currentLoc <- getwd()
