@@ -134,12 +134,10 @@ assign(
 
       Rbullet = list(
          type = "Bullet List",
-         level = "1",
-         textStyleName = "Bullet_20_Symbols",
+         paraStyle = "ArialNormal",
          bulletChar="\342\227\217",
          spaceBefore="0.25in",
-         minLabelWidth="0.25in",
-         fontName="StarSymbol"),
+         minLabelWidth="0.25in"),
 
       basicFigFrame = list(
          type = "Figure Frame",

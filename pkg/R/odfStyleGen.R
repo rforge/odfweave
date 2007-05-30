@@ -116,47 +116,6 @@
          )
       }
 
-      bulletStyles <- styles[styles == "Bullet List"]
-      for(i in seq(along = bulletStyles))
-      {
-         thisStyle <- x[[(bulletStyles)[i]]]
-         list_style <- 'text:list-style'
-         list_style_attr <- c(
-            tagattr("style:name", paste(names(bulletStyles)[i], collapse=" "))
-         )
-         list_level <- "text:list-level-style-bullet"
-         list_level_attr <- c(
-            if(has(thisStyle$level))
-               tagattr("text:level", thisStyle$level),
-            if(has(thisStyle$styleName))
-               tagattr("text:style-name", thisStyle$textStyleName),
-            if(has(thisStyle$bulletChar))
-               tagattr("text:bullet-char", thisStyle$bulletChar)
-         )
-         list_level_properties <- 'style:list-level-properties'
-         list_level_properties_attr <- c(
-            if(has(thisStyle$spaceBefore))
-               tagattr("text:space-before", thisStyle$spaceBefore),
-            if(has(thisStyle$minLabelWidth))
-               tagattr("text:min-label-width", thisStyle$minLabelWidth)
-         )
-         style_text_properties <- 'style:text-properties'
-         style_text_properties_attr <- c(
-            if(has(thisStyle$fontName))
-               tagattr("style:font-name", thisStyle$fontName))
-         out <- paste(
-            c(
-               out,
-               element(list_style, list_style_attr,
-                  element(list_level, list_level_attr,
-                     c(
-                        element(list_level_properties,
-                           list_level_properties_attr),
-                        element(style_text_properties,
-                           style_text_properties_attr))))
-            ),
-            collapse="\n")
-      }
    } else if (type == "page") {
       pageStyles <- styles[styles == "Page"]
       for (i in seq(along = pageStyles))
@@ -332,7 +291,43 @@
             collapse="\n")
       }      
       
-      
+      bulletStyles <- styles[styles == "Bullet List"]
+      for(i in seq(along = bulletStyles))
+      {
+         thisStyle <- x[[names(bulletStyles)[i]]]      
+         startParaTag <- "  <style:style "
+         listParaName <- tagattr("style:name", paste(names(bulletStyles)[i], "Paragraph", sep=""))
+         listParaStyleFamily <- 'style:family="paragraph"'
+         listParaParentStyle <- if(has(thisStyle$paraStyle)) tagattr("style:parent-style-name", thisStyle$paraStyle) else tagattr("style:parent-style-name", "Standard")
+         listParaStyleName <- tagattr("style:list-style-name", names(bulletStyles)[i])
+         endParaListTag <- "/>\n"
+         listPart1 <- c(
+            '  <text:list-style',
+            tagattr("style:name", names(bulletStyles)[i]),
+            ">\n") 
+         listPart2 <- c(
+            '   <text:list-level-style-bullet text:level=\"1\" text:style-name=\"Bullet_20_Symbols\" style:num-suffix=\".\"',
+            if(has(thisStyle$bulletChar)) tagattr("text:bullet-char", thisStyle$bulletChar),
+            ">\n")
+         listPart3 <- c(
+            '    <style:list-level-properties ',
+            if(has(thisStyle$spaceBefore)) tagattr("text:space-before", thisStyle$spaceBefore),
+            if(has(thisStyle$minLabelWidth)) tagattr("text:min-label-width", thisStyle$minLabelWidth),
+            "/>\n")
+         listPart4 <- c(
+            '    <style:text-properties style:font-name=\"StarSymbol\"/>',
+            '   </text:list-level-style-bullet>',
+            '  </text:list-style>\n')
+         out <- c(out,
+            paste(
+               paste(startParaTag, listParaName, listParaStyleFamily, listParaParentStyle, listParaStyleName, endParaListTag),
+               paste(listPart1, collapse = " "),
+               paste(listPart2, collapse = " "),
+               paste(listPart3, collapse = " "),
+               paste(listPart4, collapse = "\n"),
+               collapse = "\n"))
+               
+      }      
    } else {
       stop('illegal type specified')
    }
