@@ -42,7 +42,7 @@ application is needed. \code{unzip} and \code{zip} are free utilities located at
 
 \url{http://www.info-zip.org/}
 
-Also, \code{jar} can be used. See \code{link{odfWeaveControl}} for more
+Also, \code{jar} can be used. See \code{\link{odfWeaveControl}} for more
 information on configuring \code{odfWeave} to use applications other than
 \code{zip} and \code{unzip}. 
 
@@ -62,8 +62,14 @@ e.g., changing the color of part of the \code{Sexpr} could result in an error. B
 
 The image format and sizes are specified using \code{\link{setImageDefs}}.
 The dimensions of the image file and the dimensions of the rendered
-image can be set independently. See \code{\link{setImageDefs}} for more details.
+image can be set independently. See \code{\link{setImageDefs}} for more
+details.
+
+The document formatting.odt in the package's examples directory
+illustrates the process of changing the appearance of the various
+document elements..
 }
+
 \value{
 an ODF file with the R output
 }

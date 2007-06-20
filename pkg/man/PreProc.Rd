@@ -1,8 +1,8 @@
-\name{XML Processing }
+\name{odfTranslate}
 \alias{odfTranslate}
 
 
-\title{XML Processing }
+\title{Translation of text to XML}
 \description{
 
 \code{odfTranslate} converts some XML modified characters (such as
