@@ -1,0 +1,44 @@
+export(
+   adjustImageSize,
+   announce,
+   getImageDefs,
+   getStyles,
+   getStyleDefs,
+   listString,
+   matrixPaste,
+   odfCat,
+   odfFigureCaption,
+   odfInsertPlot,  
+   odfItemize, 
+   odfPageBreak,
+   odfSetPageStyle,
+   odfTable, 
+   odfTable.character, 
+   odfTable.data.frame, 
+   odfTable.matrix,    
+   odfTable.numeric,
+   odfTableCaption,
+   odfTmpDir,
+   odfTranslate, 
+   odfWeave, 
+   odfWeaveControl,
+   pkgVersions,
+   RweaveOdf,
+   RweaveOdfSetup,
+   setImageDefs,       
+   setStyles,
+   setStyleDefs,   
+   tableStyles)
+
+
+S3method(odfTable, character)
+S3method(odfTable, factor)
+S3method(odfTable, matrix)
+S3method(odfTable, numeric)
+S3method(odfTable, data.frame)
+
+S3method(print, odfTable)
+S3method(print, odfCat)
+S3method(print, odfItemize)
+S3method(print, odfPageBreak)
+
