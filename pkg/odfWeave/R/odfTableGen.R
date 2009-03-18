@@ -17,8 +17,9 @@ function(x, dataType, header = NULL, tableName, styles)
    textName <- matrixPaste(textNameStart, styles$text, textNameEnd, sep = c("", ""))
    textStart <- makeMatrix("      <text:p", dim(styles$text))
    textEnd <- makeMatrix(">", dim(styles$text))
-   tagEnd <- makeMatrix(" </text:p>\n", dim(styles$text))
-   textMatrix <- matrixPaste(textStart, textName, textEnd, x, tagEnd)
+   tagEnd <- makeMatrix("</text:p>\n", dim(styles$text))
+   textMatrix <- matrixPaste(textStart, textName, textEnd, x, tagEnd,
+                             sep = rep("", 5))
 
    # cell properties
    cellNameStart <- makeMatrix(" table:style-name=\"", dim(styles$cell))
@@ -56,7 +57,7 @@ function(x, dataType, header = NULL, tableName, styles)
       textHeaderStyle <- paste(" text:style-name=\"", styles$header, "\" ", sep = "")
       textHeaderStyle <- ifelse(styles$header == "", "", textHeaderStyle)
 
-      headLine01 <- paste("\n      <text:p ", textHeaderStyle, "> ", header, " </text:p>", sep = "")
+      headLine01 <- paste("\n      <text:p ", textHeaderStyle, ">", header, "</text:p>", sep = "")
       headLine02 <- paste(
          "\n    <table:table-cell ",
          cellHeaderStyle,
