@@ -1,3 +1,5 @@
+#Zekai Otles added cgroup,rgroup,n.cgroup,n.rgroup similar ideas to F. Harrell Misc
+#package, see Hmisc latex package
 "odfTable.matrix" <-
 function(
    x,
@@ -6,6 +8,7 @@ function(
    digits      = max(3, getOption("digits") - 3),
    name = paste("Table", floor(runif(1) * 1000), sep = ""),
    styles = NULL,
+   cgroup=NULL,n.cgroup=NULL,rgroup=NULL,n.rgroup=NULL,
    ...)
 {
    if(!is.null(colnames)) colnames <- odfTranslate(colnames, toR = FALSE)
@@ -31,8 +34,9 @@ function(
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
    if(is.null(styles))    styles <- tableStyles(xChar, useRowNames = FALSE, dimnames(xChar)[[2]])
-
-   tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles)
+ 
+   tbleText <- odfTableGen(xChar, colTypes, header = dimnames(xChar)[[2]], tableName = name, styles,cgroup,n.cgroup,
+				rgroup,n.rgroup)
    structure(tbleText, class = "odfTable")
 }
 

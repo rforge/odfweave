@@ -1,3 +1,5 @@
+#Zekai Otles added cgroup,rgroup,n.cgroup,n.rgroup similar ideas to F. Harrell Misc
+#package, see Hmisc latex package
 "odfTable" <-
 function(x, ...)
 {
