@@ -41,6 +41,10 @@ odfTable(x, ...)
   \item{digits}{number of significant digits passed to \code{format}}
   \item{name}{A name for the table. ODF requires a name for each object, so a random name will be used if unspecified.}
   \item{styles}{An optional list of style names for each table element (cells, headers etc). See \code{\link{tableStyles}}}
+  \item{cgroup}{A Vector defining column headers.}
+  \item{n.cgroup}{A numerical vector defining column spawn for each header column.}
+  \item{rgroup}{A vector defining row headers.}
+  \item{n.rgroup}{A Numerical vector defining row span for each row column}
   \item{\dots}{optional arguments that can be passed to \code{format}}
 }
 
@@ -52,15 +56,32 @@ argument should be set to \code{xml}.
 
 The document formatting.odt in the package's examples directory
 illustrates the process of changing the appearance of the table.
+
+Column and Row Header specification followed from Dr. Harrell \code{Hmisc} package
 }
 \value{
 a list of character string that contain XML markup
 }
-\author{Max Kuhn}
+\author{Max Kuhn, and modified by Zekai Otles }
 
-\seealso{\code{\link{tableStyles}}}
+\seealso{\code{\link{tableStyles} and Frank Harrell \link{Hmisc} package for latex table}}
 \examples{
 odfTable(iris[1:5,])
+#examples with odfWeaveData, see multi column and row headers
+data(odfWeaveData)
+cgroup<-c("row","C")
+n.cgroup<-c(1,3)
+
+odfTable(mdat,cgroup=cgroup,n.cgroup=n.cgroup)
+#
+carCgroup<-levels(factor(carRentInfo$carGroup))
+carCgroup<-c("",carCgroup)
+carNcgroup<-c(1,1,2,2,2,2)
+carRgroup<-levels(factor(carRentInfo$Months))
+carRngroup<-c(5,5)
+
+odfTable(carRentInfo$tableCells,cgroup=carCgroup,n.cgroup=carNcgroup,rgroup=carRgroup,n.rgroup=carRngroup)
+
 }
 \keyword{utilities}
 
