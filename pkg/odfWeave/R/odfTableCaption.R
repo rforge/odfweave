@@ -32,5 +32,5 @@ odfTableCaption <- function(caption, numformat='1', numlettersync=FALSE, formula
    cat('\n')  # see if this removes the warning messages
 
    # return the reference name so it can be used to create a cross-reference
-   refname
+   invisible(refname)
 }
