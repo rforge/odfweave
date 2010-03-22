@@ -15,7 +15,7 @@ odfFigureCaption <- function(caption, numformat='1', numlettersync=FALSE,
    .odfEnv$fig.caption <- list(caption=caption, numformat=numformat,
                                numlettersync=numlettersync, formula=formula,
                                refname=refname)
-   invisible(NULL)
+   invisible(refname)
 }
 
 
