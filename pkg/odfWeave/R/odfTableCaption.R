@@ -30,8 +30,7 @@ odfTableCaption <- function(caption, numformat='1', numlettersync=FALSE, formula
    cat(sprintf(' text:ref-name="%s">', refname))
    cat(sprintf('999</text:sequence>: %s</text:p>', caption))
    cat('\n')  # see if this removes the warning messages
-   invisible(NULL)
+
+   # return the reference name so it can be used to create a cross-reference
+   refname
 }
-
-getRefs <- function() .odfEnv$seqInfo
-
