@@ -19,7 +19,7 @@ odfFigureCaption <- function(caption, numformat='1', numlettersync=FALSE,
 }
 
 
-xRef <- function(name, type = "number", initial = NULL)
+xRef <- function(name, type = "value", initial = NULL)
   {
 
     ## todo: check type values
