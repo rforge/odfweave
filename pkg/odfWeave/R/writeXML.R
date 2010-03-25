@@ -27,7 +27,7 @@ writeXML <- function(node, file=stdout()) {
         }
       }
 
-      cat(odfWeave:::genXMLAttributes(atts), file=file)
+      cat(genXMLAttributes(atts), file=file)
 
       if (xmlSize(node) == 0) {
         cat('/>', file=file)
