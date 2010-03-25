@@ -87,10 +87,30 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
       paste(workDir, "/Pictures", sep = ""),
       env = .odfEnv)
  
+   # Create the "Style Name Environment" which will be used to create
+   # unique style names during the Sweave phase.  Names of the existing
+   # style definitions will be put into this environment during the
+   # preprocessing stage.
+   # Note that this assignment may overwrite an environment created on
+   # an earlier call to odfWeave.  We need a new, clean one at this point.
+   styleNameEnv <- new.env(hash=TRUE, parent=emptyenv())
+   assign('styleNameEnv', styleNameEnv, pos=.odfEnv)
+
+   # Temporarily initializing the "Style Name Environment" here
+   # to avoid making changes to preproc for the moment.
+   initStyleNames("content.xml", styleNameEnv)
+
    announce(verbose, "\n  Pre-processing the contents\n")
    # pre-process content.xml in preparation for sweaving
    rnwFileName <- "content.Rnw"
    preproc("content.xml", rnwFileName)
+
+   # Create the "New Style Environment" which will be used to register
+   # styles (in the form of XMLNode objects) that will later be added
+   # to the document during post processing.
+   # Note that this assignment may overwrite an environment created on
+   # an earlier call to odfWeave.  We need a new, clean one at this point.
+   assign('newStyleEnv', new.env(hash=TRUE, parent=emptyenv()), pos=.odfEnv)
 
    # Sweave results to new xml file
    announce(verbose, "  Sweaving ", rnwFileName, "\n\n")
