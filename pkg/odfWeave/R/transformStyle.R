@@ -4,60 +4,60 @@
 # The resulting style will cause a page break to occur
 # before it.
 makePageBreakStyle <- function(name, family=c('paragraph', 'table'),
-                               type=c('common', 'automatic'), prevstyle) {
-  family <- match.arg(family)
-  type <- match.arg(type)
-  propertiesName <- sprintf('style:%s-properties', family)
+                               type=c('common', 'automatic'), prevstyle)
+{
+   family <- match.arg(family)
+   type <- match.arg(type)
+   propertiesName <- sprintf('style:%s-properties', family)
 
-  if (type == 'common') {
-    if (is.null(prevstyle) || ! is.character(prevstyle)) {
-      stop('prevstyle must be a style name if type is common')
-    }
+   if (type == 'common')
+   {
+      if (is.null(prevstyle) || ! is.character(prevstyle))
+         stop('prevstyle must be a style name if type is common')
 
-    # Create the new style
-    xmlNode('style:style',
-            xmlNode(propertiesName,
-                    attrs=c('fo:break-before'='page')),
-            attrs=c('style:name'=name,
-                    'style:family'=family,
-                    'style:parent-style-name'=prevstyle))
-  } else if (type == 'automatic') {
-    if (is.null(prevstyle) || ! inherits(prevstyle, 'XMLNode')) {
-      stop('prevstyle must be a style node if type is automatic')
-    }
+      # Create the new style
+      xmlNode('style:style',
+              xmlNode(propertiesName,
+                      attrs=c('fo:break-before'='page')),
+              attrs=c('style:name'=name,
+                      'style:family'=family,
+                      'style:parent-style-name'=prevstyle))
+   } else if (type == 'automatic') {
+      if (is.null(prevstyle) || ! inherits(prevstyle, 'XMLNode'))
+         stop('prevstyle must be a style node if type is automatic')
 
-    # Extract the attributes and children from the previous style object
-    attrs <- xmlAttrs(prevstyle)
-    children <- xmlChildren(prevstyle)
+      # Extract the attributes and children from the previous style object
+      attrs <- xmlAttrs(prevstyle)
+      children <- xmlChildren(prevstyle)
 
-    # Add/update the style name
-    attrs['style:name'] <- name
+      # Add/update the style name
+      attrs['style:name'] <- name
 
-    # Create a new child list from the old
-    childrenNames <- unlist(lapply(children, function(c) xmlName(c, full=TRUE)))
-    iprops <- which(childrenNames == propertiesName)
-    newchildren <- if (length(iprops) > 0) {
-      if (length(iprops) > 1) {
-        warning(sprintf('found style with multiple %s children', propertiesName))
+      # Create a new child list from the old
+      childrenNames <- unlist(lapply(children, function(c) xmlName(c, full=TRUE)))
+      iprops <- which(childrenNames == propertiesName)
+      newchildren <- if (length(iprops) > 0)
+      {
+         if (length(iprops) > 1)
+            warning(sprintf('found style with multiple %s children', propertiesName))
+         xnode <- children[[iprops[1]]]
+         pattrs <- xmlAttrs(xnode)
+         pattrs['fo:break-before'] <- 'page'
+         xnode$attributes <- pattrs
+         c(children[-iprops], list(xnode))
+      } else {
+         c(children, list(xmlNode(propertiesName, attrs=c('fo:break-before'='page'))))
       }
-      xnode <- children[[iprops[1]]]
-      pattrs <- xmlAttrs(xnode)
-      pattrs['fo:break-before'] <- 'page'
-      xnode$attributes <- pattrs
-      c(children[-iprops], list(xnode))
-    } else {
-      c(children, list(xmlNode(propertiesName, attrs=c('fo:break-before'='page'))))
-    }
 
-    # Set the updated attributes and children, and return the modified object
-    prevstyle$attributes <- attrs
-    xmlChildren(prevstyle) <- newchildren
+      # Set the updated attributes and children, and return the modified object
+      prevstyle$attributes <- attrs
+      xmlChildren(prevstyle) <- newchildren
 
-    # Return the modified node
-    prevstyle
-  } else {
-    stop('illegal style type specified: ', type)
-  }
+      # Return the modified node
+      prevstyle
+   } else {
+      stop('illegal style type specified: ', type)
+   }
 }
 
 # This function makes a new style from a specified style,
@@ -65,61 +65,61 @@ makePageBreakStyle <- function(name, family=c('paragraph', 'table'),
 # whether the speccified style is common or automatic.
 # The resulting style will use the specified page style.
 makeSetPageStyle <- function(name, pagestyle, family=c('paragraph', 'table'),
-                             type=c('common', 'automatic'), prevstyle) {
-  family <- match.arg(family)
-  type <- match.arg(type)
+                             type=c('common', 'automatic'), prevstyle)
+{
+   family <- match.arg(family)
+   type <- match.arg(type)
 
-  if (type == 'common') {
-    if (is.null(prevstyle) || ! is.character(prevstyle)) {
-      stop('prevstyle must be a style name if type is common')
-    }
+   if (type == 'common')
+   {
+      if (is.null(prevstyle) || ! is.character(prevstyle))
+         stop('prevstyle must be a style name if type is common')
 
-    # Create the new style
-    xmlNode('style:style',
-            attrs=c('style:name'=name,
-                    'style:family'=family,
-                    'style:parent-style-name'=prevstyle,
-                    'style:master-page-name'=pagestyle))
-  } else if (type == 'automatic') {
-    if (is.null(prevstyle) || ! inherits(prevstyle, 'XMLNode')) {
-      stop('prevstyle must be a style node if type is automatic')
-    }
+      # Create the new style
+      xmlNode('style:style',
+              attrs=c('style:name'=name,
+                      'style:family'=family,
+                      'style:parent-style-name'=prevstyle,
+                      'style:master-page-name'=pagestyle))
+   } else if (type == 'automatic') {
+      if (is.null(prevstyle) || ! inherits(prevstyle, 'XMLNode'))
+         stop('prevstyle must be a style node if type is automatic')
 
-    if (family != xmlGetAttr(prevstyle, 'style:family')) {
-      stop('family argument must match family of prevstyle')
-    }
+      if (family != xmlGetAttr(prevstyle, 'style:family'))
+         stop('family argument must match family of prevstyle')
 
-    # Extract the attributes and children from the previous style object
-    attrs <- xmlAttrs(prevstyle)
+      # Extract the attributes and children from the previous style object
+      attrs <- xmlAttrs(prevstyle)
 
-    # Add/update the style name
-    attrs['style:name'] <- name
-    attrs['style:master-page-name'] <- pagestyle
+      # Add/update the style name
+      attrs['style:name'] <- name
+      attrs['style:master-page-name'] <- pagestyle
 
-    # Set the updated attributes
-    prevstyle$attributes <- attrs
+      # Set the updated attributes
+      prevstyle$attributes <- attrs
 
-    # Return the modified node
-    prevstyle
-  } else {
-    stop('illegal style type specified: ', type)
-  }
+      # Return the modified node
+      prevstyle
+   } else {
+      stop('illegal style type specified: ', type)
+   }
 }
 
-testTrans <- function() {
-  library(XML)
+testTrans <- function()
+{
+   library(XML)
 
-  pstyle <- makePageBreakStyle('P1342', 'paragraph', 'common', 'Foo')
-  print(pstyle)
-  tstyle <- makePageBreakStyle('TTable8499', 'table', 'common', 'Bar')
-  print(tstyle)
+   pstyle <- makePageBreakStyle('P1342', 'paragraph', 'common', 'Foo')
+   print(pstyle)
+   tstyle <- makePageBreakStyle('TTable8499', 'table', 'common', 'Bar')
+   print(tstyle)
 
-  print(makePageBreakStyle('P554', 'paragraph', 'automatic', pstyle))
-  print(makePageBreakStyle('TTable949', 'table', 'automatic', tstyle))
+   print(makePageBreakStyle('P554', 'paragraph', 'automatic', pstyle))
+   print(makePageBreakStyle('TTable949', 'table', 'automatic', tstyle))
 
-  print(makeSetPageStyle('P7347', 'Frank', 'paragraph', 'common', 'Spam'))
-  print(makeSetPageStyle('TTable4334', 'Frank', 'table', 'common', 'Eggs'))
+   print(makeSetPageStyle('P7347', 'Frank', 'paragraph', 'common', 'Spam'))
+   print(makeSetPageStyle('TTable4334', 'Frank', 'table', 'common', 'Eggs'))
 
-  print(makeSetPageStyle('P74', 'Joe', 'paragraph', 'automatic', pstyle))
-  print(makeSetPageStyle('TTable3943', 'Joe', 'table', 'automatic', tstyle))
+   print(makeSetPageStyle('P74', 'Joe', 'paragraph', 'automatic', pstyle))
+   print(makeSetPageStyle('TTable3943', 'Joe', 'table', 'automatic', tstyle))
 }

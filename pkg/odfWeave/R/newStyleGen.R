@@ -1,9 +1,12 @@
-newStyleGen <- function(x, type="styles") {
+newStyleGen <- function(x, type="styles")
+{
    nonempty <- function(x) !is.null(x) && x != ""
 
-   getFontAttrs <- function(styleName, thisStyle) {
+   getFontAttrs <- function(styleName, thisStyle)
+   {
       c(
-         if (nonempty(thisStyle$fontType)) {
+         if (nonempty(thisStyle$fontType))
+         {
             c(
                if (length(grep("bold", thisStyle$fontType)))
                   c("fo:font-weight"="bold"),
@@ -24,7 +27,8 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getStyleAttrs <- function(styleName, thisStyle) {
+   getStyleAttrs <- function(styleName, thisStyle)
+   {
       c(
          "style:name"=styleName,
          "style:family"="paragraph",
@@ -33,7 +37,8 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getTextPropertyAttrs <- function(styleName, thisStyle) {
+   getTextPropertyAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$fontColor))
             c("fo:color"=thisStyle$fontColor),
@@ -45,18 +50,21 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getParagraphPropertyAttrs <- function(styleName, thisStyle) {
+   getParagraphPropertyAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$textAlign))
             c("fo:text-align"=thisStyle$textAlign)
       )
    }
 
-   getPageLayoutAttrs <- function(styleName, thisStyle, idx) {
+   getPageLayoutAttrs <- function(styleName, thisStyle, idx)
+   {
       c("style:name"=paste("pm", idx + 100, sep=""))
    }
 
-   getPagePropertiesAttrs <- function(styleName, thisStyle) {
+   getPagePropertiesAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$marginLeft))
             c("fo:margin-left"=thisStyle$marginLeft),
@@ -77,24 +85,29 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getHeaderStyleAttrs <- function(styleName, thisStyle) {
+   getHeaderStyleAttrs <- function(styleName, thisStyle)
+   {
       character()
    }
 
-   getFooterStyleAttrs <- function(styleName, thisStyle) {
+   getFooterStyleAttrs <- function(styleName, thisStyle)
+   {
       character()
    }
 
-   getMasterPageAttrs <- function(styleName, thisStyle, idx) {
+   getMasterPageAttrs <- function(styleName, thisStyle, idx)
+   {
       c("style:name"=styleName,
         "style:page-layout-name"=paste("pm", idx + 100, sep=""))
    }
 
-   getTableStyleAttrs <- function(styleName, thisStyle) {
+   getTableStyleAttrs <- function(styleName, thisStyle)
+   {
       c("style:name"=styleName, "style:family"="table")
    }
 
-   getTablePropertiesAttrs <- function(styleName, thisStyle) {
+   getTablePropertiesAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$marginLeft))
             c("fo:margin-left"=thisStyle$marginLeft),
@@ -109,11 +122,13 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getTableCellStyleAttrs <- function(styleName, thisStyle) {
+   getTableCellStyleAttrs <- function(styleName, thisStyle)
+   {
       c("style:name"=styleName, "style:family"="table-cell")
    }
 
-   getTableCellPropertiesAttrs <- function(styleName, thisStyle) {
+   getTableCellPropertiesAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$verticalAlign))
             c("style:vertical-align"=thisStyle$verticalAlign),
@@ -132,13 +147,15 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getFigureFrameStyleAttrs <- function(styleName, thisStyle) {
+   getFigureFrameStyleAttrs <- function(styleName, thisStyle)
+   {
       c("style:name"=styleName,
         "style:family"="graphic",
         "style:parent-style-name"="Frame")
    }
 
-   getFigureFramePropertiesAttrs <- function(styleName, thisStyle) {
+   getFigureFramePropertiesAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$verticalPosition))
             c("style:vertical-pos"=thisStyle$verticalPosition),
@@ -169,10 +186,12 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getBulletStyleAttrs <- function(styleName, thisStyle) {
+   getBulletStyleAttrs <- function(styleName, thisStyle)
+   {
       c("style:name"=paste(styleName, "Paragraph", sep=""),  # XXX verify
         "style:family"="paragraph",
-        if (nonempty(thisStyle$paraStyle)) {
+        if (nonempty(thisStyle$paraStyle))
+        {
            c("style:parent-style-name"=thisStyle$paraStyle)
         } else {
            c("style:parent-style-name"="Standard")
@@ -181,11 +200,13 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getListStyleAttrs <- function(styleName, thisStyle) {
+   getListStyleAttrs <- function(styleName, thisStyle)
+   {
       c("style:name"=styleName)
    }
 
-   getListLevelStyleAttrs <- function(styleName, thisStyle) {
+   getListLevelStyleAttrs <- function(styleName, thisStyle)
+   {
       c("text:level"="1",
         "text:style-name"="Bullet_20_Symbols",
         "style:num-suffix"=".",
@@ -194,7 +215,8 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getListLevelPropertiesAttrs <- function(styleName, thisStyle) {
+   getListLevelPropertiesAttrs <- function(styleName, thisStyle)
+   {
       c(
          if (nonempty(thisStyle$spaceBefore))
             c("text:space-before"=thisStyle$spaceBefore),
@@ -203,17 +225,20 @@ newStyleGen <- function(x, type="styles") {
       )
    }
 
-   getTextPropertiesAttrs <- function(styleName, thisStyle) {
+   getTextPropertiesAttrs <- function(styleName, thisStyle)
+   {
       c("style:font-name"="StarSymbol")
    }
 
    styles <- unlist(lapply(x, function(x) x$type))
    styleNames <- names(x)
 
-   if (type == "styles") {
+   if (type == "styles")
+   {
       # These styles will go into the 'office:styles' section
       # of styles.xml
-      paragraphFun <- function(idx) {
+      paragraphFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
 
@@ -234,7 +259,8 @@ newStyleGen <- function(x, type="styles") {
    } else if (type == "page") {
       # These styles will go into the 'office:automatic-styles' section
       # of styles.xml
-      pageFun <- function(idx) {
+      pageFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          children <- c(
@@ -254,7 +280,8 @@ newStyleGen <- function(x, type="styles") {
    } else if (type == "master") {
       # These styles will go into the 'office:master-styles' section
       # of styles.xml
-      masterFun <- function(idx) {
+      masterFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          xmlNode('style:master-page',
@@ -267,7 +294,8 @@ newStyleGen <- function(x, type="styles") {
       # of content.xml
 
       # Get the list of table styles
-      tableFun <- function(idx) {
+      tableFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          children <- list(xmlNode('style:table-properties',
@@ -280,7 +308,8 @@ newStyleGen <- function(x, type="styles") {
       tableStyleNodes <- lapply(idx, tableFun)
 
       # Get the list of table cell styles
-      tableCellFun <- function(idx) {
+      tableCellFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          children <- list(xmlNode('style:table-cell-properties',
@@ -293,7 +322,8 @@ newStyleGen <- function(x, type="styles") {
       tableCellStyleNodes <- lapply(idx, tableCellFun)
 
       # Get the list of figure frame/graphic styles
-      figureFrameFun <- function(idx) {
+      figureFrameFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          children <- list(xmlNode('style:graphic-properties',
@@ -306,7 +336,8 @@ newStyleGen <- function(x, type="styles") {
       figureFrameStyleNodes <- lapply(idx, figureFrameFun)
 
       # Get the list of bullet styles used for lists
-      bulletFun <- function(idx) {
+      bulletFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          xmlNode('style:style',
@@ -316,7 +347,8 @@ newStyleGen <- function(x, type="styles") {
       bulletStyleNodes <- lapply(idx, bulletFun)
 
       # Get the list of list styles
-      listFun <- function(idx) {
+      listFun <- function(idx)
+      {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
          children <- c(

@@ -6,20 +6,24 @@
 uniqueName <- function(prefix, env) {
    # Get the "probable" next suffix
    nextSuffix <- 0L
-   tryCatch({
+   tryCatch(
+   {
       nextSuffix <- get(prefix, pos=env, inherits=FALSE)
-      if (! is.integer(nextSuffix)) {
+      if (! is.integer(nextSuffix))
+      {
          # Indicates a bug, I think
          warning("nextSuffix was defined but not an integer")
          nextSuffix <- 0L
       }
    },
-   error=function(e) {
+   error=function(e)
+   {
       # Presumably not defined in the environment
       # Doing this means the environment doesn't need to be initialized
    })
 
-   repeat {
+   repeat
+   {
       n <- paste(prefix, nextSuffix, sep='')
       if (! exists(n, where=env, inherits=FALSE))
          break
