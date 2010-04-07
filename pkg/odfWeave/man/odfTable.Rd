@@ -26,12 +26,14 @@ odfTable(x, ...)
 \method{odfTable}{data.frame}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
+   styles = NULL, cgroup = NULL, n.cgroup = NULL, rgroup = NULL,
+   n.rgroup = NULL, ...)
    
 \method{odfTable}{matrix}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3),
     name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-    styles = NULL, ...)
+    styles = NULL, cgroup = NULL, n.cgroup = NULL, rgroup = NULL,
+    n.rgroup = NULL, ...)
 }
 \arguments{
   \item{x}{a vector, matrix or data frame}
@@ -64,7 +66,8 @@ a list of character string that contain XML markup
 }
 \author{Max Kuhn, and modified by Zekai Otles }
 
-\seealso{\code{\link{tableStyles} and Frank Harrell \link{Hmisc} package for latex table}}
+\seealso{\code{\link{tableStyles}} and Frank Harrell's
+  \code{\link[Hmisc]{latexTabular}} for latex table}
 \examples{
 odfTable(iris[1:5,])
 #examples with odfWeaveData, see multi column and row headers
