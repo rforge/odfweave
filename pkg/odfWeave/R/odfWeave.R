@@ -100,6 +100,11 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    # to avoid making changes to preproc for the moment.
    initStyleNames("content.xml", styleNameEnv)
 
+   # Temporarily initializing seqInfo here
+   # to avoid making changes to preproc for the moment.
+   seqInfo <- getSeqInfo("content.xml")
+   assign('seqInfo', seqInfo, pos=.odfEnv)
+
    announce(verbose, "\n  Pre-processing the contents\n")
    # pre-process content.xml in preparation for sweaving
    rnwFileName <- "content.Rnw"

@@ -1,3 +1,15 @@
+# This is intended to be the new version of odfStyleGen.
+# It is essentially the same, except that instead of creating
+# strings containing XML markup, it creates XML node objects.
+# This is necessary because of the changes that were made
+# to XML processing.  These XML node objects are added to
+# the document object, and then the whole thing is written
+# out to an XML file.
+#
+# This will be renamed to odfStyleGen after Max has signed
+# off on this whole change.
+#
+
 newStyleGen <- function(x, type="styles")
 {
    nonempty <- function(x) !is.null(x) && x != ""

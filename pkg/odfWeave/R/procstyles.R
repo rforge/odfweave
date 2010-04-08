@@ -1,3 +1,21 @@
+# this handler is called at the start of parsing the XML document.
+# this is used in the "post" phase, where XML is actually generated.
+# it is also used by postproc and procstyles.
+startDocument <- function(.state)
+{
+   cat('<?xml version="1.0" encoding="UTF-8"?>\n', file=.state$outfile)
+   .state
+}
+
+# this handler is called at the end of parsing the XML document.
+# this is used in the "post" phase, where XML is actually generated.
+# it is also used by postproc and procstyles.
+endDocument <- function(.state)
+{
+   cat('\n', file=.state$outfile)  # prevents warning from R readline
+   .state
+}
+
 # event handler functions
 
 stylesStartElement <- function(name, atts, .state)

@@ -33,11 +33,14 @@ escape <- function(x)
    x
 }
 
+# Convert certain UTF-8 encoded characters to their non-word processing
+# equivalents, since R doesn't like them
 correct <- function(x)
 {
    x <- gsub('\342\200\223', '-', x)
    x <- gsub('\342\200\235', '"', x)
    x <- gsub('\342\200\234', '"', x)
+   x <- gsub('\342\206\220', '<-', x)
    x
 }
 
