@@ -121,58 +121,9 @@ function(file, height, width,
    {
       newPath <- paste(dest, "/", basename(file), sep = "")
       if(!file.exists(dest)) stop(paste(dest, "does not exist"))
-      # NB: see comments below!
-      if(!Xfile.copy(file, newPath,  overwrite = TRUE)) stop("Error copying file")
+      if(!file.copy(file, newPath,  overwrite = TRUE)) stop("Error copying file")
    }
 
    out
 }
 
-# This is a temporary fix to a scary problem.  It appears that file.copy
-# sometimes creates a corrupted file.  I've seen this happen when a PNG
-# file is inserted into an ODF document when using odfInsertPlot.
-# In particular, when inserting "Frink.png" in the example file "examples.odt".
-# The fifth and sixth bytes of PNG files contain a \r\n, and file.copy seems
-# to be removing the \r (at least on my Mac) as if it were correcting the
-# line endings.
-#
-# Strangely, file.copy works when it is used on that same file when it's
-# executed manually.  Could it have something to do with locale settings?
-# Some environment variable?
-#
-# Note that this is a temporary fix because if we don't get to the root
-# of the problem, then we don't know where else file.copy might fail.
-# I'm only using Xfile.copy in "odfInsertPlot", so it's possible that
-# the problem could crop up in some other case.
-#
-Xfile.copy <- function(infile, outfile, overwrite=TRUE) {
-   stopifnot(overwrite)  # We don't support overwrite == FALSE
-   bufsize <- 1024
-   status <- FALSE
-   fin <- NULL
-   fout <- NULL
-
-   tryCatch(
-   {
-      fin <- file(infile, "rb")
-      fout <- file(outfile, "wb")
-      repeat {
-         d <- readBin(fin, raw(), n=bufsize)
-         if (length(d) <= 0)
-            break
-         writeBin(d, fout)
-      }
-      status <- TRUE
-   },
-   error=function(e) {
-      warning(sprintf("Caught error: %s", conditionMessage(e)))
-   },
-   finally={
-      if (!is.null(fin))
-         close(fin)
-      if (!is.null(fout))
-         close(fout)
-   })
-
-   status
-}
