@@ -98,7 +98,7 @@ addText.Exprs <- function(obj, x)
       # Check if we need to create a text node to contain the normal text
       if (nzchar(normaltext))
       {
-         tnode <- xmlTextNode(normaltext)
+         tnode <- xmlTextNode(normaltext, entities=NULL)
          # cat('normal text: ')
          # print(tnode)
          obj$ncompleted <- obj$ncompleted + 1
