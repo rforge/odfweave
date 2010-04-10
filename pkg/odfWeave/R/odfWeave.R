@@ -142,10 +142,14 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    # post-process the output from Sweave
    postproc("content_1.xml", "content.xml")
 
-   # remove the input to Sweave
-   announce(verbose, "  Removing", rnwFileName, "\n")
-   file.remove(rnwFileName)
-   if (file.exists(rnwFileName)) stop("Error removing xml file")
+   if (! is.null(control$debug)) {
+      # remove the input to Sweave
+      announce(verbose, "  Removing", rnwFileName, "\n")
+      file.remove(rnwFileName)
+      if (file.exists(rnwFileName)) stop("Error removing xml file")
+   } else {
+      announce(verbose, "  Not removing", rnwFileName, "\n")
+   }
 
    # process styles.xml
    procstyles("styles.xml", "styles_2.xml")
@@ -153,17 +157,20 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    # remove original styles.xml file
    announce(verbose, "  Removing styles.xml\n")
    file.remove("styles.xml")
-   if (file.exists(rnwFileName)) stop("Error removing xml file")
+   if (file.exists("styles.xml")) stop("Error removing xml file")
 
    # rename post-processed file to styles.xml ready for zipping
    announce(verbose, "  Renaming styles_2.xml to styles.xml\n")
    file.rename("styles_2.xml", "styles.xml")
    if (!file.exists("styles.xml")) stop("Error renaming styles xml file")
 
-   announce(verbose, "  Removing extra files\n")
-
-   if(file.exists("content_1.xml")) try(file.remove("content_1.xml"), silent = TRUE)
-   if(file.exists("styles_2.xml"))  try(file.remove("styles_2.xml"), silent = TRUE)
+   if (! is.null(control$debug)) {
+      announce(verbose, "  Removing extra files\n")
+      if(file.exists("content_1.xml")) try(file.remove("content_1.xml"), silent = TRUE)
+      if(file.exists("styles_2.xml"))  try(file.remove("styles_2.xml"), silent = TRUE)
+   } else {
+      announce(verbose, "  Not removing extra files\n")
+   }
 
    # zip up the new ODT file
    announce(verbose, "\n\  Packaging file using", zipCmd[1], "\n")
