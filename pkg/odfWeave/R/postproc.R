@@ -311,12 +311,8 @@ posttraverse_2 <- function(node, seqenv)
 
 # this is the main function that turns the output from Sweave
 # into the content.xml file of the ODF file
-postproc <- function(infile, outfile)
+postproc <- function(node, outfile)
 {
-   # Parse the file
-   doc <- xmlTreeParse(infile, trim=FALSE, addAttributeNamespaces=TRUE)
-   node <- doc$doc$children[[1]]
-
    # Create an environment that will pass information from one pass to the next
    env <- new.env(parent=baseenv())
 

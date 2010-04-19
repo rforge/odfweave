@@ -242,13 +242,9 @@ tdata <- function(node, chunks)
 
 # This is the main function that turns the content.xml file into
 # a file that can be processed by the Sweave function
-preproc <- function(infile, outfile)
+preproc <- function(node, outfile)
 {
-   # Parse the file
-   doc <- xmlTreeParse(infile, trim=FALSE, addAttributeNamespaces=TRUE)
-
    # Traverse and transform the document
-   node <- doc$doc$children[[1]]
    newNode <- pretraverse(node)
 
    # Save the transformed XML

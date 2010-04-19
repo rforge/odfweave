@@ -96,19 +96,20 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    styleNameEnv <- new.env(hash=TRUE, parent=emptyenv())
    assign('styleNameEnv', styleNameEnv, pos=.odfEnv)
 
-   # Temporarily initializing the "Style Name Environment" here
-   # to avoid making changes to preproc for the moment.
-   initStyleNames("content.xml", styleNameEnv)
+   # Parse content.xml
+   top <- getTopNode("content.xml")
 
-   # Temporarily initializing seqInfo here
-   # to avoid making changes to preproc for the moment.
-   seqInfo <- getSeqInfo("content.xml")
+   # Initialize the "Style Name Environment"
+   initStyleNames(top, styleNameEnv)
+
+   # Initialize seqInfo
+   seqInfo <- getSeqInfo(top)
    assign('seqInfo', seqInfo, pos=.odfEnv)
 
    announce(verbose, "\n  Pre-processing the contents\n")
    # pre-process content.xml in preparation for sweaving
    rnwFileName <- "content.Rnw"
-   preproc("content.xml", rnwFileName)
+   preproc(top, rnwFileName)
 
    # Create the "New Style Environment" which will be used to register
    # styles (in the form of XMLNode objects) that will later be added
@@ -140,7 +141,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
    announce(verbose, "\n  Post-processing the contents\n")
    # post-process the output from Sweave
-   postproc("content_1.xml", "content.xml")
+   top <- getTopNode("content_1.xml")
+   postproc(top, "content.xml")
 
    if (! is.null(control$debug)) {
       # remove the input to Sweave
