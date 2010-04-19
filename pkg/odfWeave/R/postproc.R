@@ -324,13 +324,8 @@ postproc <- function(node, outfile)
    # since we must guarantee that all of the sequences have been recomputed
    newNode <- posttraverse_2(newNode, env)
 
-   # Open the output file
-   outcon <- file(outfile, open='w')
-
    # Write out the post processed XML file
-   writeXML(newNode, file=outcon)
+   writeXML(newNode, file=outfile)
 
-   # Close the output file and return
-   close(outcon)
    invisible(NULL)
 }
