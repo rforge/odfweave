@@ -134,7 +134,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    #Sys.setlocale("LC_CTYPE", "C")
    #Sys.setlocale("LC_COLLATE", "C")
 
-   if (is.null(control$debug))
+   if (!control$debug)
    {
       # remove the original content.xml
       announce(verbose, "\n  Removing content.xml\n")
@@ -151,7 +151,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    top <- getTopNode("content_1.xml")
    postproc(top, "content.xml")
 
-   if (is.null(control$debug))
+   if (!control$debug)
    {
       # remove the input to Sweave
       announce(verbose, "  Removing", rnwFileName, "\n")
@@ -165,7 +165,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    stylestop <- getTopNode("styles.xml")
    procstyles(stylestop, "styles_2.xml")
 
-   if (is.null(control$debug))
+   if (!control$debug)
    {
       # remove original styles.xml file
       announce(verbose, "  Removing styles.xml\n")
@@ -182,7 +182,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    file.rename("styles_2.xml", "styles.xml")
    if (!file.exists("styles.xml")) stop("Error renaming styles xml file")
 
-   if (is.null(control$debug))
+   if (!control$debug)
    {
       announce(verbose, "  Removing extra files\n")
       if(file.exists("content_1.xml")) try(file.remove("content_1.xml"), silent = TRUE)
