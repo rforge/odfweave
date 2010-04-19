@@ -134,17 +134,25 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    #Sys.setlocale("LC_CTYPE", "C")
    #Sys.setlocale("LC_COLLATE", "C")
 
-   # remove the original content.xml
-   announce(verbose, "\n  Removing content.xml\n")
-   file.remove("content.xml")
-   if (file.exists("content.xml")) stop("Error removing xml file")
+   if (is.null(control$debug))
+   {
+      # remove the original content.xml
+      announce(verbose, "\n  Removing content.xml\n")
+      file.remove("content.xml")
+      if (file.exists("content.xml")) stop("Error removing content.xml file")
+   } else {
+      announce(verbose, "  Renaming original content.xml to content_orig.xml\n")
+      file.rename("content.xml", "content_orig.xml")
+      if (file.exists("content.xml")) stop("Error renaming content.xml file")
+   }
 
    announce(verbose, "\n  Post-processing the contents\n")
    # post-process the output from Sweave
    top <- getTopNode("content_1.xml")
    postproc(top, "content.xml")
 
-   if (! is.null(control$debug)) {
+   if (is.null(control$debug))
+   {
       # remove the input to Sweave
       announce(verbose, "  Removing", rnwFileName, "\n")
       file.remove(rnwFileName)
@@ -154,22 +162,30 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    }
 
    # process styles.xml
-   procstyles("styles.xml", "styles_2.xml")
+   stylestop <- getTopNode("styles.xml")
+   procstyles(stylestop, "styles_2.xml")
 
-   # remove original styles.xml file
-   announce(verbose, "  Removing styles.xml\n")
-   file.remove("styles.xml")
-   if (file.exists("styles.xml")) stop("Error removing xml file")
+   if (is.null(control$debug))
+   {
+      # remove original styles.xml file
+      announce(verbose, "  Removing styles.xml\n")
+      file.remove("styles.xml")
+      if (file.exists("styles.xml")) stop("Error removing styles.xml file")
+   } else {
+      announce(verbose, "  Renaming original styles.xml to styles_orig.xml\n")
+      file.rename("styles.xml", "styles_orig.xml")
+      if (file.exists("styles.xml")) stop("Error renaming styles.xml file")
+   }
 
    # rename post-processed file to styles.xml ready for zipping
    announce(verbose, "  Renaming styles_2.xml to styles.xml\n")
    file.rename("styles_2.xml", "styles.xml")
    if (!file.exists("styles.xml")) stop("Error renaming styles xml file")
 
-   if (! is.null(control$debug)) {
+   if (is.null(control$debug))
+   {
       announce(verbose, "  Removing extra files\n")
       if(file.exists("content_1.xml")) try(file.remove("content_1.xml"), silent = TRUE)
-      if(file.exists("styles_2.xml"))  try(file.remove("styles_2.xml"), silent = TRUE)
    } else {
       announce(verbose, "  Not removing extra files\n")
    }
