@@ -90,6 +90,7 @@ stylestraverse <- function(node)
 # of the output ODF file
 procstyles <- function(node, outfile)
 {
+   # Add the new styles that we need
    newNode <- stylestraverse(node)
 
    # Write out the post processed XML file
