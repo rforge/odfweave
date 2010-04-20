@@ -104,22 +104,3 @@ makeSetPageStyle <- function(name, pagestyle, family=c('paragraph', 'table'),
       stop('illegal style type specified: ', type)
    }
 }
-
-testTrans <- function()
-{
-   library(XML)
-
-   pstyle <- makePageBreakStyle('P1342', 'paragraph', 'common', 'Foo')
-   print(pstyle)
-   tstyle <- makePageBreakStyle('TTable8499', 'table', 'common', 'Bar')
-   print(tstyle)
-
-   print(makePageBreakStyle('P554', 'paragraph', 'automatic', pstyle))
-   print(makePageBreakStyle('TTable949', 'table', 'automatic', tstyle))
-
-   print(makeSetPageStyle('P7347', 'Frank', 'paragraph', 'common', 'Spam'))
-   print(makeSetPageStyle('TTable4334', 'Frank', 'table', 'common', 'Eggs'))
-
-   print(makeSetPageStyle('P74', 'Joe', 'paragraph', 'automatic', pstyle))
-   print(makeSetPageStyle('TTable3943', 'Joe', 'table', 'automatic', tstyle))
-}
