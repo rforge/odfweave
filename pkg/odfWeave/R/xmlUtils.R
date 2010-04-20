@@ -140,31 +140,3 @@ genXMLAttributes <- function(atts)
    else
       ''
 }
-
-startTag <- function(name, atts, outfile)
-{
-   cat('<', name, genXMLAttributes(atts), sep='', file=outfile)
-}
-
-openTag <- function(name, atts, outfile)
-{
-   startTag(name, atts, outfile)
-   cat('>', file=outfile)
-}
-
-closeTag <- function(name, outfile)
-{
-   cat(sprintf('</%s>', name), file=outfile)
-}
-
-completeTag <- function(name, atts, outfile)
-{
-   startTag(name, atts, outfile)
-   cat('/>', file=outfile)
-}
-
-processText <- function(t, outfile)
-{
-   if (!is.null(t))
-      cat(escape(t), file=outfile)
-}
