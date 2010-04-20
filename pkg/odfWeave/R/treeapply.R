@@ -1,3 +1,6 @@
+# This function is an attempt at a general purpose utility for extracting
+# information from an XML document.  It cannot modify the document, only
+# extract information.
 treeapply <- function(node, path, fun, ..., onlyFirst=TRUE, rooted=TRUE)
 {
    finished <- FALSE
