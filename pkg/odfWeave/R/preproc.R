@@ -109,7 +109,7 @@ pretraverse <- function(node)
 
 # Called from "pretraverse" when a text:p element is encountered.
 # It calls tdata to traverse all of its children.  We use tdata
-# so that tdata can call itself recursive to handle text:span
+# so that tdata can call itself recursively to handle text:span
 # nodes.
 textp <- function(node, chunks)
 {
@@ -154,6 +154,14 @@ tdata <- function(node, chunks)
          flushText(exprs)  # XXX ?
          # Tell the Chunks object that we've reached the end of a line
          eol(chunks)
+         numNewChildren <- numNewChildren + 1
+         if (numNewChildren > length(newChildren))
+         {
+            length(newChildren) <- 2 * length(newChildren)
+         }
+         newChildren[[numNewChildren]] <- child
+      } else if (xmlName(child, full=TRUE) == 'text:soft-page-break') {
+         # Allow a 'text:soft-page-break' element to occur in a code chunk
          numNewChildren <- numNewChildren + 1
          if (numNewChildren > length(newChildren))
          {
@@ -234,10 +242,10 @@ tdata <- function(node, chunks)
       }
    }
 
-  length(newChildren) <- numNewChildren
-  xmlChildren(node) <- newChildren
+   length(newChildren) <- numNewChildren
+   xmlChildren(node) <- newChildren
 
-  node
+   node
 }
 
 # This is the main function that turns the content.xml file into
