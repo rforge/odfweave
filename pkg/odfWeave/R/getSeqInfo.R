@@ -7,6 +7,6 @@
 getSeqInfo <- function(node)
 {
    sfun <- function(s) xmlGetAttr(s, 'text:ref-name')
-   refnames <- unlist(treeapply(node, 'text:sequence', sfun, onlyFirst=FALSE, rooted=FALSE))
+   refnames <- as.character(treeapply(node, 'text:sequence', sfun, onlyFirst=FALSE, rooted=FALSE))
    list(Table=refnames, Illustration=refnames)
 }
