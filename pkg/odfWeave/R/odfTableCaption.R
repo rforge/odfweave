@@ -15,14 +15,15 @@ uniqueRef <- function(seqname, prefix) {
 }
 
 # XXX this needs to handle escaping special characters
-odfTableCaption <- function(caption, numformat='1', numlettersync=FALSE, formula='Table+1')
+odfTableCaption <- function(caption, numformat='1', numlettersync=FALSE,
+      formula='Table+1', prefix='Table')
 {
    if (!any(numformat == c('A', 'a', 'I', 'i', '1')))
       stop('illegal numformat value: ', numformat)
 
    refname <- uniqueRef('Table', 'refTable')
 
-   cat('<text:p text:style-name="Table">Table ')
+   cat(sprintf('<text:p text:style-name="Table">%s ', prefix))
    cat(sprintf('<text:sequence style:num-format="%s"', numformat))
    if (numlettersync)
       cat(' style:num-letter-sync="true"')

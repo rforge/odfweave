@@ -7,13 +7,15 @@
   be specified via the numformat argument.
 }
 \usage{
-odfFigureCaption(caption, numformat='1', numlettersync=FALSE, formula='Illustration+1')
+odfFigureCaption(caption, numformat='1', numlettersync=FALSE,
+  formula='Illustration+1', prefix='Illustration')
 }
 \arguments{
   \item{caption}{the text portion of the caption}
   \item{numformat}{the format to use the figure number}
   \item{numlettersync}{specifies the style of numbering to use if numformat is 'A' or 'a'}
   \item{formula}{the formula to use for computing this figure number from the previous}
+  \item{prefix}{the prefix to use for the caption.  Defaults to 'Illustration'.}
 }
 \details{
   This function should be called no more than once in a code chunk where
