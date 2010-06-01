@@ -1,5 +1,3 @@
-#Zekai Otles added cgroup,rgroup,n.cgroup,n.rgroup similar ideas to F. Harrell Misc
-#package, see Hmisc latex package
 "odfTable" <-
 function(x, ...)
 {
@@ -13,4 +11,3 @@ print.odfTable <- function(x, ...)
    if(any(dim(x$cells) == 1)) cat(x$cells) else cat(t(x$cells))
    cat(x$end)
 }
-

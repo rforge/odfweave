@@ -1,28 +1,29 @@
-#Zekai Otles added cgroup,rgroup,n.cgroup,n.rgroup similar ideas to F. Harrell Misc
-#package, see Hmisc latex package
 "odfTable.data.frame" <-
 function(
    x,
    colnames    = NULL,  # allow alt col names (what about dimnames[[1]]?)
    useRowNames = TRUE,  # discard or not
    digits      = max(3, getOption("digits") - 3),
-   name = paste("Table", floor(runif(1) * 1000), sep = ""),
-   styles = NULL,
-    cgroup=NULL,n.cgroup=NULL,rgroup=NULL,n.rgroup=NULL,
+   name        = paste("Table", floor(runif(1) * 1000), sep = ""),
+   styles      = NULL,
+   cgroup      = NULL,
+   n.cgroup    = NULL,
+   rgroup      = NULL,
+   n.rgroup    = NULL,
    ...)
 {
-   if(!is.null(colnames)) colnames <- odfTranslate(colnames, toR = FALSE)  
+   if(!is.null(colnames)) colnames <- odfTranslate(colnames, toR = FALSE)
    colTypes <- unlist(lapply(x, odfDataType))
 
    theDots <- list(...)
    if(!any(names(theDots) == "justify")) theDots$justify <- "none"
    if(!any(names(theDots) == "trim")) theDots$trim <- TRUE
-   
+
    args <- list(x = x, digits = digits)
    args <- c(args, theDots)
    xChar <- as.matrix(do.call("format", args))
 
-   if(useRowNames & !is.null(rownames(x)))
+   if(useRowNames && !is.null(rownames(x)))
    {
       xChar <- cbind(rownames(x), xChar)
       if(!is.null(dimnames(xChar)[[2]])) dimnames(xChar)[[2]] <- c("", dimnames(x)[[2]])
@@ -35,7 +36,7 @@ function(
 
    if(is.null(styles))    styles <- tableStyles(xChar, useRowNames = FALSE, dimnames(xChar)[[2]])
 
-   tbleText <- odfTableGen(xChar, dataType = colTypes, header = dimnames(xChar)[[2]], tableName = name, styles)
+   tbleText <- odfTableGen(xChar, dataType = colTypes, header = dimnames(xChar)[[2]],
+                           tableName = name, styles, cgroup, n.cgroup, rgroup, n.rgroup)
    structure(tbleText, class = "odfTable")
 }
-

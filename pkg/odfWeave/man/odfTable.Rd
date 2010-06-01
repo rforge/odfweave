@@ -51,7 +51,12 @@ odfTable(x, ...)
 }
 
 \details{
-The data structures are converted to character matrices using \code{format}. The \code{justify} and \code{trim} arguments to \code{format} are usually overridden by the table style options, so those arguments are automatically set to \code{justify = "none"} and \code{trim = TRUE}. However, if values of these arguments are passed using the three dots, format will use them (but they probably won't do anything).
+The data structures are converted to character matrices using \code{format}.
+The \code{justify} and \code{trim} arguments to \code{format} are usually
+overridden by the table style options, so those arguments are automatically set
+to \code{justify = "none"} and \code{trim = TRUE}. However, if values of these
+arguments are passed using the three dots, format will use them (but they
+probably won't do anything).
 
 When using \code{odfTable} in a code chunk, the chunk's \code{results}
 argument should be set to \code{xml}.
@@ -70,21 +75,19 @@ a list of character string that contain XML markup
   \code{\link[Hmisc]{latexTabular}} for latex table}
 \examples{
 odfTable(iris[1:5,])
-#examples with odfWeaveData, see multi column and row headers
+
+# examples with odfWeaveData, see multi column and row headers
 data(odfWeaveData)
-cgroup<-c("row","C")
-n.cgroup<-c(1,3)
+cgroup <- c("row","C")
+n.cgroup <- c(1, 3)
+odfTable(mdat, cgroup=cgroup, n.cgroup=n.cgroup)
 
-odfTable(mdat,cgroup=cgroup,n.cgroup=n.cgroup)
 #
-carCgroup<-levels(factor(carRentInfo$carGroup))
-carCgroup<-c("",carCgroup)
-carNcgroup<-c(1,1,2,2,2,2)
-carRgroup<-levels(factor(carRentInfo$Months))
-carRngroup<-c(5,5)
-
-odfTable(carRentInfo$tableCells,cgroup=carCgroup,n.cgroup=carNcgroup,rgroup=carRgroup,n.rgroup=carRngroup)
-
+carCgroup <- c("", "Compact", "Medium", "Full", "SUV")
+carNcgroup <- c(1, 2, 2, 2, 2)
+carRgroup <- c("Jan.-Feb.", "Mar.-Apr")
+carRngroup <- c(5, 5)
+odfTable(carRentInfo$tableCells, cgroup=carCgroup, n.cgroup=carNcgroup,
+         rgroup=carRgroup, n.rgroup=carRngroup)
 }
 \keyword{utilities}
-
