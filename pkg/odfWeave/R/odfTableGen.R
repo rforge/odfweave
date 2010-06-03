@@ -1,29 +1,44 @@
-# Notes:
-#
-# rgroup and n.rgroup should have the same length.
-# That is true for cgroup and n.cgroup, also.
-#
-# More sanity checking of the arguments is needed
-#
-# Currently, cgroup/n.cgroup is ignored unless "header" is not NULL.
-# That doesn't seem to make sense to me, and can be easily fixed.
-
 "odfTableGen" <-
 function(x, dataType, header = NULL, tableName, styles,
          cgroup = NULL, n.cgroup = NULL, rgroup = NULL, n.rgroup = NULL)
 {
+   # Sanity check cgroup, n.cgroup, rgroup, and n.rgroup
+   if (is.null(cgroup) != is.null(n.cgroup))
+      stop('cgroup and n.cgroup must both be specified')
+   if (is.null(rgroup) != is.null(n.rgroup))
+      stop('rgroup and n.rgroup must both be specified')
+   if (length(cgroup) != length(n.cgroup))
+      stop('cgroup and n.cgroup must be the same length')
+   if (length(rgroup) != length(n.rgroup))
+      stop('rgroup and n.rgroup must be the same length')
+   if (length(cgroup) == 0)
+   {
+      cgroup <- NULL
+      n.cgroup <- NULL
+   }
+   if (length(rgroup) == 0)
+   {
+      rgroup <- NULL
+      n.rgroup <- NULL
+   }
+   if (!is.null(cgroup) && sum(n.cgroup) != ncol(x))
+      stop('sum of n.cgroup not equal to ', ncol(x))
+   if (!is.null(rgroup) && sum(n.rgroup) != nrow(x))
+      stop('sum of n.rgroup not equal to ', nrow(x))
+
    # Modify arguments if rgroup is specified
    if(!is.null(rgroup))
    {
       x <- cbind("", x)
       dataType <- c("string", dataType)
-      header <- c("", header)
-      # names(header)[1] <- "V1"  # XXX why do the names of "header" matter?
 
       # XXX This is wrong if the user specified a value for "styles".
       # XXX It was done because "styles" is a function of the dimension
       # XXX of "x", but this isn't a good solution
       styles <- tableStyles(x, useRowNames = FALSE, dimnames(x)[[2]])
+
+      if (!is.null(header))
+         header <- c("", header)
    }
 
    # Generate the cell matrix, which contains the "table:table-cell" elements
@@ -43,7 +58,7 @@ function(x, dataType, header = NULL, tableName, styles,
          "<text:p text:style-name=\"ArialCenteredBold\">", rgroup, "</text:p>",
          "</table:table-cell>",
          sep = "")
-      firstCol <- rep('<table:covered-table-cell/>', nrow(cellMatrix))
+      firstCol <- rep("<table:covered-table-cell/>", nrow(cellMatrix))
       idx <- c(1, 1 + cumsum(n.rgroup)[-length(n.rgroup)])
       firstCol[idx] <- firstCol0
 
@@ -52,7 +67,8 @@ function(x, dataType, header = NULL, tableName, styles,
       cellMatrix <- cbind(firstCol, cellMatrix[,-1])
 
       # Adjust cgroup/n.cgroup due to the new column if they were specified
-      if(!is.null(cgroup)) {
+      if(!is.null(cgroup))
+      {
          cgroup <- c("", cgroup)
          n.cgroup <- c(1, n.cgroup)
       }
@@ -107,17 +123,16 @@ function(x, dataType, header = NULL, tableName, styles,
 #   library(odfWeave)
 #   x <- matrix(1:12, nrow=3)
 #   xChar <- format(x, digits=3)
-#   dataType <- rep('double', ncol(x))
+#   dataType <- rep("double", ncol(x))
 #   styles <- odfWeave:::tableStyles(xChar, useRowNames=FALSE, colnames(x))
 #   odfWeave:::genCellMatrix(xChar, dataType, styles)
 #
-genCellMatrix <- function(x, dataType, styles)
+"genCellMatrix" <-
+function(x, dataType, styles)
 {
    # Function to generate a matrix containing a single repeated value
    # with the specified dimensions
-   makeMatrix <- function(text, dims) {
-      matrix(rep(text, prod(dims)), nrow = dims[1])
-   }
+   makeMatrix <- function(text, dims) matrix(rep(text,prod(dims)),nrow=dims[1])
 
    endQuote <- makeMatrix("\" ", dim(styles$cell))
 
@@ -151,57 +166,66 @@ genCellMatrix <- function(x, dataType, styles)
    matrixPaste(cellStart, cellName, cellEnd, textMatrix, tagEnd)
 }
 
-genHeadLine <- function(header, styles, cgroup, n.cgroup)
+"genHeadLine" <-
+function(header, styles, cgroup, n.cgroup)
 {
-   if(!is.null(header))
+   # Compute the style attributes for the "table:table-cell" and
+   # "text:p" elements
+   if (!is.null(styles$headerCell))
    {
-      # Compute the style attributes for the "table:table-cell" and
-      # "text:p" elements
       cellHeaderStyle <- paste(" table:style-name=\"", styles$headerCell,
                                "\" ", sep = "")
       cellHeaderStyle <- ifelse(styles$headerCell == "", "", cellHeaderStyle)
+   } else {
+      cellHeaderStyle <- rep("", sum(n.cgroup))
+   }
 
+   if (!is.null(styles$header))
+   {
       textHeaderStyle <- paste(" text:style-name=\"", styles$header, "\" ",
                                sep = "")
       textHeaderStyle <- ifelse(styles$header == "", "", textHeaderStyle)
+   } else {
+      textHeaderStyle <- rep("", sum(n.cgroup))
+   }
 
-      # Compute "firstRow" which is used in the construction of the "header"
-      # element of the return value
-      if(!is.null(cgroup) && length(cgroup) > 0)
-      {
-         numHeadCol <- length(cgroup)
-         idx <- c(1, 1 + cumsum(n.cgroup)[-length(n.cgroup)])
+   # Compute a "table:table-row" element based on "cgroup" and "n.cgroup"
+   # if specified
+   if(!is.null(cgroup))
+   {
+      idx <- c(1, 1 + cumsum(n.cgroup)[-length(n.cgroup)])
 
-         firstRow0 <- paste(
-            "\n      <text:p ",
-            textHeaderStyle[idx],   # XXX probably need new style mechanism
-            ">",
-            cgroup,
-            "</text:p>",
-            sep = "")
+      firstRow0 <- paste(
+         "\n      <text:p ",
+         textHeaderStyle[idx],   # XXX probably need new style mechanism
+         ">",
+         cgroup,
+         "</text:p>",
+         sep = "")
 
-         firstRow01 <- paste(
-             "<table:table-cell ",
-             cellHeaderStyle[idx],  # XXX probably need new style mechanism
-             " table:number-columns-spanned=\"", n.cgroup, "\"",
-             " office:value-type=\"string\">",
-             firstRow0,
-             "</table:table-cell>",
-             sep = "")
+      firstRow01 <- paste(
+         "<table:table-cell ",
+         cellHeaderStyle[idx],  # XXX probably need new style mechanism
+         " table:number-columns-spanned=\"", n.cgroup, "\"",
+         " office:value-type=\"string\">",
+         firstRow0,
+         "</table:table-cell>",
+         sep = "")
 
-         firstRow02 <- rep('<table:covered-table-cell/>', length(cellHeaderStyle))
-         firstRow02[idx] <- firstRow01
+      firstRow02 <- rep("<table:covered-table-cell/>", length(cellHeaderStyle))
+      firstRow02[idx] <- firstRow01
 
-         firstRow <- paste(
-            "<table:table-row>",
-            paste(firstRow02, collapse = ""),
-            "</table:table-row>\n",
-            sep = "")
+      firstRow <- paste(
+         "\n    <table:table-row>",
+         paste(firstRow02, collapse = ""),
+         "\n    </table:table-row>",
+         sep = "")
+   } else {
+      firstRow <- NULL
+   }
 
-      } else {
-         firstRow <- NULL
-      }
-
+   if (!is.null(header))
+   {
       headLine01 <- paste("\n      <text:p ", textHeaderStyle, ">",
                           header, "</text:p>", sep = "")
       headLine02 <- paste(
@@ -211,12 +235,24 @@ genHeadLine <- function(header, styles, cgroup, n.cgroup)
          headLine01,
          "\n    </table:table-cell>",
          sep = "")
-      paste(
-         "\n  <table:table-header-rows>\n",
-         firstRow,
+      headLine03 <- paste(
          "\n    <table:table-row>\n",
          paste(headLine02, collapse = ""),
-         "\n    </table:table-row>\n   </table:table-header-rows>\n",
+         "\n    </table:table-row>",
+         sep = "")
+   } else {
+      headLine03 <- NULL
+   }
+
+   # Generate and return a "table:table-header-rows" element if we
+   # generated either a normal "header" row, or a "cgroup" row.
+   if (!is.null(firstRow) || !is.null(headLine03))
+   {
+      paste(
+         "\n   <table:table-header-rows>\n",
+         firstRow,
+         headLine03,
+         "\n   </table:table-header-rows>\n",
          sep = "")
    } else {
       NULL
