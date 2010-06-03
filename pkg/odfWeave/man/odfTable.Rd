@@ -36,18 +36,40 @@ odfTable(x, ...)
     n.rgroup = NULL, ...)
 }
 \arguments{
-  \item{x}{a vector, matrix or data frame}
-  \item{horizontal}{a logical: should the vector be shown as a 1xn table or nx1? This is ignored for other data structures.}  
-  \item{colnames}{a vector of column names that can be used. Note that if the row names are used in the table, this should contain an extra element for that column.}
-  \item{useRowNames}{a logical: should the row names be printed in the final table}
-  \item{digits}{number of significant digits passed to \code{format}}
-  \item{name}{A name for the table. ODF requires a name for each object, so a random name will be used if unspecified.}
-  \item{styles}{An optional list of style names for each table element (cells, headers etc). See \code{\link{tableStyles}}}
-  \item{cgroup}{A Vector defining column headers.}
-  \item{n.cgroup}{A numerical vector defining column spawn for each header column.}
-  \item{rgroup}{A vector defining row headers.}
-  \item{n.rgroup}{A Numerical vector defining row span for each row column}
-  \item{\dots}{optional arguments that can be passed to \code{format}}
+  \item{x}{A vector, matrix or data frame.}
+  \item{horizontal}{A logical: should the vector be shown as a 1xn
+    table or nx1?
+    This is ignored for other data structures.}  
+  \item{colnames}{A vector of column names that can be used.
+    Note that if the row names are used in the table, this should
+    contain an extra element for that column.}
+  \item{useRowNames}{A logical: should the row names be printed in the
+    final table.}
+  \item{digits}{Number of significant digits passed to \code{format}.}
+  \item{name}{A name for the table. ODF requires a name for each object,
+    so a random name will be used if unspecified.}
+  \item{styles}{An optional list of style names for each table element
+    (cells, headers etc). See \code{\link{tableStyles}}}
+  \item{cgroup}{A character vector specifying column group header names.
+    The resulting row will come before the header names specified via the
+    \code{colnames} argument.
+    \code{cgroup} must be used with the \code{n.cgroup} argument, and be
+    of the same length.}
+  \item{n.cgroup}{A numeric vector specifying the column span for the
+    corresponding element of the \code{cgroup} argument.
+    The sum of this vector must be equal to the number of columns in \code{x},
+    plus one, if \code{useRowNames} is true and \code{x} actually has row names.
+    \code{n.cgroup} must be used with the \code{cgroup} argument, and be
+    of the same length.}
+  \item{rgroup}{A character vector specifying row group header names.
+    \code{rgroup} must be used with the \code{n.rgroup} argument, and be
+    of the same length.}
+  \item{n.rgroup}{A numeric vector specifying the row span for the corresponding
+    element of the \code{rgroup} argument.
+    The sum of this vector must be equal to the number of rows in \code{x}.
+    \code{n.rgroup} must be used with the \code{rgroup} argument, and be
+    of the same length.}
+  \item{\dots}{Optional arguments that can be passed to \code{format}.}
 }
 
 \details{
@@ -64,25 +86,26 @@ argument should be set to \code{xml}.
 The document formatting.odt in the package's examples directory
 illustrates the process of changing the appearance of the table.
 
-Column and Row Header specification followed from Dr. Harrell \code{Hmisc} package
+The \code{cgroup}, \code{n.cgroup}, \code{rgroup} and \code{n.rgroup}
+arguments are patterned after Frank Harrell's \code{Hmisc} package.
 }
 \value{
 a list of character string that contain XML markup
 }
-\author{Max Kuhn, and modified by Zekai Otles }
+\author{Max Kuhn, with contributions from Zekai Otles}
 
 \seealso{\code{\link{tableStyles}} and Frank Harrell's
   \code{\link[Hmisc]{latexTabular}} for latex table}
 \examples{
 odfTable(iris[1:5,])
 
-# examples with odfWeaveData, see multi column and row headers
+# Simple use of cgroup/n.cgroup
 data(odfWeaveData)
 cgroup <- c("row","C")
 n.cgroup <- c(1, 3)
 odfTable(mdat, cgroup=cgroup, n.cgroup=n.cgroup)
 
-#
+# Use of cgroup/n.cgroup and rgroup/n.rgroup
 carCgroup <- c("", "Compact", "Medium", "Full", "SUV")
 carNcgroup <- c(1, 2, 2, 2, 2)
 carRgroup <- c("Jan.-Feb.", "Mar.-Apr")
