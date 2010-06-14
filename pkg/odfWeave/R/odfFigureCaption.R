@@ -1,6 +1,6 @@
 # Max wants this to be 'stylified'
 odfFigureCaption <- function(caption, numformat='1', numlettersync=FALSE,
-      formula='Illustration+1', prefix='Illustration')
+      formula='Illustration+1', label='Illustration')
 {
    # sanity check numformat argument
    if (!any(numformat == c('A', 'a', 'I', 'i', '1')))
@@ -14,7 +14,7 @@ odfFigureCaption <- function(caption, numformat='1', numlettersync=FALSE,
    # we are ready to generate the XML for the figure/illustration
    .odfEnv$fig.caption <- list(caption=caption, numformat=numformat,
                                numlettersync=numlettersync, formula=formula,
-                               refname=refname, prefix=prefix)
+                               refname=refname, label=label)
    invisible(refname)
 }
 

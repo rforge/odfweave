@@ -8,14 +8,14 @@
 }
 \usage{
 odfTableCaption(caption, numformat='1', numlettersync=FALSE,
-  formula='Table+1', prefix='Table')
+  formula='Table+1', label='Table')
 }
 \arguments{
   \item{caption}{the text portion of the caption}
   \item{numformat}{the format to use the table number}
   \item{numlettersync}{specifies the style of numbering to use if numformat is 'A' or 'a'}
   \item{formula}{the formula to use for computing this table number from the previous}
-  \item{prefix}{the prefix to use for the caption.  Defaults to 'Table'.}
+  \item{label}{the label to use for the caption.  Defaults to 'Table'.}
 }
 \details{
   This function should be called immediately after a call to odfTable in a code chunk
