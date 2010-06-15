@@ -7,9 +7,7 @@ function(
    name        = paste("Table", floor(runif(1) * 1000), sep = ""),
    styles      = NULL,
    cgroup      = NULL,
-   n.cgroup    = NULL,
    rgroup      = NULL,
-   n.rgroup    = NULL,
    ...)
 {
    if(!is.null(colnames)) colnames <- odfTranslate(colnames, toR = FALSE)
@@ -34,9 +32,11 @@ function(
       stop("wrong length of column names")
    if(!is.null(colnames)) dimnames(xChar)[[2]] <- colnames
 
-   if(is.null(styles))    styles <- tableStyles(xChar, useRowNames = FALSE, dimnames(xChar)[[2]])
+   if(is.null(styles))
+      styles <- tableStyles(xChar, useRowNames = FALSE, header = dimnames(xChar)[[2]],
+                            cgroup = cgroup, rgroup = rgroup)
 
    tbleText <- odfTableGen(xChar, dataType = colTypes, header = dimnames(xChar)[[2]],
-                           tableName = name, styles, cgroup, n.cgroup, rgroup, n.rgroup)
+                           tableName = name, styles, cgroup, rgroup)
    structure(tbleText, class = "odfTable")
 }

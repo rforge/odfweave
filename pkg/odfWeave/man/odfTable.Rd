@@ -26,14 +26,12 @@ odfTable(x, ...)
 \method{odfTable}{data.frame}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3), 
    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, cgroup = NULL, n.cgroup = NULL, rgroup = NULL,
-   n.rgroup = NULL, ...)
+   styles = NULL, cgroup = NULL, rgroup = NULL, ...)
    
 \method{odfTable}{matrix}(x, colnames = NULL, useRowNames = TRUE, 
    digits = max(3, getOption("digits") - 3),
     name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-    styles = NULL, cgroup = NULL, n.cgroup = NULL, rgroup = NULL,
-    n.rgroup = NULL, ...)
+    styles = NULL, cgroup = NULL, rgroup = NULL, ...)
 }
 \arguments{
   \item{x}{A vector, matrix or data frame.}
@@ -50,25 +48,19 @@ odfTable(x, ...)
     so a random name will be used if unspecified.}
   \item{styles}{An optional list of style names for each table element
     (cells, headers etc). See \code{\link{tableStyles}}}
-  \item{cgroup}{A character vector specifying column group header names.
+  \item{cgroup}{A data frame with three columns.  The first column should be
+    a character vector specifying column group header names.
     The resulting row will come before the header names specified via the
     \code{colnames} argument.
-    \code{cgroup} must be used with the \code{n.cgroup} argument, and be
-    of the same length.}
-  \item{n.cgroup}{A numeric vector specifying the column span for the
-    corresponding element of the \code{cgroup} argument.
-    The sum of this vector must be equal to the number of columns in \code{x},
-    plus one, if \code{useRowNames} is true and \code{x} actually has row names.
-    \code{n.cgroup} must be used with the \code{cgroup} argument, and be
-    of the same length.}
-  \item{rgroup}{A character vector specifying row group header names.
-    \code{rgroup} must be used with the \code{n.rgroup} argument, and be
-    of the same length.}
-  \item{n.rgroup}{A numeric vector specifying the row span for the corresponding
-    element of the \code{rgroup} argument.
-    The sum of this vector must be equal to the number of rows in \code{x}.
-    \code{n.rgroup} must be used with the \code{rgroup} argument, and be
-    of the same length.}
+    The second column should be a numeric vector specifying the column span for the
+    corresponding element of the first column.
+    The sum of the second column must be equal to the number of columns in \code{x},
+    plus one, if \code{useRowNames} is true and \code{x} actually has row names.}
+  \item{rgroup}{A data frame with three columns.  The first column should be
+    a character vector specifying row group header names.
+    The second column should be a numeric vector specifying the row span for the
+    corresponding element of the first column.
+    The sum of the second column must be equal to the number of rows in \code{x}.}
   \item{\dots}{Optional arguments that can be passed to \code{format}.}
 }
 
@@ -85,32 +77,25 @@ argument should be set to \code{xml}.
 
 The document formatting.odt in the package's examples directory
 illustrates the process of changing the appearance of the table.
-
-The \code{cgroup}, \code{n.cgroup}, \code{rgroup} and \code{n.rgroup}
-arguments are patterned after Frank Harrell's \code{Hmisc} package.
 }
 \value{
 a list of character string that contain XML markup
 }
 \author{Max Kuhn, with contributions from Zekai Otles}
 
-\seealso{\code{\link{tableStyles}} and Frank Harrell's
-  \code{\link[Hmisc]{latexTabular}} for latex table}
+\seealso{\code{\link{tableStyles}}}
 \examples{
 odfTable(iris[1:5,])
 
-# Simple use of cgroup/n.cgroup
+# Simple use of cgroup
 data(odfWeaveData)
-cgroup <- c("row","C")
-n.cgroup <- c(1, 3)
-odfTable(mdat, cgroup=cgroup, n.cgroup=n.cgroup)
+cgroup <- data.frame(c("row","C"), c(1, 3))
+odfTable(mdat, cgroup=cgroup)
 
-# Use of cgroup/n.cgroup and rgroup/n.rgroup
-carCgroup <- c("", "Compact", "Medium", "Full", "SUV")
-carNcgroup <- c(1, 2, 2, 2, 2)
-carRgroup <- c("Jan.-Feb.", "Mar.-Apr")
-carRngroup <- c(5, 5)
-odfTable(carRentInfo$tableCells, cgroup=carCgroup, n.cgroup=carNcgroup,
-         rgroup=carRgroup, n.rgroup=carRngroup)
+# Use of cgroup and rgroup
+carCgroup <- data.frame(c("", "Compact", "Medium", "Full", "SUV"),
+                        c(1, 2, 2, 2, 2))
+carRgroup <- data.frame(c("Jan.-Feb.", "Mar.-Apr"), c(5, 5))
+odfTable(carRentInfo$tableCells, cgroup=carCgroup, rgroup=carRgroup)
 }
 \keyword{utilities}
