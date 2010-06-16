@@ -3,35 +3,42 @@ function(x, dataType, header = NULL, tableName, styles,
          cgroup = NULL, rgroup = NULL)
 {
    # Sanity check cgroup and rgroup
-   if (!is.null(cgroup) && (!is.data.frame(cgroup) || ncol(cgroup) != 2))
-      stop('cgroup must be a data frame with three columns')
-   if (!is.null(rgroup) && (!is.data.frame(rgroup) || ncol(rgroup) != 2))
-      stop('rgroup must be a data frame with three columns')
+   if (!is.null(cgroup)) {
+      if (!is.data.frame(cgroup) || ncol(cgroup) < 2 || ncol(cgroup) > 4)
+         stop('cgroup must be a data frame with 2 to 4 columns')
+      if (nrow(cgroup) == 0)
+         cgroup <- NULL
+   }
 
-   if (!is.null(cgroup) && nrow(cgroup) == 0)
-      cgroup <- NULL
-   if (!is.null(rgroup) && nrow(rgroup) == 0)
-      rgroup <- NULL
+   if (!is.null(rgroup)) {
+      if (!is.data.frame(rgroup) || ncol(rgroup) < 2 || ncol(rgroup) > 4)
+         stop('rgroup must be a data frame with 2 to 4 columns')
+      if (nrow(rgroup) == 0)
+         rgroup <- NULL
+   }
 
    if (!is.null(cgroup))
    {
       t.cgroup <- as.character(cgroup[[1]])
       n.cgroup <- cgroup[[2]]
-      # s.cgroup <- as.character(cgroup[[3]])
+      ts.cgroup <- if (ncol(cgroup) > 2) as.character(cgroup[[3]]) else styles$cgroupText
+      cs.cgroup <- if (ncol(cgroup) > 3) as.character(cgroup[[4]]) else styles$cgroupCell
 
       if (!is.numeric(n.cgroup) || sum(n.cgroup) != ncol(x))
          stop('the second column of cgroup must be a numeric vector summing to ', ncol(x))
    } else {
       t.cgroup <- NULL
       n.cgroup <- NULL
-      # s.cgroup <- NULL
+      ts.cgroup <- NULL
+      cs.cgroup <- NULL
    }
 
    if (!is.null(rgroup))
    {
       t.rgroup <- as.character(rgroup[[1]])
       n.rgroup <- rgroup[[2]]
-      # s.rgroup <- as.character(rgroup[[3]])
+      ts.rgroup <- if (ncol(rgroup) > 2) as.character(rgroup[[3]]) else styles$rgroupText
+      cs.rgroup <- if (ncol(rgroup) > 3) as.character(rgroup[[4]]) else styles$rgroupCell
 
       if (!is.numeric(n.rgroup) || sum(n.rgroup) != nrow(x))
          stop('the second column of rgroup must be a numeric vector summing to ', nrow(x))
@@ -44,20 +51,23 @@ function(x, dataType, header = NULL, tableName, styles,
       {
          t.cgroup <- c("", t.cgroup)
          n.cgroup <- c(1, n.cgroup)
-         # s.cgroup <- c(s.cgroup[1], s.cgroup)
+         ts.cgroup <- c(ts.cgroup[1], ts.cgroup)
+         cs.cgroup <- c(cs.cgroup[1], cs.cgroup)
       }
    } else {
       t.rgroup <- NULL
       n.rgroup <- NULL
-      # s.rgroup <- NULL
+      ts.rgroup <- NULL
+      cs.rgroup <- NULL
    }
 
    # Generate the cell matrix, which contains the "table:table-cell" elements
-   cellMatrix <- genCellMatrix(x, dataType, styles, t.rgroup, n.rgroup)
+   cellMatrix <- genCellMatrix(x, dataType, styles, t.rgroup, n.rgroup,
+                               ts.rgroup, cs.rgroup)
 
    # Generate the "header" element, which contains a
    # "table:table-header-rows" element with children
-   headLine <- genHeadLine(header, styles, t.cgroup, n.cgroup)
+   headLine <- genHeadLine(header, styles, t.cgroup, n.cgroup, ts.cgroup, cs.cgroup)
 
    # Generate the "start" element, which contains the "table:table"
    # start tag and a complete "table:table-column" tag
@@ -91,10 +101,10 @@ function(x, dataType, header = NULL, tableName, styles,
 #   xChar <- format(x, digits=3)
 #   dataType <- rep("double", ncol(x))
 #   styles <- tableStyles(xChar, useRowNames=FALSE, colnames(x))
-#   odfWeave:::genCellMatrix(xChar, dataType, styles)
+#   odfWeave:::genCellMatrix(xChar, dataType, styles, NULL, NULL, NULL, NULL)
 #
 "genCellMatrix" <-
-function(x, dataType, styles, t.rgroup, n.rgroup)
+function(x, dataType, styles, t.rgroup, n.rgroup, ts.rgroup, cs.rgroup)
 {
    # Function to generate a matrix containing a single repeated value
    # with the specified dimensions
@@ -139,10 +149,10 @@ function(x, dataType, styles, t.rgroup, n.rgroup)
       # XXX Should the cell style be hardcoded like this?
       firstCol0 <- paste(
          "<table:table-cell",
-         " table:style-name=\"", styles$rgroupCell, "\"",
+         " table:style-name=\"", cs.rgroup, "\"",
          " table:number-rows-spanned=\"", n.rgroup, "\"",
          " office:value-type=\"string\">",
-         "<text:p text:style-name=\"", styles$rgroupText, "\">", t.rgroup, "</text:p>",
+         "<text:p text:style-name=\"", ts.rgroup, "\">", t.rgroup, "</text:p>",
          "</table:table-cell>",
          sep = "")
       firstCol <- rep("<table:covered-table-cell/>", nrow(cellMatrix))
@@ -171,7 +181,7 @@ function(x, dataType, styles, t.rgroup, n.rgroup)
 }
 
 "genHeadLine" <-
-function(header, styles, t.cgroup, n.cgroup)
+function(header, styles, t.cgroup, n.cgroup, ts.cgroup, cs.cgroup)
 {
    # Compute the style attributes for the "table:table-cell" and
    # "text:p" elements
