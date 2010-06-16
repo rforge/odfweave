@@ -199,18 +199,18 @@ function(header, styles, t.cgroup, n.cgroup, ts.cgroup, cs.cgroup)
       textHeaderStyle <- ifelse(styles$header == "", "", textHeaderStyle)
    }
 
-   if (!is.null(styles$cgroupCell))
+   if (!is.null(cs.cgroup))
    {
-      cgroupCellStyle <- paste(" table:style-name=\"", styles$cgroupCell,
+      cgroupCellStyle <- paste(" table:style-name=\"", cs.cgroup,
                                "\" ", sep = "")
-      cgroupCellStyle <- ifelse(styles$cgroupCell == "", "", cgroupCellStyle)
+      cgroupCellStyle <- ifelse(cs.cgroup == "", "", cgroupCellStyle)
    }
 
-   if (!is.null(styles$cgroupText))
+   if (!is.null(ts.cgroup))
    {
-      cgroupTextStyle <- paste(" text:style-name=\"", styles$cgroupText, "\" ",
+      cgroupTextStyle <- paste(" text:style-name=\"", ts.cgroup, "\" ",
                                sep = "")
-      cgroupTextStyle <- ifelse(styles$cgroupText == "", "", cgroupTextStyle)
+      cgroupTextStyle <- ifelse(ts.cgroup == "", "", cgroupTextStyle)
    }
 
    # Compute a "table:table-row" element based on "t.cgroup" and "n.cgroup"
