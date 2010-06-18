@@ -26,8 +26,10 @@ illustrates the process of changing the appearance of the table using \code{tabl
 
 }
 \value{
-a list of style names with elements:  \code{table},  \code{text},  \code{cell},  \code{header} and  \code{headerCell}. The  \code{text} and  \code{cell} entries are for the non-header table elements.
-
+A list of style names with elements: \code{table}, \code{text}, \code{cell},
+\code{header}, \code{headerCell}, \code{cgroupText}, \code{cgroupCell},
+\code{rgroupText} and \code{rgroupCell}.
+The \code{text} and \code{cell} entries are for the non-header table elements.
 }
 \author{Max Kuhn}
 

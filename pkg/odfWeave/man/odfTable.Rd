@@ -48,19 +48,27 @@ odfTable(x, ...)
     so a random name will be used if unspecified.}
   \item{styles}{An optional list of style names for each table element
     (cells, headers etc). See \code{\link{tableStyles}}}
-  \item{cgroup}{A data frame with three columns.  The first column should be
-    a character vector specifying column group header names.
+  \item{cgroup}{A data frame with two, three, or four columns.
+    The first column should be a character vector specifying column group header names.
     The resulting row will come before the header names specified via the
     \code{colnames} argument.
     The second column should be a numeric vector specifying the column span for the
     corresponding element of the first column.
     The sum of the second column must be equal to the number of columns in \code{x},
-    plus one, if \code{useRowNames} is true and \code{x} actually has row names.}
-  \item{rgroup}{A data frame with three columns.  The first column should be
-    a character vector specifying row group header names.
+    plus one, if \code{useRowNames} is true and \code{x} actually has row names.
+    If there is a third column, it should contain the names of paragraph styles to use.
+    If there is a fourth column, it should contain the names of cell styles.
+    In the absence of these columns, the \code{cgroupText} and \code{cgroupCell}
+    elements of the \code{styles} argument will be used.}
+  \item{rgroup}{A data frame with two, three, or four columns.
+    The first column should be a character vector specifying row group header names.
     The second column should be a numeric vector specifying the row span for the
     corresponding element of the first column.
-    The sum of the second column must be equal to the number of rows in \code{x}.}
+    The sum of the second column must be equal to the number of rows in \code{x}.
+    If there is a third column, it should contain the names of paragraph styles to use.
+    If there is a fourth column, it should contain the names of cell styles.
+    In the absence of these columns, the \code{rgroupText} and \code{rgroupCell}
+    elements of the \code{styles} argument will be used.}
   \item{\dots}{Optional arguments that can be passed to \code{format}.}
 }
 
