@@ -1,4 +1,22 @@
 ----------------------------------
+Version: 0.7.12Date: 2010-06-21
+
+A number of under-the-hood changes.
+
+User-visible changes: 
+
+o new "regroup" and "group" headers (as are in Hmisc:::latex) 
+  that can span multiple cells.
+
+o odfFigureCancel() is added so that you can algorithmically
+  determine whether you want to produce a plot or not.
+
+o odfFigureCaption() now has an option called "prefix" that
+  can be used to change the caption (e.g. "Illustration 1:"
+  to "Figure 1:")
+
+
+----------------------------------
 Version: 0.7.11
 Date: 2009-03-18
 
