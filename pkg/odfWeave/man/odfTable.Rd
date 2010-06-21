@@ -13,25 +13,40 @@ Create an Open Document Format table from a data frame, matrix or vector
 \usage{
 odfTable(x, ...)
 
-\method{odfTable}{numeric}(x, horizontal = length(x) < 5, colnames = names(x), 
-   digits = max(3, getOption("digits") - 3), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
+\method{odfTable}{numeric}(x, 
+         horizontal = length(x) < 5, 
+         colnames = names(x), 
+         digits = max(3, getOption("digits") - 3), 
+         name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+         styles = NULL,
+         ...)
   
-\method{odfTable}{character}(x, horizontal = length(x) < 5, colnames = names(x), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, ...)
+\method{odfTable}{character}(x, 
+         horizontal = length(x) < 5, 
+         colnames = names(x), 
+         name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+         styles = NULL, 
+         ...)
+     
+\method{odfTable}{data.frame}(x, 
+         colnames = NULL, 
+         useRowNames = TRUE, 
+         digits = max(3, getOption("digits") - 3), 
+         name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+         styles = NULL, 
+         cgroup = NULL, 
+         rgroup = NULL, 
+         ...)
    
-  
-\method{odfTable}{data.frame}(x, colnames = NULL, useRowNames = TRUE, 
-   digits = max(3, getOption("digits") - 3), 
-   name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-   styles = NULL, cgroup = NULL, rgroup = NULL, ...)
-   
-\method{odfTable}{matrix}(x, colnames = NULL, useRowNames = TRUE, 
-   digits = max(3, getOption("digits") - 3),
-    name = paste("Table", floor(runif(1) * 1000), sep = ""), 
-    styles = NULL, cgroup = NULL, rgroup = NULL, ...)
+\method{odfTable}{matrix}(x, 
+         colnames = NULL, 
+         useRowNames = TRUE, 
+         digits = max(3, getOption("digits") - 3),
+         name = paste("Table", floor(runif(1) * 1000), sep = ""), 
+         styles = NULL, 
+         cgroup = NULL, 
+         rgroup = NULL, 
+         ...)
 }
 \arguments{
   \item{x}{A vector, matrix or data frame.}
@@ -97,13 +112,20 @@ odfTable(iris[1:5,])
 
 # Simple use of cgroup
 data(odfWeaveData)
-cgroup <- data.frame(c("row","C"), c(1, 3))
-odfTable(mdat, cgroup=cgroup)
+str(carRentInfo)
+
+cgroup <- data.frame(label = c("row","C"),
+                     span = c(1, 3))
+odfTable(mdat, cgroup = cgroup)
 
 # Use of cgroup and rgroup
-carCgroup <- data.frame(c("", "Compact", "Medium", "Full", "SUV"),
-                        c(1, 2, 2, 2, 2))
-carRgroup <- data.frame(c("Jan.-Feb.", "Mar.-Apr"), c(5, 5))
-odfTable(carRentInfo$tableCells, cgroup=carCgroup, rgroup=carRgroup)
+carCgroup <- data.frame(label = c("", "Compact", "Medium", "Full", "SUV"),
+                        span = c(1, 2, 2, 2, 2))
+carRgroup <- data.frame(label = c("Jan.-Feb.", "Mar.-Apr"),
+                        span = c(5, 5))
+
+odfTable(carRentInfo$tableCells, 
+         cgroup = carCgroup, 
+         rgroup = carRgroup)
 }
 \keyword{utilities}

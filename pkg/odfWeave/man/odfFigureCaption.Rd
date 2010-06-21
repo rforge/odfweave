@@ -7,8 +7,11 @@
   be specified via the numformat argument.
 }
 \usage{
-odfFigureCaption(caption, numformat='1', numlettersync=FALSE,
-  formula='Illustration+1', label='Illustration')
+odfFigureCaption(caption, 
+                 numformat = '1', 
+                 numlettersync = FALSE,
+                 formula = 'Illustration+1', 
+                 prefix = 'Illustration')
 }
 \arguments{
   \item{caption}{the text portion of the caption}
