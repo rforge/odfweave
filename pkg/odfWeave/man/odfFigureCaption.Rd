@@ -11,7 +11,7 @@ odfFigureCaption(caption,
                  numformat = '1', 
                  numlettersync = FALSE,
                  formula = 'Illustration+1', 
-                 prefix = 'Illustration')
+                 label = 'Illustration')
 }
 \arguments{
   \item{caption}{the text portion of the caption}
