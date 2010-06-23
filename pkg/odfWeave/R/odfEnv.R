@@ -135,7 +135,7 @@ assign(
       Rbullet = list(
          type = "Bullet List",
          paraStyle = "ArialNormal",
-         bulletChar="\342\227\217",
+         bulletChar= paste("\342", "\227", "\217", sep = "")
          spaceBefore="0.25in",
          minLabelWidth="0.25in"),
 

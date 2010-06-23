@@ -1,11 +1,12 @@
 ----------------------------------
-Version: 0.7.12Date: 2010-06-21
+Version: 0.7.13
+Date: 2010-06-23
 
 A number of under-the-hood changes.
 
 User-visible changes: 
 
-o new "regroup" and "group" headers (as are in Hmisc:::latex) 
+o new "rgroup" and "cgroup" headers (as are in Hmisc:::latex) 
   that can span multiple cells.
 
 o odfFigureCancel() is added so that you can algorithmically
