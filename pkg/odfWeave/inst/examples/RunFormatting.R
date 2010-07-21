@@ -43,7 +43,8 @@ basicStyles$wideBullet <- basicStyles$Rbullet
 basicStyles$wideBullet$spaceBefore <- "0.1in"
 basicStyles$wideBullet$minLabelWidth <- "0.5in"
 basicStyles$wideBullet$paraStyle <- "ttBlue"
-basicStyles$wideBullet$bulletChar="\342\234\224"
+basicStyles$wideBullet$bulletChar <- "\342\234\224"
+Encoding(basicStyles$wideBullet$bulletChar) <- "UTF-8"
 
 setStyleDefs(basicStyles)
 
