@@ -214,7 +214,8 @@ newStyleGen <- function(x, type="styles")
 
    getListStyleAttrs <- function(styleName, thisStyle)
    {
-      c("style:name"=styleName)
+      # XXX not certain of the style:family
+      c("style:name"=styleName, "style:family"="paragraph")
    }
 
    getListLevelStyleAttrs <- function(styleName, thisStyle)
