@@ -214,8 +214,7 @@ newStyleGen <- function(x, type="styles")
 
    getListStyleAttrs <- function(styleName, thisStyle)
    {
-      # XXX not certain of the style:family
-      c("style:name"=styleName, "style:family"="paragraph")
+      c("style:name"=styleName)
    }
 
    getListLevelStyleAttrs <- function(styleName, thisStyle)
@@ -364,13 +363,12 @@ newStyleGen <- function(x, type="styles")
       {
          thisStyle <- x[[idx]]
          styleName <- styleNames[idx]
-         children <- c(
+         children <-
             list(xmlNode('text:list-level-style-bullet',
-                         attrs=getListLevelStyleAttrs(styleName, thisStyle))),
-            list(xmlNode('style:list-level-properties',
-                         attrs=getListLevelPropertiesAttrs(styleName, thisStyle)))
-         )
-         xmlNode('style:style',
+                         attrs=getListLevelStyleAttrs(styleName, thisStyle),
+                         .children=list(xmlNode('style:list-level-properties',
+                                               attrs=getListLevelPropertiesAttrs(styleName, thisStyle)))))
+         xmlNode('text:list-style',
                  attrs=getListStyleAttrs(styleName, thisStyle),
                  .children=children)
       }
