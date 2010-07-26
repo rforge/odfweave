@@ -6,7 +6,7 @@ basicStyles$lowerBorderGray <-  basicStyles$lowerBorder
 basicStyles$lowerBorderGray$backgroundColor <-  "#E8E8E8"
 
 basicStyles$ArialCenteredItalics <- basicStyles$ArialCenteredBold
-basicStyles$ArialCenteredItalics$fontSize <- "10 pt"
+basicStyles$ArialCenteredItalics$fontSize <- "10pt"
 basicStyles$ArialCenteredItalics$fontType <- "italic"
 
 basicStyles$ArialHighlight$fontColor <- "#000080"
