@@ -85,7 +85,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    assign(
       "picPath",
       paste(workDir, "/Pictures", sep = ""),
-      env = .odfEnv)
+      pos = .odfEnv)
 
    # create a character vector in .odfEnv that will collect the
    # names of the image files inserted into the document via
@@ -94,7 +94,7 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    assign(
       "picVector",
       character(),
-      env = .odfEnv)
+      pos = .odfEnv)
  
    # Create the "Style Name Environment" which will be used to create
    # unique style names during the Sweave phase.  Names of the existing
@@ -250,11 +250,11 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    assign(
       "picPath",
       NA,
-      env = .odfEnv)
+      pos = .odfEnv)
    assign(
       "picVector",
       NA,
-      env = .odfEnv)
+      pos = .odfEnv)
 
    # delete tmp dir that we were working in
    if(control$cleanup)
