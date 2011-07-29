@@ -6,6 +6,6 @@ Date: 2011-7-29
 Author: Max Kuhn. Contributions from Steve Weston, Nathan Coulter, Patrick Lenon and Zekai Otles
 Maintainer: Max Kuhn <max.kuhn@pfizer.com>
 Description: Sweave processing of Open Document Format (ODF) files
-Depends: R (>= 2.10.1), lattice, XML
+Depends: R (>= 2.13.1), lattice, XML
 License: GPL-2
 Encoding: UTF-8

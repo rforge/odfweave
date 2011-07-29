@@ -135,7 +135,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    #Sys.setlocale("LC_COLLATE", currentLocale[2])
 
    Sweave(file=rnwFileName, output="content_1.xml",
-      quiet=!control$verbose, driver=RweaveOdf(), control=control)
+      quiet=!control$verbose, driver=RweaveOdf(), control=control,
+      encoding="UTF-8")
 
    # reset the figure captions
    
