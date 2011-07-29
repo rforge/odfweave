@@ -106,7 +106,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    assign('styleNameEnv', styleNameEnv, pos=.odfEnv)
 
    # Parse content.xml
-   top <- getTopNode("content.xml")
+   content.xml.doc <- parseXML("content.xml")
+   top <- getTopNode(content.xml.doc)
 
    # Initialize the "Style Name Environment"
    initStyleNames(top, styleNameEnv)
@@ -157,7 +158,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
 
    announce(verbose, "\n  Post-processing the contents\n")
    # post-process the output from Sweave
-   top <- getTopNode("content_1.xml")
+   content_1.xml.doc <- parseXML("content_1.xml")
+   top <- getTopNode(content_1.xml.doc)
    postproc(top, "content.xml")
 
    if (!control$debug)
@@ -171,7 +173,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    }
 
    # process styles.xml
-   stylestop <- getTopNode("styles.xml")
+   styles.xml.doc <- parseXML("styles.xml")
+   stylestop <- getTopNode(styles.xml.doc)
    procstyles(stylestop, "styles_2.xml")
 
    if (!control$debug)
@@ -198,7 +201,8 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    }
 
    # process META-INF/manifest.xml
-   manifesttop <- getTopNode("META-INF/manifest.xml")
+   manifest.xml.doc <- parseXML("META-INF/manifest.xml")
+   manifesttop <- getTopNode(manifest.xml.doc)
    procmanifest(manifesttop, "META-INF/manifest_2.xml")
 
    if (!control$debug)
