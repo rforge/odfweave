@@ -1,4 +1,4 @@
-newNode <- function(node, newChildren) {
+makeNode <- function(node, newChildren) {
    if (inherits(node, 'XMLTextNode')) {
       node
    } else {

@@ -54,7 +54,7 @@ makePageBreakStyle <- function(name, family=c('paragraph', 'table'),
 
       # XXX work-around bug in XML 3.4?
       # xmlChildren(prevstyle) <- newchildren
-      prevstyle <- newNode(prevstyle, newchildren)
+      prevstyle <- makeNode(prevstyle, newchildren)
 
       # Return the modified node
       prevstyle

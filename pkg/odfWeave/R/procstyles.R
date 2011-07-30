@@ -12,7 +12,7 @@ stylestraverse <- function(node)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newstyles)
-      node <- newNode(node, c(xmlChildren(node), newstyles))
+      node <- makeNode(node, c(xmlChildren(node), newstyles))
 
       # Return the modified node
       node
@@ -28,7 +28,7 @@ stylestraverse <- function(node)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newstyles)
-      node <- newNode(node, c(xmlChildren(node), newstyles))
+      node <- makeNode(node, c(xmlChildren(node), newstyles))
 
       # Return the modified node
       node
@@ -44,7 +44,7 @@ stylestraverse <- function(node)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newstyles)
-      node <- newNode(node, c(xmlChildren(node), newstyles))
+      node <- makeNode(node, c(xmlChildren(node), newstyles))
 
       # Return the modified node
       node
@@ -89,7 +89,7 @@ stylestraverse <- function(node)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- newChildren
-      node <- newNode(node, newChildren)
+      node <- makeNode(node, newChildren)
 
       node
    }

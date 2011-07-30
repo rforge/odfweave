@@ -77,7 +77,7 @@ addentries <- function(node)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newentries)
-      node <- newNode(node, c(xmlChildren(node), newentries))
+      node <- makeNode(node, c(xmlChildren(node), newentries))
    }
 
    # Return the (possibly modified) node

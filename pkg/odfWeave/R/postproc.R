@@ -108,7 +108,7 @@ posttraverse <- function(node, seqenv)
 
             # XXX work-around for XML 3.4 bug?
             # xmlChildren(node) <- list(newnode)
-            node <- newNode(node, list(newnode))
+            node <- makeNode(node, list(newnode))
 
             # If this 'text:sequence' element has a reference name (it should)
             # then assign the formatted value of this sequence to "seqenv" using
@@ -145,7 +145,7 @@ posttraverse <- function(node, seqenv)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newstyles, dynstyles)
-      node <- newNode(node, c(xmlChildren(node), newstyles, dynstyles))
+      node <- makeNode(node, c(xmlChildren(node), newstyles, dynstyles))
 
       # Return the modified node
       node
@@ -179,7 +179,7 @@ posttraverse <- function(node, seqenv)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- c(xmlChildren(node), newFonts)
-      node <- newNode(node, c(xmlChildren(node), newFonts))
+      node <- makeNode(node, c(xmlChildren(node), newFonts))
 
       # Return the modified node
       node
@@ -227,7 +227,7 @@ posttraverse <- function(node, seqenv)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- newChildren
-      node <- newNode(node, newChildren)
+      node <- makeNode(node, newChildren)
 
       # Do any work on this node that needs to be done after all
       # of the children have been processed.
@@ -271,7 +271,7 @@ posttraverse_2 <- function(node, seqenv)
 
             # XXX work-around for XML 3.4 bug?
             # xmlChildren(node) <- list(newnode)
-            node <- newNode(node, list(newnode))
+            node <- makeNode(node, list(newnode))
          },
          error=function(e)
          {
@@ -318,7 +318,7 @@ posttraverse_2 <- function(node, seqenv)
 
       # XXX work-around for XML 3.4 bug?
       # xmlChildren(node) <- newChildren
-      node <- newNode(node, newChildren)
+      node <- makeNode(node, newChildren)
 
       node
    }

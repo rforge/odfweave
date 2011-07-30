@@ -105,7 +105,7 @@ pretraverse <- function(node)
 
    # XXX work-around for XML 3.4 bug?
    # xmlChildren(node) <- newChildren
-   node <- newNode(node, newChildren)
+   node <- makeNode(node, newChildren)
 
    node
 }
@@ -249,7 +249,7 @@ tdata <- function(node, chunks)
 
    # XXX work-around for XML 3.4 bug?
    # xmlChildren(node) <- newChildren
-   node <- newNode(node, newChildren)
+   node <- makeNode(node, newChildren)
 
    node
 }
