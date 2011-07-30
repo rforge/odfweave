@@ -24,11 +24,6 @@ RweaveOdfSetup <-
     }
     if(!quiet) cat("  Writing to file ", output, "\n",
                    "  Processing code chunks ...\n", sep="")
-
-    # We only support UTF-8 encoding of ODF files
-    encoding <- attr(file, "encoding")
-    if (! identical(toupper(encoding), "UTF-8"))
-        warning("only UTF-8 encoding is supported")
     output <- file(output, open="w+", encoding="UTF-8")
 
     options <- list(prefix=TRUE, prefix.string=prefix.string,
