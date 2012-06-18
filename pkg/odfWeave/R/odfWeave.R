@@ -80,6 +80,18 @@ function(file, dest, workDir=odfTmpDir(), control=odfWeaveControl())
    file.remove(workingCopy)
    if (file.exists(workingCopy)) stop("Error removing original file")
 
+   # Make sure we can convert content.xml to the current locale,
+   # otherwise the output from the 'Sweave' function will be invalid XML.
+   text <- iconv(readLines('content.xml', warn=FALSE), 'UTF-8', '')
+   if (any(is.na(text)))
+   {
+       announce(verbose, "\n  Unable to convert", workingCopy, "to the current locale\n")
+       announce(verbose, "  You may need to process this file in a UTF-8 locale\n")
+       stop(sprintf("unable to convert %s to the current locale",
+                    workingCopy))
+   }
+   rm(text)
+
    # create Pictures directory if it was not created by unzipping the ODT file
    if(!file.exists(paste(workDir, "/Pictures", sep = "")))
    {
